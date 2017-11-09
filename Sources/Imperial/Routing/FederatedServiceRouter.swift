@@ -1,3 +1,5 @@
+import Vapor
+
 /*
  Usage:
  
@@ -22,4 +24,12 @@ protocol FederatedServiceRouter {
     var authURL: String { get }
     
     init(callback: String)throws
+    
+    func authenticate(_ request: Request) -> ResponseRepresentable
+}
+
+extension FederatedServiceRouter {
+    public func authenticate(_ request: Request) -> ResponseRepresentable {
+        return Response(redirect: authURL)
+    }
 }
