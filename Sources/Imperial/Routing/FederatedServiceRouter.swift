@@ -24,7 +24,7 @@ import Vapor
  }
  */
 
-protocol FederatedServiceRouter {
+public protocol FederatedServiceRouter {
     var service: FederatedLoginService { get }
     var callbackURL: String { get }
     var accessTokenURL: String { get }
