@@ -26,6 +26,7 @@ protocol FederatedServiceRouter {
     init(callback: String)throws
     
     func authenticate(_ request: Request) -> ResponseRepresentable
+    func callback(_ request: Request) -> ResponseRepresentable
 }
 
 extension FederatedServiceRouter {
