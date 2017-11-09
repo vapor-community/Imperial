@@ -32,12 +32,12 @@ public protocol FederatedServiceRouter {
     
     init(callback: String)throws
     
-    func authenticate(_ request: Request) -> ResponseRepresentable
-    func callback(_ request: Request) -> ResponseRepresentable
+    func authenticate(_ request: Request)throws -> ResponseRepresentable
+    func callback(_ request: Request)throws -> ResponseRepresentable
 }
 
 extension FederatedServiceRouter {
-    public func authenticate(_ request: Request) -> ResponseRepresentable {
+    public func authenticate(_ request: Request)throws -> ResponseRepresentable {
         return Response(redirect: authURL)
     }
 }

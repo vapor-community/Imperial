@@ -16,7 +16,7 @@ public class GitHubRouter: FederatedServiceRouter {
         self.callbackURL = callback
     }
     
-    public func callback(_ request: Request) -> ResponseRepresentable {
+    public func callback(_ request: Request)throws -> ResponseRepresentable {
         return Response(redirect: "/")
     }
 }
