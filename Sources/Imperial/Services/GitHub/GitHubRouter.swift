@@ -2,6 +2,7 @@ import Vapor
 
 public class GitHubRouter: FederatedServiceRouter {
     public let service: FederatedLoginService
+    public let callbackCompletion: (String) -> ()
     public var scope: [String: String] = [:]
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
@@ -11,9 +12,10 @@ public class GitHubRouter: FederatedServiceRouter {
                "client_id=\(self.service.clientID)"
     }
     
-    public required init(callback: String) throws {
+    public required init(callback: String, completion: @escaping (String) -> ()) throws {
         self.service = try GitHubAuth()
         self.callbackURL = callback
+        self.callbackCompletion = completion
     }
     
     public func callback(_ request: Request)throws -> ResponseRepresentable {
