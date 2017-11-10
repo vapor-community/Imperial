@@ -43,4 +43,9 @@ extension FederatedServiceRouter {
     public func authenticate(_ request: Request)throws -> ResponseRepresentable {
         return Response(redirect: authURL)
     }
+    
+    public func configureRoutes(withAuthURL authURL: String) throws {
+        drop.get(callbackURL, handler: callback)
+        drop.get(authURL, handler: authenticate)
+    }
 }
