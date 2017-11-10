@@ -18,6 +18,11 @@ public class GitHubRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
+    public func configureRoutes(withAuthURL authURL: String) throws {
+        drop.get(callbackURL, handler: callback)
+        drop.get(authURL, handler: authenticate)
+    }
+    
     public func callback(_ request: Request)throws -> ResponseRepresentable {
         guard let code: String = try request.query?.get("code") else {
             throw Abort(.badRequest, reason: "Missing 'code' key from query")

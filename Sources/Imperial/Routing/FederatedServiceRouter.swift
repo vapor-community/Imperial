@@ -33,6 +33,8 @@ public protocol FederatedServiceRouter {
     
     init(callback: String, completion: @escaping (String) -> ())throws
     
+    func configureRoutes(withAuthURL authURL: String)throws
+    
     func authenticate(_ request: Request)throws -> ResponseRepresentable
     func callback(_ request: Request)throws -> ResponseRepresentable
 }
