@@ -18,12 +18,18 @@ public class GitHubRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
-    
     public func callback(_ request: Request)throws -> ResponseRepresentable {
         guard let code: String = try request.query?.get("code") else {
             throw Abort(.badRequest, reason: "Missing 'code' key from query")
         }
-        let response = try drop.client.post(accessTokenURL)
+        
+        let response = try drop.client.post(accessTokenURL, query: [:], [
+                "client_id": self.service.clientID,
+                "client_secret": self.service.clientSecret,
+                "code": code
+            ], JSON(node: [
+                "accept": "json"
+            ]))
         guard let json = response.json else {
             throw Abort(.internalServerError, reason: "Unable to get access token")
         }
