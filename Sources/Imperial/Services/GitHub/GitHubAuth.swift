@@ -10,7 +10,22 @@ public class GitHubAuth: FederatedLoginService {
         let idError = ImperialError.missingEnvVar(idEnvKey)
         let secretError = ImperialError.missingEnvVar(secretEnvKey)
         
-        self.clientID = try Env.get(idEnvKey).value(or: idError)
-        self.clientSecret = try Env.get(secretEnvKey).value(or: secretError)
+        do {
+            guard let id = ImperialConfig.gitHubID else {
+                throw idError
+            }
+            self.clientID = id
+        } catch {
+            self.clientID = try Env.get(idEnvKey).value(or: idError)
+        }
+        
+        do {
+            guard let secret = ImperialConfig.gitHubSecret else {
+                throw secretError
+            }
+            self.clientSecret = secret
+        } catch {
+            self.clientSecret = try Env.get(secretEnvKey).value(or: secretError)
+        }
     }
 }
