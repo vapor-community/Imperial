@@ -10,8 +10,12 @@ public class Provider: Vapor.Provider {
     }
     
     public func boot(_ config: Config) throws {
-        if let ghID = config["imperial", "github_client_id"]?.string,
-           let ghSecret = config["imperial", "github_client_secret"]?.string {
+        guard let imperial = config["imperial"]?.object else {
+            return
+        }
+        
+        if let ghID = imperial["github_client_id"]?.string,
+           let ghSecret = imperial["github_client_secret"]?.string {
             ImperialConfig.gitHubID = ghID
             ImperialConfig.gitHubSecret = ghSecret
         }
