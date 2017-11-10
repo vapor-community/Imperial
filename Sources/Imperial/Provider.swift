@@ -9,7 +9,19 @@ public class Provider: Vapor.Provider {
         drop = droplet
     }
     
-    public func boot(_ config: Config) throws {}
+    public func boot(_ config: Config) throws {
+        if let ghID = config["imperial", "github_client_id"]?.string,
+           let ghSecret = config["imperial", "github_client_secret"]?.string {
+            ImperialConfig.gitHubID = ghID
+            ImperialConfig.gitHubSecret = ghSecret
+        }
+    }
+    
     public func beforeRun(_ droplet: Droplet) throws {}
     public required init(config: Config) throws {}
+}
+
+internal struct ImperialConfig {
+    internal fileprivate(set) static var gitHubID: String?
+    internal fileprivate(set) static var gitHubSecret: String?
 }
