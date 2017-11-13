@@ -79,3 +79,5 @@ The `authenticate` argument is the path you will go to when you want to authenti
 ![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/callback-url.png)
 
 The completion handler is fired when the callback route is called by GitHub. The access token is passed in and a response is returned. Typically you will want a redirecting response that sends the user back to your application after they have authenticated.
+
+Now that you are authenticated
