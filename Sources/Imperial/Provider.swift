@@ -19,6 +19,12 @@ public class Provider: Vapor.Provider {
             ImperialConfig.gitHubID = ghID
             ImperialConfig.gitHubSecret = ghSecret
         }
+        
+        if let googleID = imperial["google_client_id"]?.string,
+           let googleSecret = imperial["google_client_secret"]?.string {
+            ImperialConfig.googleID = googleID
+            ImperialConfig.googleSecret = googleSecret
+        }
     }
     
     public func beforeRun(_ droplet: Droplet) throws {}
@@ -28,4 +34,6 @@ public class Provider: Vapor.Provider {
 internal struct ImperialConfig {
     internal fileprivate(set) static var gitHubID: String?
     internal fileprivate(set) static var gitHubSecret: String?
+    internal fileprivate(set) static var googleID: String?
+    internal fileprivate(set) static var googleSecret: String?
 }
