@@ -100,11 +100,17 @@ let token = try request.getAccessToken()
 Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a droplet group:
 
 ```swift
-let protected = drop.grouped(ImperialMiddleware)
+let protected = drop.grouped(ImperialMiddleware())
 ```
 
 Then, add your protected routes to the `protected` group:
 
 ```swift
 protected.get("me", handler: me)
+```
+
+The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddleware` where they are caught, but you can initialize it with a redirect path to go to if the user is not authenticated:
+
+```swift
+let protected = drop.grouped(ImperialMiddleware(redirect: "/"))
 ```
