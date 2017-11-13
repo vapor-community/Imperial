@@ -1,8 +1,8 @@
 import Vapor
 
 public class GitHubAuth: FederatedLoginService {
-    public var idEnvKey: String = "IMPERIAL_GITHUB_ID"
-    public var secretEnvKey: String = "IMPERIAL_GITHUB_SECRET"
+    public var idEnvKey: String = "GITHUB_CLIENT_ID"
+    public var secretEnvKey: String = "GITHUB_CLIENT_SECRET"
     public var clientID: String
     public var clientSecret: String
     
