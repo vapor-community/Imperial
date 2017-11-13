@@ -26,12 +26,12 @@ import Vapor
 
 public protocol FederatedServiceRouter {
     var service: FederatedLoginService { get }
-    var callbackCompletion: (String) -> () { get }
+    var callbackCompletion: (String) -> (ResponseRepresentable) { get }
     var callbackURL: String { get }
     var accessTokenURL: String { get }
     var authURL: String { get }
     
-    init(callback: String, completion: @escaping (String) -> ())throws
+    init(callback: String, completion: @escaping (String) -> (ResponseRepresentable))throws
     
     func configureRoutes(withAuthURL authURL: String)throws
     

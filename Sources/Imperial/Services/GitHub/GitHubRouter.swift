@@ -2,7 +2,7 @@ import Vapor
 
 public class GitHubRouter: FederatedServiceRouter {
     public let service: FederatedLoginService
-    public let callbackCompletion: (String) -> ()
+    public let callbackCompletion: (String) -> (ResponseRepresentable)
     public var scope: [String: String] = [:]
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
@@ -12,7 +12,7 @@ public class GitHubRouter: FederatedServiceRouter {
                "client_id=\(self.service.clientID)"
     }
     
-    public required init(callback: String, completion: @escaping (String) -> ()) throws {
+    public required init(callback: String, completion: @escaping (String) -> (ResponseRepresentable)) throws {
         self.service = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -40,8 +40,6 @@ public class GitHubRouter: FederatedServiceRouter {
             throw Abort(.internalServerError, reason: "Unable to get access token from response body")
         }
         
-        callbackCompletion(accessToken)
-        
-        return Response(status: .ok)
+        return callbackCompletion(accessToken)
     }
 }
