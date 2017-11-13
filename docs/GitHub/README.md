@@ -65,6 +65,17 @@ Or 3: Create the environment variables like the instructions in point 1 say, the
 }
 ```
 
+While we are still looking at JSON, go to the `droplet.json` file and add `"sessions"` to the `middleware` array:
+
+```json
+"middleware": [
+        "error",
+        "date",
+        "file",
+        "sessions"
+    ], ...
+```
+
 Now, all we need to do is create and instance of GitHub with the authentication paths. In your `Droplet+Setup.swift` file, create an instance of `GitHub` in the `setup` method:
 
 ```swift
@@ -80,8 +91,20 @@ The `authenticate` argument is the path you will go to when you want to authenti
 
 The completion handler is fired when the callback route is called by GitHub. The access token is passed in and a response is returned. Typically you will want a redirecting response that sends the user back to your application after they have authenticated.
 
+If you ever want to get the `access_token` in a route, you can use a helper method for the `Request` type that comes with Imperial:
+
+```swift
+let token = try request.getAccessToken()
+```
+
 Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a droplet group:
 
 ```swift
 let protected = drop.grouped(ImperialMiddleware)
+```
+
+Then, add your protected routes to the `protected` group:
+
+```swift
+protected.get("me", handler: me)
 ```
