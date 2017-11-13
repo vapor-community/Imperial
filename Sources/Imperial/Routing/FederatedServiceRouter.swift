@@ -27,6 +27,7 @@ import Vapor
 public protocol FederatedServiceRouter {
     var service: FederatedLoginService { get }
     var callbackCompletion: (String) -> (ResponseRepresentable) { get }
+    var scope: [String: String] { get set }
     var callbackURL: String { get }
     var accessTokenURL: String { get }
     var authURL: String { get }
