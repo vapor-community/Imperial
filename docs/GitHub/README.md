@@ -80,4 +80,8 @@ The `authenticate` argument is the path you will go to when you want to authenti
 
 The completion handler is fired when the callback route is called by GitHub. The access token is passed in and a response is returned. Typically you will want a redirecting response that sends the user back to your application after they have authenticated.
 
-Now that you are authenticated
+Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a droplet group:
+
+```swift
+let protected = drop.grouped(ImperialMiddleware)
+```
