@@ -1,0 +1,9 @@
+os:
+  - linux
+  - osx
+language: generic
+sudo: required
+dist: trusty
+osx_image: xcode9
+script:
+  - eval "$(curl -sL https://gist.githubusercontent.com/calebkleveter/adbc184c15d25a15914d91b7497bdcd4/raw/a1675c935d2af18958510c8c434518a808b32dbc/TravisPodLint.sh)"
