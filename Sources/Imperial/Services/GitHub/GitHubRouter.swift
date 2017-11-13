@@ -23,17 +23,23 @@ public class GitHubRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key from query")
         }
         
-        let response = try drop.client.post(accessTokenURL, query: [:], [
-                "client_id": self.service.clientID,
-                "client_secret": self.service.clientSecret,
-                "code": code
-            ], JSON(node: [
-                "accept": "json"
-            ]))
-        guard let json = response.json else {
-            throw Abort(.internalServerError, reason: "Unable to get access token")
+        let request = Request(method: .post, uri: accessTokenURL)
+        request.formURLEncoded = [
+            "client_id": .string(self.service.clientID),
+            "client_secret": .string(self.service.clientSecret),
+            "code": .string(code)
+        ]
+        
+        let response = try drop.client.respond(to: request)
+        
+        guard let body = response.body.bytes else {
+            throw Abort(.internalServerError, reason: "Unable to get body from access token response")
         }
-        let accessToken: String = try json.get("access_token")
+
+        guard let accessToken: String = try Node(formURLEncoded: body, allowEmptyValues: false).get("access_token") else {
+            throw Abort(.internalServerError, reason: "Unable to get access token from response body")
+        }
+        
         callbackCompletion(accessToken)
         
         return Response(status: .ok)
