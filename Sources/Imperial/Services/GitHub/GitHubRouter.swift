@@ -1,4 +1,5 @@
 import Vapor
+import Sessions
 
 public class GitHubRouter: FederatedServiceRouter {
     public let service: FederatedLoginService
@@ -23,14 +24,14 @@ public class GitHubRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key from query")
         }
         
-        let request = Request(method: .post, uri: accessTokenURL)
-        request.formURLEncoded = [
+        let req = Request(method: .post, uri: accessTokenURL)
+        req.formURLEncoded = [
             "client_id": .string(self.service.clientID),
             "client_secret": .string(self.service.clientSecret),
             "code": .string(code)
         ]
         
-        let response = try drop.client.respond(to: request)
+        let response = try drop.client.respond(to: req)
         
         guard let body = response.body.bytes else {
             throw Abort(.internalServerError, reason: "Unable to get body from access token response")
@@ -39,6 +40,9 @@ public class GitHubRouter: FederatedServiceRouter {
         guard let accessToken: String = try Node(formURLEncoded: body, allowEmptyValues: false).get("access_token") else {
             throw Abort(.internalServerError, reason: "Unable to get access token from response body")
         }
+        
+        let session = try request.assertSession()
+        try session.data.set("access_token", accessToken)
         
         return callbackCompletion(accessToken)
     }
