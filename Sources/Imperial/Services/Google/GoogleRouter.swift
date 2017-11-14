@@ -12,7 +12,8 @@ public class GoogleRouter: FederatedServiceRouter {
         return "https://accounts.google.com/o/oauth2/auth?" +
                "client_id=\(self.service.clientID)&" +
                "redirect_uri=\(self.callbackURL)&" +
-               "scope=\(self.scope.mergeValues(with: " "))"
+               "scope=\(self.scope.mergeValues(with: " "))&" +
+               "response_type=code"
     }
     
     public required init(callback: String, completion: @escaping (String) -> (ResponseRepresentable)) throws {
