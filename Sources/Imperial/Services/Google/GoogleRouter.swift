@@ -37,7 +37,8 @@ public class GoogleRouter: FederatedServiceRouter {
             "code": .string(code),
             "client_id": .string(self.service.clientID),
             "client_secret": .string(self.service.clientSecret),
-            "grant_type": .string("authorization_code")
+            "grant_type": .string("authorization_code"),
+            "redirect_uri": .string(self.callbackURL)
         ]
         let response = try drop.client.respond(to: req)
         
