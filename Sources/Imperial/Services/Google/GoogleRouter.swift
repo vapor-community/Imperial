@@ -42,8 +42,9 @@ public class GoogleRouter: FederatedServiceRouter {
         ]
         let response = try drop.client.respond(to: req)
         
-        guard let accessToken: String = try response.json?.get("access_token") else {
-            throw Abort(.badRequest, reason: "Mssing JSON from response body")
+        guard let body = response.body.bytes,
+            let accessToken: String = try JSON(bytes: body).get("access_token") else {
+                throw Abort(.badRequest, reason: "Missing JSON from response body")
         }
         
         let session = try request.assertSession()
