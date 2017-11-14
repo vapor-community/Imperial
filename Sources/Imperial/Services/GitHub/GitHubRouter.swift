@@ -20,8 +20,13 @@ public class GitHubRouter: FederatedServiceRouter {
     }
     
     public func callback(_ request: Request)throws -> ResponseRepresentable {
-        guard let code: String = try request.query?.get("code") else {
-            throw Abort(.badRequest, reason: "Missing 'code' key from query")
+        let code: String
+        if let queryCode: String = try request.query?.get("code") {
+            code = queryCode
+        } else if let error: String = try request.query?.get("error") {
+            throw Abort(.badRequest, reason: error)
+        } else {
+            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
         let req = Request(method: .post, uri: accessTokenURL)

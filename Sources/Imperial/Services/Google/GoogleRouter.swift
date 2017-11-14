@@ -29,7 +29,7 @@ public class GoogleRouter: FederatedServiceRouter {
         } else if let error: String = try request.query?.get("error") {
             throw Abort(.badRequest, reason: error)
         } else {
-            throw Abort(.badRequest, reason: "Missing expected values in URL query")
+            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
         let req = Request(method: .post, uri: accessTokenURL)
