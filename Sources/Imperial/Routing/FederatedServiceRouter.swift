@@ -1,4 +1,5 @@
 import Vapor
+import URI
 
 /*
  Usage:
@@ -46,7 +47,10 @@ extension FederatedServiceRouter {
     }
     
     public func configureRoutes(withAuthURL authURL: String) throws {
-        drop.get(callbackURL, handler: callback)
+        var callbackPath = URIParser().parse(bytes: callbackURL.bytes).path
+        callbackPath = callbackPath != "/" ? callbackPath : callbackURL
+        
+        drop.get(callbackPath, handler: callback)
         drop.get(authURL, handler: authenticate)
     }
 }
