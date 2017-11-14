@@ -2,7 +2,7 @@ import Vapor
 import HTTP
 import Sessions
 
-public class GooglebRouter: FederatedServiceRouter {
+public class GoogleRouter: FederatedServiceRouter {
     public let service: FederatedLoginService
     public let callbackCompletion: (String) -> (ResponseRepresentable)
     public var scope: [String: String] = [:]
