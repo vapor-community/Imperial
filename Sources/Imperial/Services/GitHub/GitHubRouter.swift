@@ -48,6 +48,7 @@ public class GitHubRouter: FederatedServiceRouter {
         
         let session = try request.assertSession()
         try session.data.set("access_token", accessToken)
+        try session.data.set("access_token_server", "github")
         
         return callbackCompletion(accessToken)
     }
