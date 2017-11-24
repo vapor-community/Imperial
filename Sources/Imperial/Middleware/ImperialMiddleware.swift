@@ -12,11 +12,10 @@ public class ImperialMiddleware: Middleware {
             _ = try request.getAccessToken()
             return try next.respond(to: request)
         } catch let error {
-            if redirectPath != nil {
-                return Response(redirect: redirectPath!)
-            } else {
+            guard let redirect = redirectPath else {
                 throw error
             }
+            return Response(redirect: redirect)
         }
     }
 }
