@@ -6,3 +6,9 @@ public protocol FederatedInitializible {
     
     static func create(with json: JSON) -> Self
 }
+
+extension FederatedInitializible {
+    public var tokenPrefix: String {
+        return "Bearer "
+    }
+}
