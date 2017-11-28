@@ -4,11 +4,11 @@ public struct Service {
     public let name: String
     public let model: FederatedService.Type
     
-    static func register(_ service: Service) {
+    public static func register(_ service: Service) {
         services[service.name] = service
     }
     
-    static func get(service name: String)throws -> Service {
+    public static func get(service name: String)throws -> Service {
         return try services[name] ?? ImperialError.noServiceFound(name)
     }
 }
