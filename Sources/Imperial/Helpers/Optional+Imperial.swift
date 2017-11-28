@@ -1,5 +1,5 @@
 extension Optional {
-    func value(or error: Error)throws -> Wrapped {
+    public func value(or error: Error)throws -> Wrapped {
         switch self {
         case let .some(value): return value
         case .none: throw error
@@ -9,7 +9,7 @@ extension Optional {
 
 infix operator ??
 
-func ??<T>(lhs: T?, rhs: Error)throws -> T {
+public func ??<T>(lhs: T?, rhs: Error)throws -> T {
     guard lhs != nil else {
         throw rhs
     }
