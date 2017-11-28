@@ -49,7 +49,7 @@ public class GoogleRouter: FederatedServiceRouter {
         
         let session = try request.assertSession()
         try session.data.set("access_token", accessToken)
-        try session.data.set("access_token_server", "google")
+        try session.data.set("access_token_service", Service.google)
         
         return callbackCompletion(accessToken)
     }
