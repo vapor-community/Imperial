@@ -2,7 +2,7 @@ fileprivate var services: [String: Service] = [:]
 
 public struct Service {
     public let name: String
-    public let model: FederatedService
+    public let model: FederatedService.Type
     
     static func register(_ service: Service) {
         services[service.name] = service
