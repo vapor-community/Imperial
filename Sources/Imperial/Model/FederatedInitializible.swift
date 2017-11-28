@@ -1,13 +1,13 @@
 import JSON
 
-public protocol FederatedInitializible {
+public protocol FederatedCreatable {
     var tokenPrefix: String { get }
     var dataUri: String { get }
     
     static func create(with json: JSON) -> Self
 }
 
-extension FederatedInitializible {
+extension FederatedCreatable {
     public var tokenPrefix: String {
         return "Bearer "
     }
