@@ -4,7 +4,7 @@ public protocol FederatedCreatable {
     static var tokenPrefix: String { get }
     static var dataUri: String { get }
     
-    static func create(with json: JSON) -> Self
+    static func create(with json: JSON)throws -> Self
 }
 
 extension FederatedCreatable {
