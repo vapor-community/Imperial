@@ -10,8 +10,5 @@ extension Optional {
 infix operator ??
 
 public func ??<T>(lhs: T?, rhs: Error)throws -> T {
-    guard lhs != nil else {
-        throw rhs
-    }
-    return lhs!
+    return try lhs.value(or: rhs)
 }
