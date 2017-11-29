@@ -3,21 +3,21 @@ import HTTP
 import Sessions
 
 public class GoogleRouter: FederatedServiceRouter {
-    public let service: FederatedServiceTokens
+    public let tokens: FederatedServiceTokens
     public let callbackCompletion: (String) -> (ResponseRepresentable)
     public var scope: [String: String] = [:]
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public var authURL: String {
         return "https://accounts.google.com/o/oauth2/auth?" +
-               "client_id=\(self.service.clientID)&" +
+               "client_id=\(self.tokens.clientID)&" +
                "redirect_uri=\(self.callbackURL)&" +
                "scope=\(self.scope.mergeValues(with: " "))&" +
                "response_type=code"
     }
     
     public required init(callback: String, completion: @escaping (String) -> (ResponseRepresentable)) throws {
-        self.service = try GoogleAuth()
+        self.tokens = try GoogleAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
@@ -35,8 +35,8 @@ public class GoogleRouter: FederatedServiceRouter {
         let req = Request(method: .post, uri: accessTokenURL)
         req.formURLEncoded = [
             "code": .string(code),
-            "client_id": .string(self.service.clientID),
-            "client_secret": .string(self.service.clientSecret),
+            "client_id": .string(self.tokens.clientID),
+            "client_secret": .string(self.tokens.clientSecret),
             "grant_type": .string("authorization_code"),
             "redirect_uri": .string(self.callbackURL)
         ]
