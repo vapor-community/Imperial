@@ -5,8 +5,14 @@ fileprivate var services: [String: Service] = [:]
 /// Represents a service that interacts with an OAuth provider.
 public struct Service {
     
-    /// The namse of the service, i.e. "google", "github", etc.
+    /// The name of the service, i.e. "google", "github", etc.
     public let name: String
+    
+    /// The prefix for the access token when it is used in a authorization header. Defaults to 'Bearer '.
+    public let tokenPrefix: String
+    
+    /// The endpoints for the provider's API to use for initializing `FederatedCreatable` types
+    public let endpoints: [String: String]
     
     /// The service model that is used for interacting the the named OAuth provider.
     public let model: FederatedService.Type
