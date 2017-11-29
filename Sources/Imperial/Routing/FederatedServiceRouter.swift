@@ -26,7 +26,7 @@ import URI
  */
 
 public protocol FederatedServiceRouter {
-    var service: FederatedLoginService { get }
+    var service: FederatedServiceTokens { get }
     var callbackCompletion: (String) -> (ResponseRepresentable) { get }
     var scope: [String: String] { get set }
     var callbackURL: String { get }

@@ -1,7 +1,7 @@
 import HTTP
 
 public class GitHub: FederatedService {
-    public var auth: FederatedLoginService
+    public var auth: FederatedServiceTokens
     public var router: FederatedServiceRouter
     
     @discardableResult

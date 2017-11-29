@@ -14,7 +14,7 @@
  }
  */
 
-public protocol FederatedLoginService {
+public protocol FederatedServiceTokens {
     var idEnvKey: String { get }
     var clientID: String { get }
     var secretEnvKey: String { get }

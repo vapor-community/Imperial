@@ -1,6 +1,6 @@
 import Vapor
 
-public class GoogleAuth: FederatedLoginService {
+public class GoogleAuth: FederatedServiceTokens {
     public var idEnvKey: String = "GOOGLE_CLIENT_ID"
     public var secretEnvKey: String = "GOOGLE_CLIENT_SECRET"
     public var clientID: String

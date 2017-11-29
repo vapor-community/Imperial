@@ -2,7 +2,7 @@ import Vapor
 import Sessions
 
 public class GitHubRouter: FederatedServiceRouter {
-    public let service: FederatedLoginService
+    public let service: FederatedServiceTokens
     public let callbackCompletion: (String) -> (ResponseRepresentable)
     public var scope: [String: String] = [:]
     public let callbackURL: String

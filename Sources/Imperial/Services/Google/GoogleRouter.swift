@@ -3,7 +3,7 @@ import HTTP
 import Sessions
 
 public class GoogleRouter: FederatedServiceRouter {
-    public let service: FederatedLoginService
+    public let service: FederatedServiceTokens
     public let callbackCompletion: (String) -> (ResponseRepresentable)
     public var scope: [String: String] = [:]
     public let callbackURL: String

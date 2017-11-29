@@ -18,7 +18,7 @@ import HTTP
  */
 
 public protocol FederatedService {
-    var auth: FederatedLoginService { get }
+    var auth: FederatedServiceTokens { get }
     var router: FederatedServiceRouter { get }
     
     init(authenticate: String, callback: String, scope: [String: String], completion: @escaping (String) -> (ResponseRepresentable))throws
