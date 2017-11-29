@@ -1,13 +1,13 @@
 import HTTP
 
 public class Google: FederatedService {
-    public var auth: FederatedServiceTokens
+    public var tokens: FederatedServiceTokens
     public var router: FederatedServiceRouter
     
     @discardableResult
     public required init(authenticate: String, callback: String, scope: [String: String] = [:], completion: @escaping (String) -> (ResponseRepresentable)) throws {
         self.router = try GoogleRouter(callback: callback, completion: completion)
-        self.auth = self.router.tokens
+        self.tokens = self.router.tokens
         
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate)
