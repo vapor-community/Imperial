@@ -4,11 +4,8 @@ import JSON
 /// This type is used as a parameter in the `request.fetch` method
 public protocol FederatedCreatable {
     
-    /// The prefix for the access token when it is used in a authorization header.
-    static var tokenPrefix: String { get }
-    
-    /// The URI to make a request to, to get the JSON to create an instance of the model.
-    static var dataUri: String { get }
+    /// The key for the service's endpoint to use when `request.create` is called with the implimenting type.
+    static var serviceKey: String { get }
     
     /// Creates an instance of the model with JSON.
     ///
