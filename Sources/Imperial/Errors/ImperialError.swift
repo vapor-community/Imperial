@@ -12,12 +12,20 @@ public enum ImperialError: Error, CustomStringConvertible {
     /// no JSON in the response from the the request to `dataUri`.
     case missingJSONFromResponse(String)
     
+    /// Thrown when a `FederatedCreatable` type has a `serviceKey` that does not match any available endpoints in the service.
+    case noServiceEndpoint(String)
+    
+    /// Thrown when `request.fetch` is called with a type that has not been run through `request.create`.
+    case typeNotInitialized(String)
+    
     /// A human readable version of the error thrown.
     public var description: String {
         switch self {
         case let .missingEnvVar(variable): return "Missing enviroment variable '\(variable)'"
         case let .noServiceFound(name): return "No service was found with the name '\(name)'"
         case let .missingJSONFromResponse(uri): return "Reponse returned from '\(uri)' does not contain JSON"
+        case let .noServiceEndpoint(endpoint): return "Service does not have available endpoint for key '\(endpoint)'"
+        case let .typeNotInitialized(type): return "No instence of type '\(type)' has been created"
         }
     }
 }
