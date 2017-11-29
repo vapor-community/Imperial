@@ -17,6 +17,26 @@ public struct Service {
     /// The service model that is used for interacting the the named OAuth provider.
     public let model: FederatedService.Type
     
+    /// Creates an instance of a service.
+    /// This is is usually done by creating an extension and a static property.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the service.
+    ///   - prefix: The prefix for the access token when it is used in a authoriazation header.
+    ///   - uri: The URI used to get data to initialize a `FederatedCreatable` type.
+    ///   - model: The model that works with the service.
+    public init(name: String, prefix: String? = nil, model: FederatedService.Type, endpoints: [String: String]) {
+        self.name = name
+        self.tokenPrefix = prefix ?? "Bearer "
+        self.model = model
+        self.endpoints = endpoints
+    }
+    
+    /// Syntax sugar for getting one of the service's endpoints.
+    public subscript (key: String) -> String? {
+        return endpoints[key]
+    }
+    
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
