@@ -19,11 +19,13 @@ public class ImperialMiddleware: Middleware {
         do {
             _ = try request.getAccessToken()
             return try next.respond(to: request)
-        } catch let error {
+        } catch let error as Abort {
             guard let redirect = redirectPath else {
                 throw error
             }
             return Response(redirect: redirect)
+        } catch let error {
+            throw error
         }
     }
 }
