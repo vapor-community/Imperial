@@ -14,7 +14,7 @@ public struct Service {
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
-    public static func register(_ service: Service) {
+    internal static func register(_ service: Service) {
         services[service.name] = service
     }
     
