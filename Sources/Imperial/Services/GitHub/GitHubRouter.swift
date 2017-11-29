@@ -4,12 +4,12 @@ import Sessions
 public class GitHubRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (String) -> (ResponseRepresentable)
-    public var scope: [String: String] = [:]
+    public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
     public var authURL: String {
         return "https://github.com/login/oauth/authorize?" +
-               "scope=\(scope.merge(with: ":"))&" +
+               "scope=\(scope.joined(separator: " "))&" +
                "client_id=\(self.tokens.clientID)"
     }
     

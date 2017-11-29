@@ -21,5 +21,5 @@ public protocol FederatedService {
     var tokens: FederatedServiceTokens { get }
     var router: FederatedServiceRouter { get }
     
-    init(authenticate: String, callback: String, scope: [String: String], completion: @escaping (String) -> (ResponseRepresentable))throws
+    init(authenticate: String, callback: String, scope: [String], completion: @escaping (String) -> (ResponseRepresentable))throws
 }
