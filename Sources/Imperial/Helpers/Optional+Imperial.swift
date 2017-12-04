@@ -22,6 +22,6 @@ infix operator ??
 ///   - rhs: The error to throw if the optional is `nil`.
 /// - Returns: The value that was contained in the optional.
 /// - Throws: The error passed in if the optional is `nil`.
-public func ??<T>(lhs: T?, rhs: Error)throws -> T {
+internal func ??<T>(lhs: T?, rhs: Error)throws -> T {
     return try lhs.value(or: rhs)
 }
