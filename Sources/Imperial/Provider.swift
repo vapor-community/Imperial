@@ -7,6 +7,8 @@ public class Provider: Vapor.Provider {
     
     public func boot(_ droplet: Droplet) throws {
         drop = droplet
+        Google.registerName()
+        GitHub.registerName()
     }
     
     public func boot(_ config: Config) throws {
