@@ -6,7 +6,7 @@ internal fileprivate(set) var federatedServices: [String: FederatedService.Type]
 
 extension FederatedService {
     public static func registerName() {
-        let key = String(describing: self)
+        let key = Self.typeName
         federatedServices[key] = self
     }
     
@@ -21,7 +21,7 @@ extension Service: JSONConvertible {
         try json.set("name", self.name)
         try json.set("token_prefix", self.tokenPrefix)
         try json.set("endpoints", self.endpoints)
-        try json.set("model", federatedServices[self.model.typeName])
+        try json.set("model", self.model.typeName)
         return json
     }
     
