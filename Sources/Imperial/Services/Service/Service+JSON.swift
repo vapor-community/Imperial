@@ -31,7 +31,7 @@ extension Service: JSONConvertible {
         let name: String = try json.get("name")
         let tokenPrefix: String = try json.get("token_prefix")
         let endpoints: [String: String] = try json.get("endpoints")
-        let model: FederatedService.Type = try federatedServices[key] ?? ImperialError.noExistingService(key)
+        let model: FederatedService.Type = try federatedServices[key] ?? ServiceError.noExistingService(key)
         
         self.init(name: name, prefix: tokenPrefix, model: model, endpoints: endpoints)
     }

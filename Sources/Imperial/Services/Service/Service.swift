@@ -50,6 +50,6 @@ public struct Service {
     /// - Returns: The service that matches the name passed in.
     /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
     public static func get(service name: String)throws -> Service {
-        return try services[name] ?? ImperialError.noServiceFound(name)
+        return try services[name] ?? ServiceError.noServiceFound(name)
     }
 }

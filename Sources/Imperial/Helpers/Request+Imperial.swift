@@ -10,7 +10,7 @@ extension Request {
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
     func create<T: FederatedCreatable>(_ model: T.Type, with service: Service)throws -> T {
-        let uri = try service[model.serviceKey] ?? ImperialError.noServiceEndpoint(model.serviceKey)
+        let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
         
         let token = try service.tokenPrefix + self.getAccessToken()
         let noJson = ImperialError.missingJSONFromResponse(uri)
