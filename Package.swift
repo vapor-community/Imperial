@@ -8,11 +8,10 @@ let package = Package(
         .library(name: "Imperial", targets: ["Imperial"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", .exact("2.4.0")),
-        .package(url: "https://github.com/vapor/fluent-provider.git", .exact("1.3.0"))
+        .package(url: "https://github.com/vapor/vapor.git", .exact("2.4.0"))
     ],
     targets: [
-        .target(name: "Imperial", dependencies: ["Vapor", "FluentProvider"]),
+        .target(name: "Imperial", dependencies: ["Vapor"]),
         .testTarget(name: "ImperialTests", dependencies: ["Imperial"]),
     ]
 )

@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "df9eb9a6afd03851abcb3d8204d04c368729776e",
-          "version": "2.3.0"
+          "revision": "78d27da2838aa2fb0354037e71a589583d166b41",
+          "version": "2.3.1"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/vapor/crypto.git",
         "state": {
           "branch": null,
-          "revision": "bf4470b9da79024aab79c85de80374f6c29e3864",
-          "version": "2.1.1"
+          "revision": "946edc6642d6825982a2f52a268a8ba9bd520a3d",
+          "version": "2.1.2"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/debugging.git",
         "state": {
           "branch": null,
-          "revision": "49c5e8f0a7cb5456a8f7c72c6cd9f1553e5885a8",
-          "version": "1.1.0"
+          "revision": "fc5a27d6eb236141dc24e5f14eedaa2e035ae7b3",
+          "version": "1.1.1"
         }
       },
       {
@@ -69,26 +69,8 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": null,
-          "revision": "decf702d774ac630dfe0441ff76b4bb68257b77a",
-          "version": "2.2.1"
-        }
-      },
-      {
-        "package": "Fluent",
-        "repositoryURL": "https://github.com/vapor/fluent.git",
-        "state": {
-          "branch": null,
-          "revision": "2c66e5c6c99dac19554e1cb8957e6de256009efc",
-          "version": "2.4.2"
-        }
-      },
-      {
-        "package": "FluentProvider",
-        "repositoryURL": "https://github.com/vapor/fluent-provider.git",
-        "state": {
-          "branch": null,
-          "revision": "425d973f7cad7bfa987409b9e4a8659c14c6f0e0",
-          "version": "1.3.0"
+          "revision": "c10bff75382f8e1f9476e4a9ebc470e18842c844",
+          "version": "2.2.2"
         }
       },
       {
@@ -96,8 +78,8 @@
         "repositoryURL": "https://github.com/vapor/json.git",
         "state": {
           "branch": null,
-          "revision": "735800d8f2e75ebe3be25559eb6a781f4666dcfc",
-          "version": "2.2.1"
+          "revision": "6c7ce40d30b322d45cc49a8f1d742609d3228eb7",
+          "version": "2.2.2"
         }
       },
       {
@@ -114,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/node.git",
         "state": {
           "branch": null,
-          "revision": "642f357d08ec5aa335ae2e3c4633c72da7b5a0c4",
-          "version": "2.1.1"
+          "revision": "e8e21dfe88aa14be905d6e98d5333f666c2e1a78",
+          "version": "2.1.3"
         }
       },
       {
@@ -132,17 +114,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "cb9d78aca2540c1a6b45b0ab43e5b0c50f29d216",
-          "version": "2.2.0"
-        }
-      },
-      {
-        "package": "SQLite",
-        "repositoryURL": "https://github.com/vapor/sqlite.git",
-        "state": {
-          "branch": null,
-          "revision": "9aceb6a0d7b1698a557647493bd78b030dad468b",
-          "version": "2.3.1"
+          "revision": "e950f3d56fb2eab6a64dafcfdb89ac98866045b8",
+          "version": "2.2.1"
         }
       },
       {
@@ -159,8 +132,8 @@
         "repositoryURL": "https://github.com/vapor/tls.git",
         "state": {
           "branch": null,
-          "revision": "6c6eedb6761cddc6b6c87142a27eec13fa1701ec",
-          "version": "2.1.1"
+          "revision": "02a47309249e69358aa3c28b5853897585d7a750",
+          "version": "2.1.2"
         }
       },
       {
