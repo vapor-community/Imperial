@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "Imperial", targets: ["Imperial"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", .exact("2.4.0"))
+        .package(url: "https://github.com/vapor/vapor.git", .branch("beta"))
     ],
     targets: [
         .target(name: "Imperial", dependencies: ["Vapor"]),
