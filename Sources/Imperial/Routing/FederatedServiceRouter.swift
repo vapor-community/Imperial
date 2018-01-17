@@ -60,7 +60,7 @@ public protocol FederatedServiceRouter {
 
 extension FederatedServiceRouter {
     public func authenticate(_ request: Request)throws -> Future<ResponseEncodable> {
-        return Response(redirect: authURL)
+        return Future(request.redirect(to: authURL))
     }
     
     public func configureRoutes(withAuthURL authURL: String) throws {
