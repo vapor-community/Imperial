@@ -1,9 +1,9 @@
 /// The services that are available for use in the application.
 /// Services are added and fecthed with the `Service.register` and `.get` static methods.
-fileprivate var services: [String: Service] = [:]
+fileprivate var services: [String: ImperialService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
-public struct Service {
+public struct ImperialService {
     
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
@@ -40,7 +40,7 @@ public struct Service {
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
-    internal static func register(_ service: Service) {
+    internal static func register(_ service: ImperialService) {
         services[service.name] = service
     }
     
@@ -49,7 +49,7 @@ public struct Service {
     /// - Parameter name: The name of the service to fetch.
     /// - Returns: The service that matches the name passed in.
     /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
-    public static func get(service name: String)throws -> Service {
+    public static func get(service name: String)throws -> ImperialService {
         return try services[name] ?? ServiceError.noServiceFound(name)
     }
 }

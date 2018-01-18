@@ -1,5 +1,5 @@
-extension Service {
-    public static let github = Service.init(
+extension ImperialService {
+    public static let github = ImperialService.init(
         name: "github",
         model: GitHub.self,
         endpoints: [

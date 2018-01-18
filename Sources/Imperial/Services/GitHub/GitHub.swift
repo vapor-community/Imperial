@@ -12,6 +12,6 @@ public class GitHub: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate)
         
-        Service.register(.github)
+        ImperialService.register(.github)
     }
 }

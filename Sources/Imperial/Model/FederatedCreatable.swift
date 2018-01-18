@@ -10,5 +10,5 @@ public protocol FederatedCreatable {
     /// - Parameter json: The JSON in the response from the `dataUri`.
     /// - Returns: An instence of the type that conforms to this protocol.
     /// - Throws: Any errors that could be thrown inside the method.
-    static func create(with json: JSON, `for` service: Service)throws -> Self
+    static func create(with json: JSON, `for` service: ImperialService)throws -> Self
 }

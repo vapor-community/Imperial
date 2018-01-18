@@ -18,7 +18,7 @@ extension FederatedService {
 }
 
 
-extension Service: JSONConvertible {
+extension ImperialService: JSONConvertible {
     
     /// Creates a JSON representation of the `Service`.
     ///

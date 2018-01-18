@@ -1,5 +1,5 @@
-extension Service {
-    public static let google = Service.init(
+extension ImperialService {
+    public static let google = ImperialService.init(
         name: "google",
         model: Google.self,
         endpoints: [:]
