@@ -1,5 +1,3 @@
-import JSON
-
 /// Defines a type that can be created with federated login data.
 /// This type is used as a parameter in the `request.fetch` method
 public protocol FederatedCreatable {

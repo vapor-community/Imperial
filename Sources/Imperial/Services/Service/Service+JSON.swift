@@ -1,5 +1,3 @@
-import JSON
-
 internal fileprivate(set) var federatedServices: [String: FederatedService.Type] = [
     :
 ]

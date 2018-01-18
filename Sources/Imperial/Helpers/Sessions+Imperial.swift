@@ -1,5 +1,4 @@
 import Vapor
-import Sessions
 
 extension Request {
     

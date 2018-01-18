@@ -1,5 +1,4 @@
 import Vapor
-import URI
 
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
