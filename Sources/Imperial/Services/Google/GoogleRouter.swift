@@ -1,10 +1,9 @@
 import Vapor
 import HTTP
-import Sessions
 
 public class GoogleRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (String) -> (ResponseRepresentable)
+    public let callbackCompletion: (String) -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
@@ -16,13 +15,13 @@ public class GoogleRouter: FederatedServiceRouter {
                "response_type=code"
     }
     
-    public required init(callback: String, completion: @escaping (String) -> (ResponseRepresentable)) throws {
+    public required init(callback: String, completion: @escaping (String) -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GoogleAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
     
-    public func callback(_ request: Request)throws -> ResponseRepresentable {
+    public func callback(_ request: Request)throws -> Future<ResponseEncodable> {
         let code: String
         if let queryCode: String = try request.query?.get("code") {
             code = queryCode

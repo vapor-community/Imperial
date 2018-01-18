@@ -1,9 +1,8 @@
 import Vapor
-import Sessions
 
 public class GitHubRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (String) -> (ResponseRepresentable)
+    public let callbackCompletion: (String) -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
@@ -13,13 +12,13 @@ public class GitHubRouter: FederatedServiceRouter {
                "client_id=\(self.tokens.clientID)"
     }
     
-    public required init(callback: String, completion: @escaping (String) -> (ResponseRepresentable)) throws {
+    public required init(callback: String, completion: @escaping (String) -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
     
-    public func callback(_ request: Request)throws -> ResponseRepresentable {
+    public func callback(_ request: Request)throws -> Future<ResponseEncodable> {
         let code: String
         if let queryCode: String = try request.query?.get("code") {
             code = queryCode
