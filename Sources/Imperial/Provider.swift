@@ -17,10 +17,3 @@ public class Provider: Vapor.Provider {
         GitHub.registerName()
     }
 }
-
-internal struct ImperialConfig {
-    internal fileprivate(set) static var gitHubID: String?
-    internal fileprivate(set) static var gitHubSecret: String?
-    internal fileprivate(set) static var googleID: String?
-    internal fileprivate(set) static var googleSecret: String?
-}
