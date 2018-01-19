@@ -20,17 +20,18 @@ extension Request {
     ///   - service: The service to get the data from.
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
-    func create<T: FederatedCreatable>(_ model: T.Type, with service: ImperialService)throws -> T {
+    func create<T: FederatedCreatable>(_ model: T.Type, with service: ImperialService)throws -> Future<T> {
         let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
         
         let token = try service.tokenPrefix + self.getAccessToken()
-        let noJson = ImperialError.missingJSONFromResponse(uri)
         
-        let response = try self.get(url: uri, headers: [.authorization: token])
-        let new = try model.create(with: response.json ?? noJson, for: service)
-        
-        self.storage["imperial-\(model)"] = new
-        return new
+        return try self.get(url: uri, headers: [.authorization: token]).flatMap(to: T.self, { (response) -> Future<T> in
+            return try model.create(from: response)
+        }).map(to: T.self, { (instance) -> T in
+            let session = try self.session()
+            session.data.storage["imperial-\(model)"] = instance
+            return instance
+        })
     }
     
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
