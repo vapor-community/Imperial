@@ -20,7 +20,7 @@ extension Session {
     /// - Returns: The access token stored with the `access_token` key.
     /// - Throws: `Abort.unauthorized` if no access token exists.m
     public func getAccessToken()throws -> String {
-        guard let token = self.data["access_token"]?.string else {
+        guard let token = self["access_token"] else {
             throw Abort(.unauthorized, reason: "User currently not authenticated")
         }
         return token
