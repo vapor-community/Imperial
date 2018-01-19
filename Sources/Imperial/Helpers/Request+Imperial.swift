@@ -2,13 +2,15 @@ import Vapor
 
 extension Request {
     
-    func get(url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<HTTPResponse> {
+    func get(url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<Response> {
         let client = try self.make(HTTPClient.self)
         var header: HTTPHeaders = HTTPHeaders()
         header.append(headers)
         var request = HTTPRequest(method: .get, uri: URI(url), headers: header, body: body)
         request.mediaType = .urlEncodedForm
-        return client.send(request)
+        return client.send(request).map(to: Response.self, { (res) in
+            return Response(http: res, using: self.superContainer)
+        })
     }
     
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
