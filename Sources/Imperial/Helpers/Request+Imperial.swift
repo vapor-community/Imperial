@@ -42,10 +42,11 @@ extension Request {
     /// - Throws:
     ///   - `ImperialError.typeNotInitialized`: If there is no value stored in the request for the type passed in.
     func fetch<T: FederatedCreatable>(_ model: T.Type)throws -> T {
-        let cache = try self.privateContainer.make(ServiceStorage.self, for: Request.self)
-        if let new = cache["imperial-\(model)"] {
-            return new as! T
+        let session = try self.session()
+        guard let fetched = session.data.storage["imperial-\(model)"],
+              let typed = fetched as? T else {
+                throw ImperialError.typeNotInitialized("\(model)")
         }
-        throw ImperialError.typeNotInitialized("\(model)")
+        return typed
     }
 }
