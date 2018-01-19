@@ -63,7 +63,7 @@ extension FederatedServiceRouter {
     }
     
     public func configureRoutes(withAuthURL authURL: String) throws {
-        var callbackPath = URIParser().parse(bytes: callbackURL.bytes).path
+        var callbackPath = URI(callbackURL).path
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
         drop.get(callbackPath, handler: callback)
