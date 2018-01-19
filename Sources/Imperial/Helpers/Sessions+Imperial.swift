@@ -9,7 +9,7 @@ extension Request {
     ///   - `Abort.unauthorized` if no access token exists.
     ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
     public func getAccessToken()throws -> String {
-        return try self.assertSession().getAccessToken()
+        return try self.session().getAccessToken()
     }
 }
 
