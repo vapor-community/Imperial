@@ -2,6 +2,15 @@ import Vapor
 
 extension Request {
     
+    func get(url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<HTTPResponse> {
+        let client = try self.make(HTTPClient.self)
+        var header: HTTPHeaders = HTTPHeaders()
+        header.append(headers)
+        var request = HTTPRequest(method: .get, uri: URI(url), headers: header, body: body)
+        request.mediaType = .urlEncodedForm
+        return client.send(request)
+    }
+    
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
     ///
     /// - Parameters:
@@ -15,7 +24,7 @@ extension Request {
         let token = try service.tokenPrefix + self.getAccessToken()
         let noJson = ImperialError.missingJSONFromResponse(uri)
         
-        let response = try drop.client.get(uri, [.authorization: token])
+        let response = try self.get(url: uri, headers: [.authorization: token])
         let new = try model.create(with: response.json ?? noJson, for: service)
         
         self.storage["imperial-\(model)"] = new
@@ -30,7 +39,8 @@ extension Request {
     /// - Throws:
     ///   - `ImperialError.typeNotInitialized`: If there is no value stored in the request for the type passed in.
     func fetch<T: FederatedCreatable>(_ model: T.Type)throws -> T {
-        if let new = self.storage["imperial-\(model)"] {
+        let cache = try self.privateContainer.make(ServiceStorage.self, for: Request.self)
+        if let new = cache["imperial-\(model)"] {
             return new as! T
         }
         throw ImperialError.typeNotInitialized("\(model)")
