@@ -16,9 +16,6 @@ public struct ImperialService: Content {
     /// The endpoints for the provider's API to use for initializing `FederatedCreatable` types
     public let endpoints: [String: String]
     
-    /// The service model that is used for interacting the the named OAuth provider.
-    public let model: FederatedService.Type
-    
     /// Creates an instance of a service.
     /// This is is usually done by creating an extension and a static property.
     ///
@@ -27,10 +24,9 @@ public struct ImperialService: Content {
     ///   - prefix: The prefix for the access token when it is used in a authoriazation header.
     ///   - uri: The URI used to get data to initialize a `FederatedCreatable` type.
     ///   - model: The model that works with the service.
-    public init(name: String, prefix: String? = nil, model: FederatedService.Type, endpoints: [String: String]) {
+    public init(name: String, prefix: String? = nil, endpoints: [String: String]) {
         self.name = name
         self.tokenPrefix = prefix ?? "Bearer "
-        self.model = model
         self.endpoints = endpoints
     }
     
