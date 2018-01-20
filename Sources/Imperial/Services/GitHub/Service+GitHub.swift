@@ -1,7 +1,6 @@
-extension Service {
-    public static let github = Service.init(
+extension OAuthService {
+    public static let github = OAuthService.init(
         name: "github",
-        model: GitHub.self,
         endpoints: [
             "user": "https://api.github.com/user"
         ]

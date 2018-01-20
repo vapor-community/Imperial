@@ -1,9 +1,11 @@
+import Vapor
+
 /// The services that are available for use in the application.
-/// Services are added and fecthed with the `Service.register` and `.get` static methods.
-fileprivate var services: [String: Service] = [:]
+/// Services are added and fetched with the `Service.register` and `.get` static methods.
+fileprivate var services: [String: OAuthService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
-public struct Service {
+public struct OAuthService: Codable, Content {
     
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
@@ -14,9 +16,6 @@ public struct Service {
     /// The endpoints for the provider's API to use for initializing `FederatedCreatable` types
     public let endpoints: [String: String]
     
-    /// The service model that is used for interacting the the named OAuth provider.
-    public let model: FederatedService.Type
-    
     /// Creates an instance of a service.
     /// This is is usually done by creating an extension and a static property.
     ///
@@ -25,10 +24,9 @@ public struct Service {
     ///   - prefix: The prefix for the access token when it is used in a authoriazation header.
     ///   - uri: The URI used to get data to initialize a `FederatedCreatable` type.
     ///   - model: The model that works with the service.
-    public init(name: String, prefix: String? = nil, model: FederatedService.Type, endpoints: [String: String]) {
+    public init(name: String, prefix: String? = nil, endpoints: [String: String]) {
         self.name = name
         self.tokenPrefix = prefix ?? "Bearer "
-        self.model = model
         self.endpoints = endpoints
     }
     
@@ -40,7 +38,7 @@ public struct Service {
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
-    internal static func register(_ service: Service) {
+    internal static func register(_ service: OAuthService) {
         services[service.name] = service
     }
     
@@ -49,7 +47,7 @@ public struct Service {
     /// - Parameter name: The name of the service to fetch.
     /// - Returns: The service that matches the name passed in.
     /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
-    public static func get(service name: String)throws -> Service {
-        return try services[name] ?? ImperialError.noServiceFound(name)
+    public static func get(service name: String)throws -> OAuthService {
+        return try services[name] ?? ServiceError.noServiceFound(name)
     }
 }

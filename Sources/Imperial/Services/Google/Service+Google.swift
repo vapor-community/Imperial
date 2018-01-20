@@ -1,7 +1,6 @@
-extension Service {
-    public static let google = Service.init(
+extension OAuthService {
+    public static let google = OAuthService.init(
         name: "google",
-        model: Google.self,
         endpoints: [:]
     )
 }

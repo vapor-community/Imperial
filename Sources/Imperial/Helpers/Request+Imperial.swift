@@ -2,6 +2,17 @@ import Vapor
 
 extension Request {
     
+    func send(method: HTTPMethod = .get, url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<Response> {
+        let client = try self.make(HTTPClient.self)
+        var header: HTTPHeaders = HTTPHeaders()
+        header.append(headers)
+        var request = HTTPRequest(method: method, uri: URI(url), headers: header, body: body)
+        request.mediaType = mediaType ?? .urlEncodedForm
+        return client.send(request).map(to: Response.self, { (res) in
+            return Response(http: res, using: self.superContainer)
+        })
+    }
+    
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
     ///
     /// - Parameters:
@@ -9,17 +20,18 @@ extension Request {
     ///   - service: The service to get the data from.
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
-    func create<T: FederatedCreatable>(_ model: T.Type, with service: Service)throws -> T {
-        let uri = try service[model.serviceKey] ?? ImperialError.noServiceEndpoint(model.serviceKey)
+    func create<T: FederatedCreatable>(_ model: T.Type, with service: OAuthService)throws -> Future<T> {
+        let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
         
         let token = try service.tokenPrefix + self.getAccessToken()
-        let noJson = ImperialError.missingJSONFromResponse(uri)
         
-        let response = try drop.client.get(uri, [.authorization: token])
-        let new = try model.create(with: response.json ?? noJson, for: service)
-        
-        self.storage["imperial-\(model)"] = new
-        return new
+        return try self.send(url: uri, headers: [.authorization: token]).flatMap(to: T.self, { (response) -> Future<T> in
+            return try model.create(from: response)
+        }).map(to: T.self, { (instance) -> T in
+            let session = try self.session()
+            session.data.storage["imperial-\(model)"] = instance
+            return instance
+        })
     }
     
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
@@ -30,9 +42,11 @@ extension Request {
     /// - Throws:
     ///   - `ImperialError.typeNotInitialized`: If there is no value stored in the request for the type passed in.
     func fetch<T: FederatedCreatable>(_ model: T.Type)throws -> T {
-        if let new = self.storage["imperial-\(model)"] {
-            return new as! T
+        let session = try self.session()
+        guard let fetched = session.data.storage["imperial-\(model)"],
+              let typed = fetched as? T else {
+                throw ImperialError.typeNotInitialized("\(model)")
         }
-        throw ImperialError.typeNotInitialized("\(model)")
+        return typed
     }
 }

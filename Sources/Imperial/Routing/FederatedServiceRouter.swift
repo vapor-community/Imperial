@@ -1,5 +1,4 @@
 import Vapor
-import URI
 
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
@@ -10,7 +9,7 @@ public protocol FederatedServiceRouter {
     
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: (String) -> (ResponseRepresentable) { get }
+    var callbackCompletion: (String) -> (Future<ResponseEncodable>) { get }
     
     /// The scopes to get permission for when getting the access token.
     /// Usage of this property varies by provider.
@@ -32,7 +31,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (String) -> (ResponseRepresentable))throws
+    init(callback: String, completion: @escaping (String) -> (Future<ResponseEncodable>))throws
     
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
@@ -48,26 +47,26 @@ public protocol FederatedServiceRouter {
     /// - Parameter request: The request from the browser.
     /// - Returns: A response that, by default, redirects the user to `authURL`.
     /// - Throws: N/A
-    func authenticate(_ request: Request)throws -> ResponseRepresentable
+    func authenticate(_ request: Request)throws -> Future<ResponseEncodable>
     
     /// The route that the OAuth provider calls when the user has benn authenticated.
     ///
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: An errors that occur in the implementation code.
-    func callback(_ request: Request)throws -> ResponseRepresentable
+    func callback(_ request: Request)throws -> Future<ResponseEncodable>
 }
 
 extension FederatedServiceRouter {
-    public func authenticate(_ request: Request)throws -> ResponseRepresentable {
-        return Response(redirect: authURL)
+    public func authenticate(_ request: Request)throws -> Future<ResponseEncodable> {
+        return Future(request.redirect(to: authURL))
     }
     
     public func configureRoutes(withAuthURL authURL: String) throws {
-        var callbackPath = URIParser().parse(bytes: callbackURL.bytes).path
+        var callbackPath = URI(callbackURL).path
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
-        drop.get(callbackPath, handler: callback)
-        drop.get(authURL, handler: authenticate)
+        router.get(callbackPath.makePathComponent(), use: callback)
+        router.get(authURL.makePathComponent(), use: authenticate)
     }
 }
