@@ -2,12 +2,12 @@ import Vapor
 
 extension Request {
     
-    func get(url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<Response> {
+    func send(method: HTTPMethod = .get, url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<Response> {
         let client = try self.make(HTTPClient.self)
         var header: HTTPHeaders = HTTPHeaders()
         header.append(headers)
-        var request = HTTPRequest(method: .get, uri: URI(url), headers: header, body: body)
-        request.mediaType = .urlEncodedForm
+        var request = HTTPRequest(method: method, uri: URI(url), headers: header, body: body)
+        request.mediaType = mediaType ?? .urlEncodedForm
         return client.send(request).map(to: Response.self, { (res) in
             return Response(http: res, using: self.superContainer)
         })
@@ -25,7 +25,7 @@ extension Request {
         
         let token = try service.tokenPrefix + self.getAccessToken()
         
-        return try self.get(url: uri, headers: [.authorization: token]).flatMap(to: T.self, { (response) -> Future<T> in
+        return try self.send(url: uri, headers: [.authorization: token]).flatMap(to: T.self, { (response) -> Future<T> in
             return try model.create(from: response)
         }).map(to: T.self, { (instance) -> T in
             let session = try self.session()
