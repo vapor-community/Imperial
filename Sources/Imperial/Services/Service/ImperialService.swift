@@ -1,9 +1,11 @@
+import Vapor
+
 /// The services that are available for use in the application.
 /// Services are added and fecthed with the `Service.register` and `.get` static methods.
 fileprivate var services: [String: ImperialService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
-public struct ImperialService {
+public struct ImperialService: Content {
     
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
