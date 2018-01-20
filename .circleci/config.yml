@@ -28,10 +28,10 @@ jobs:
             - run: swift build
             - run: swift test
 
-    workflows:
-        version: 2
-        tests:
-        jobs:
-            - macos
-            - linux-3
-            - linux-4
+workflows:
+    version: 2
+    tests:
+    jobs:
+        - macos
+        - linux-3
+        - linux-4
