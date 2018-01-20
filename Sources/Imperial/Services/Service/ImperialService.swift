@@ -5,7 +5,7 @@ import Vapor
 fileprivate var services: [String: ImperialService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
-public struct ImperialService: Content {
+public struct ImperialService: Codable, Content {
     
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
