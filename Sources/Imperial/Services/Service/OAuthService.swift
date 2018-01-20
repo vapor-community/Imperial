@@ -2,10 +2,10 @@ import Vapor
 
 /// The services that are available for use in the application.
 /// Services are added and fecthed with the `Service.register` and `.get` static methods.
-fileprivate var services: [String: ImperialService] = [:]
+fileprivate var services: [String: OAuthService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
-public struct ImperialService: Codable, Content {
+public struct OAuthService: Codable, Content {
     
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
@@ -38,7 +38,7 @@ public struct ImperialService: Codable, Content {
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
-    internal static func register(_ service: ImperialService) {
+    internal static func register(_ service: OAuthService) {
         services[service.name] = service
     }
     
@@ -47,7 +47,7 @@ public struct ImperialService: Codable, Content {
     /// - Parameter name: The name of the service to fetch.
     /// - Returns: The service that matches the name passed in.
     /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
-    public static func get(service name: String)throws -> ImperialService {
+    public static func get(service name: String)throws -> OAuthService {
         return try services[name] ?? ServiceError.noServiceFound(name)
     }
 }

@@ -1,5 +1,5 @@
-extension ImperialService {
-    public static let google = ImperialService.init(
+extension OAuthService {
+    public static let google = OAuthService.init(
         name: "google",
         endpoints: [:]
     )

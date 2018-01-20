@@ -12,6 +12,6 @@ public class Google: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate)
         
-        ImperialService.register(.google)
+        OAuthService.register(.google)
     }
 }

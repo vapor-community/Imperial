@@ -40,7 +40,7 @@ public class GitHubRouter: FederatedServiceRouter {
         }).map(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
             session.data.storage["access_token"] = accessToken
-            session.data.storage["access_token_service"] = ImperialService.github
+            session.data.storage["access_token_service"] = OAuthService.github
             
              return self.callbackCompletion(accessToken)
         })

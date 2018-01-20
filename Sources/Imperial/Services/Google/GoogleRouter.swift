@@ -44,7 +44,7 @@ public class GoogleRouter: FederatedServiceRouter {
         }).map(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
             session.data.storage["access_token"] = accessToken
-            session.data.storage["access_token_service"] = ImperialService.google
+            session.data.storage["access_token_service"] = OAuthService.google
             
             return self.callbackCompletion(accessToken)
         })
