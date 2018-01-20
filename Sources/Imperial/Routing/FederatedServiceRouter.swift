@@ -66,7 +66,7 @@ extension FederatedServiceRouter {
         var callbackPath = URI(callbackURL).path
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
-        drop.get(callbackPath, handler: callback)
-        drop.get(authURL, handler: authenticate)
+        routeer.get(callbackPath.makePathComponent(), use: callback)
+        routeer.get(authURL.makePathComponent(), use: authenticate)
     }
 }
