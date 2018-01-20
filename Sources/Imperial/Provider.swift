@@ -1,5 +1,7 @@
 import Vapor
 
+internal fileprivate(set) var routeer: Router!
+
 public class Provider: Vapor.Provider {
     
     public static var repositoryName: String = "Imperial"
@@ -9,6 +11,8 @@ public class Provider: Vapor.Provider {
     
     /// Called after the container has initialized.
     public func boot(_ worker: Container) throws {
+        routeer = try worker.make(Router.self, for: Container.self)
+        
         Google.registerName()
         GitHub.registerName()
     }
