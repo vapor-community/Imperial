@@ -1,7 +1,7 @@
 import Vapor
 
 /// The services that are available for use in the application.
-/// Services are added and fecthed with the `Service.register` and `.get` static methods.
+/// Services are added and fetched with the `Service.register` and `.get` static methods.
 fileprivate var services: [String: OAuthService] = [:]
 
 /// Represents a service that interacts with an OAuth provider.
