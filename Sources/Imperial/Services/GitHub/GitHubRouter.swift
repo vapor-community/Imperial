@@ -39,8 +39,9 @@ public class GitHubRouter: FederatedServiceRouter {
             return response.content.get(String.self, at: ["access_token"])
         }).map(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
-            session.data.storage["access_token"] = accessToken
-            session.data.storage["access_token_service"] = OAuthService.github
+            
+            try session.set("access_token", to: accessToken)
+            try session.set("access_token_service", to: OAuthService.github)
             
              return self.callbackCompletion(accessToken)
         })
