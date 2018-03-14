@@ -1,7 +1,7 @@
 import Vapor
 
 extension Router {
-    func oAuth<OAuthProvider>(
+    public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
         callback: String,
