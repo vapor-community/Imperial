@@ -38,7 +38,7 @@ public protocol FederatedServiceRouter {
     ///
     /// - Parameter authURL: The URL for the route that will redirect the user to the OAuth provider.
     /// - Throws: N/A
-    func configureRoutes(withAuthURL authURL: String)throws
+    func configureRoutes(withAuthURL authURL: String, on router: Router)throws
     
     
     /// The route to call when the user is going to authenticate with the OAuth provider.
@@ -62,7 +62,7 @@ extension FederatedServiceRouter {
         return Future(request.redirect(to: authURL))
     }
     
-    public func configureRoutes(withAuthURL authURL: String) throws {
+    public func configureRoutes(withAuthURL authURL: String, on router: Router) throws {
         var callbackPath = URI(callbackURL).path
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         

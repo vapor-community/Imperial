@@ -10,7 +10,7 @@ public class GitHub: FederatedService {
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate)
+        try self.router.configureRoutes(withAuthURL: authenticate, on: router)
         
         OAuthService.register(.github)
     }
