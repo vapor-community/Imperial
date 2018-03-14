@@ -5,12 +5,12 @@ public class Google: FederatedService {
     public var router: FederatedServiceRouter
     
     @discardableResult
-    public required init(authenticate: String, callback: String, scope: [String] = [], completion: @escaping (String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(router: Router, authenticate: String, callback: String, scope: [String] = [], completion: @escaping (String)throws -> (Future<ResponseEncodable>)) throws {
         self.router = try GoogleRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate)
+        try self.router.configureRoutes(withAuthURL: authenticate, on: router)
         
         OAuthService.register(.google)
     }
