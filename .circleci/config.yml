@@ -6,6 +6,13 @@ jobs:
             xcode: "9.2"
         steps:
             - run: brew install vapor/tap/vapor
+            - run: git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
+            - run: echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.bash_profile
+            - run: echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+            - run: echo 'eval "$(swiftenv init -)"' >> ~/.bash_profile
+            - run: . ~/.bash_profile
+            - run: swiftenv install https://swift.org/builds/swift-4.1-branch/xcode/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-13-a/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-13-a-osx.pkg
+            - run: swiftenv global 4.1-DEVELOPMENT-SNAPSHOT-2018-03-13-a
             - checkout
             - run: swift build
             - run: swift test
