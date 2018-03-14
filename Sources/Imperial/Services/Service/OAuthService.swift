@@ -14,7 +14,7 @@ public struct OAuthService: Codable, Content {
     public let tokenPrefix: String
     
     /// The endpoints for the provider's API to use for initializing `FederatedCreatable` types
-    public let endpoints: [String: String]
+    public var endpoints: [String: String]
     
     /// Creates an instance of a service.
     /// This is is usually done by creating an extension and a static property.
@@ -30,9 +30,14 @@ public struct OAuthService: Codable, Content {
         self.endpoints = endpoints
     }
     
-    /// Syntax sugar for getting one of the service's endpoints.
+    /// Syntax sugar for getting or setting one of the service's endpoints.
     public subscript (key: String) -> String? {
-        return endpoints[key]
+        get {
+            return endpoints[key]
+        }
+        set {
+            endpoints[key] = newValue
+        }
     }
     
     /// Registers a service as available for use.
