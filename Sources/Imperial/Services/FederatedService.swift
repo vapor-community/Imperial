@@ -42,5 +42,5 @@ public protocol FederatedService {
     ///   - scope: The scopes to send to the provider to request access to.
     ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
-    init(authenticate: String, callback: String, scope: [String], completion: @escaping (String) -> (Future<ResponseEncodable>))throws
+    init(authenticate: String, callback: String, scope: [String], completion: @escaping (String)throws -> (Future<ResponseEncodable>))throws
 }

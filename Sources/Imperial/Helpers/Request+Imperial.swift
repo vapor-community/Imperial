@@ -1,3 +1,4 @@
+import Foundation
 import Vapor
 
 extension Request {
@@ -29,7 +30,7 @@ extension Request {
             return try model.create(from: response)
         }).map(to: T.self, { (instance) -> T in
             let session = try self.session()
-            session.data.storage["imperial-\(model)"] = instance
+            try session.set("imperial-\(model)", to: instance)
             return instance
         })
     }
@@ -43,10 +44,6 @@ extension Request {
     ///   - `ImperialError.typeNotInitialized`: If there is no value stored in the request for the type passed in.
     func fetch<T: FederatedCreatable>(_ model: T.Type)throws -> T {
         let session = try self.session()
-        guard let fetched = session.data.storage["imperial-\(model)"],
-              let typed = fetched as? T else {
-                throw ImperialError.typeNotInitialized("\(model)")
-        }
-        return typed
+        return try session.get("imperial-\(model)", as: T.self)
     }
 }
