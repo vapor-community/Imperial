@@ -9,7 +9,7 @@ Now that we have an OAuth application registered with GitHub, we can add Imperia
 Add the following line of code to your `dependencies` array in your package manifest file:
 
 ```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", .upToNextMajor(from: "0.1.0"))
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.5.0")
 ```
 
 **Note:** There might be a later version of the package available, in which case you will want to use that version.
@@ -17,7 +17,7 @@ Add the following line of code to your `dependencies` array in your package mani
 You will also need to add the package as a dependency for the targets you will be using it in:
 
 ```swift
-.target(name: "App", dependencies: ["Vapor", "LeafProvider", "Imperial"],
+.target(name: "App", dependencies: ["Vapor", "Imperial"],
                exclude: [
                    "Config",
                    "Database",
