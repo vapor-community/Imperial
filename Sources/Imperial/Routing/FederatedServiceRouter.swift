@@ -9,7 +9,7 @@ public protocol FederatedServiceRouter {
     
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: (String)throws -> (Future<ResponseEncodable>) { get }
+    var callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>) { get }
     
     /// The scopes to get permission for when getting the access token.
     /// Usage of this property varies by provider.
@@ -31,7 +31,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (String)throws -> (Future<ResponseEncodable>))throws
+    init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>))throws
     
     
     /// Configures the `authenticate` and `callback` routes with the droplet.

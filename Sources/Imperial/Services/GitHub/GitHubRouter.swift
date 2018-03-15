@@ -3,7 +3,7 @@ import Foundation
 
 public class GitHubRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
@@ -13,7 +13,7 @@ public class GitHubRouter: FederatedServiceRouter {
                "client_id=\(self.tokens.clientID)"
     }
     
-    public required init(callback: String, completion: @escaping (String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -43,7 +43,7 @@ public class GitHubRouter: FederatedServiceRouter {
             try session.set("access_token", to: accessToken)
             try session.set("access_token_service", to: OAuthService.github)
             
-            return try self.callbackCompletion(accessToken)
+            return try self.callbackCompletion(request, accessToken)
         }).flatMap(to: Response.self, { (response) in
             return try response.encode(for: request)
         })

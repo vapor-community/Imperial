@@ -6,7 +6,7 @@ extension Router {
         authenticate authUrl: String,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (String)throws -> Future<ResponseEncodable>
+        completion: @escaping (Request, String)throws -> Future<ResponseEncodable>
     )throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(router: self, authenticate: authUrl, callback: callback, scope: scope, completion: completion)
     }
