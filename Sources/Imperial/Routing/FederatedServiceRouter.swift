@@ -1,3 +1,4 @@
+import Foundation
 import Vapor
 
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
@@ -63,7 +64,10 @@ extension FederatedServiceRouter {
     }
     
     public func configureRoutes(withAuthURL authURL: String, on router: Router) throws {
-        var callbackPath = URI(callbackURL).path
+        var callbackPath: String = ""
+        if try NSRegularExpression(pattern: "^https?\\/\\/", options: []).matches(in: callbackURL, options: [], range: NSMakeRange(0, callbackURL.utf8.count)).count > 0 {
+            callbackPath = URI(callbackURL).path
+        }
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
         router.get(callbackPath.makePathComponent(), use: callback)
