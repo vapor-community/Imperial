@@ -32,7 +32,7 @@ public class GoogleRouter: FederatedServiceRouter {
         }
         
         let body = GoogleCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
-        return try request.send(url: accessTokenURL, content: JSONEncoder().encode(body)).flatMap(to: String.self, { (response) in
+        return try request.make(Client.self).post(accessTokenURL, content: body).flatMap(to: String.self, { (response) in
             return response.content.get(String.self, at: ["access_token"])
         }).flatMap(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
