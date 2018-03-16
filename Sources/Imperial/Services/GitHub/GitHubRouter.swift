@@ -29,13 +29,8 @@ public class GitHubRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let bodyData = NSKeyedArchiver.archivedData(withRootObject: [
-                "client_id": self.tokens.clientID,
-                "client_secret": self.tokens.clientSecret,
-                "code": code
-            ])
-        
-        return try request.send(url: accessTokenURL, body: HTTPBody(bodyData)).flatMap(to: String.self, { (response) in
+        let body = GitHubCallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code)
+        return try request.send(method: .post, url: accessTokenURL, content: JSONEncoder().encode(body)).flatMap(to: String.self, { (response) in
             return response.content.get(String.self, at: ["access_token"])
         }).flatMap(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
