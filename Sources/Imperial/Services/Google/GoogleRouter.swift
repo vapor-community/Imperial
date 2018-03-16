@@ -31,15 +31,8 @@ public class GoogleRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let bodyData = NSKeyedArchiver.archivedData(withRootObject: [
-                "code": code,
-                "client_id": self.tokens.clientID,
-                "client_secret": self.tokens.clientSecret,
-                "grant_type": "authorization_code",
-                "redirect_uri": self.callbackURL
-            ])
-        
-        return try request.send(url: accessTokenURL, body: HTTPBody(bodyData)).flatMap(to: String.self, { (response) in
+        let body = GoogleCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
+        return try request.send(url: accessTokenURL, content: JSONEncoder().encode(body)).flatMap(to: String.self, { (response) in
             return response.content.get(String.self, at: ["access_token"])
         }).flatMap(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
