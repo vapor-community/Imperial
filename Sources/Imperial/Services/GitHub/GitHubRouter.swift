@@ -35,7 +35,7 @@ public class GitHubRouter: FederatedServiceRouter {
         }).flatMap(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
             
-            try session.set("access_token", to: accessToken)
+            session["access_token"] = accessToken
             try session.set("access_token_service", to: OAuthService.github)
             
             return try self.callbackCompletion(request, accessToken)
