@@ -21,14 +21,14 @@ extension Request {
     ///   - service: The service to get the data from.
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
-    func create<T: FederatedCreatable>(_ model: T.Type, with service: OAuthService)throws -> Future<T> {
+    func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService)throws -> Future<Model> {
         let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
         
         let token = try service.tokenPrefix + self.getAccessToken()
         
-        return try self.send(url: uri, headers: [.authorization: token]).flatMap(to: T.self, { (response) -> Future<T> in
+        return try self.send(url: uri, headers: [.authorization: token]).flatMap(to: Model.self, { (response) -> Future<Model> in
             return try model.create(from: response)
-        }).map(to: T.self, { (instance) -> T in
+        }).map(to: Model.self, { (instance) -> Model in
             let session = try self.session()
             try session.set("imperial-\(model)", to: instance)
             return instance
