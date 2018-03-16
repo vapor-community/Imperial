@@ -1,17 +1,20 @@
 import Foundation
 import Vapor
 
+extension Data: Content {}
+
 extension Request {
     
-    func send(method: HTTPMethod = .get, url: String, headers: HTTPHeaders.Literal = [:], body: HTTPBody = HTTPBody(), mediaType: MediaType? = nil)throws -> Future<Response> {
-        let client = try self.make(HTTPClient.self)
+    func send(method: HTTPMethod = .get, url: String, headers: HTTPHeaders.Literal = [:], content: Data? = nil, mediaType: MediaType? = nil)throws -> Future<Response> {
+        let client = try self.make(Client.self)
         var header: HTTPHeaders = HTTPHeaders()
         header.append(headers)
-        var request = HTTPRequest(method: method, uri: URI(url), headers: header, body: body)
-        request.mediaType = mediaType ?? .urlEncodedForm
-        return client.send(request).map(to: Response.self, { (res) in
-            return Response(http: res, using: self.superContainer)
-        })
+        
+        if let content = content {
+            return client.send(method, headers: header, to: url, content: content)
+        } else {
+            return client.send(method, headers: header, to: url)
+        }
     }
     
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
