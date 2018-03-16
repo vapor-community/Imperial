@@ -64,7 +64,7 @@ extension FederatedServiceRouter {
     }
     
     public func configureRoutes(withAuthURL authURL: String, on router: Router) throws {
-        var callbackPath: String = ""
+        var callbackPath: String = callbackURL
         if try NSRegularExpression(pattern: "^https?\\/\\/", options: []).matches(in: callbackURL, options: [], range: NSMakeRange(0, callbackURL.utf8.count)).count > 0 {
             callbackPath = URI(callbackURL).path
         }
