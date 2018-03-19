@@ -101,5 +101,5 @@ protected.get("me", handler: me)
 The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddleware` where they are caught, but you can initialize it with a redirect path to go to if the user is not authenticated:
 
 ```swift
-let protected = drop.grouped(ImperialMiddleware(redirect: "/"))
+let protected = router.grouped(ImperialMiddleware(redirect: "/"))
 ```
