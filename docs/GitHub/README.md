@@ -63,16 +63,22 @@ Now, all we need to do is register the GitHub service in your main router method
 
 ```swift
 try router.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete") { (request, token) in
-        print(token)
-        return Future(request.redirect(to: "/"))
-    }
+    print(token)
+    return Future(request.redirect(to: "/"))
+}
+```
+
+If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
+
+```swift
+try router.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete", redirect: "/")
 ```
 
 The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on GitHub:
 
 ![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/callback-url.png)
 
-The completion handler is fired when the callback route is called by GitHub. The access token is passed in and a response is returned. Typically you will want a redirecting response that sends the user back to your application after they have authenticated.
+The completion handler is fired when the callback route is called by the OAuthg provider. The access token is passed in and a response is returned.
 
 If you ever want to get the `access_token` in a route, you can use a helper method for the `Request` type that comes with Imperial:
 

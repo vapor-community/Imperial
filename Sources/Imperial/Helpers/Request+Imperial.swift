@@ -13,7 +13,7 @@ extension Request {
     func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService)throws -> Future<Model> {
         let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
         
-        let token = try service.tokenPrefix + self.getAccessToken()
+        let token = try service.tokenPrefix + self.accessToken()
         
         return try self.make(Client.self).get(uri, headers: [.authorization: token]).flatMap(to: Model.self, { (response) -> Future<Model> in
             return try model.create(from: response)
