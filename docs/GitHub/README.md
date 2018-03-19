@@ -83,13 +83,13 @@ The completion handler is fired when the callback route is called by the OAuthg 
 If you ever want to get the `access_token` in a route, you can use a helper method for the `Request` type that comes with Imperial:
 
 ```swift
-let token = try request.getAccessToken()
+let token = try request.accessToken()
 ```
 
-Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a droplet group:
+Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a router group (or maybe your middleware config):
 
 ```swift
-let protected = drop.grouped(ImperialMiddleware())
+let protected = router.grouped(ImperialMiddleware())
 ```
 
 Then, add your protected routes to the `protected` group:
