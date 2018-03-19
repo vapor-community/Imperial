@@ -78,7 +78,7 @@ The `authenticate` argument is the path you will go to when you want to authenti
 
 ![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/callback-url.png)
 
-The completion handler is fired when the callback route is called by the OAuthg provider. The access token is passed in and a response is returned.
+The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 
 If you ever want to get the `access_token` in a route, you can use a helper method for the `Request` type that comes with Imperial:
 
