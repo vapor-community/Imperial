@@ -3,7 +3,7 @@ import Foundation
 
 public class GoogleRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
@@ -15,7 +15,7 @@ public class GoogleRouter: FederatedServiceRouter {
                "response_type=code"
     }
     
-    public required init(callback: String, completion: @escaping (String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GoogleAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -31,23 +31,16 @@ public class GoogleRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let bodyData = NSKeyedArchiver.archivedData(withRootObject: [
-                "code": code,
-                "client_id": self.tokens.clientID,
-                "client_secret": self.tokens.clientSecret,
-                "grant_type": "authorization_code",
-                "redirect_uri": self.callbackURL
-            ])
-        
-        return try request.send(url: accessTokenURL, body: HTTPBody(bodyData)).flatMap(to: String.self, { (response) in
+        let body = GoogleCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
+        return try request.make(Client.self).post(accessTokenURL, content: body).flatMap(to: String.self, { (response) in
             return response.content.get(String.self, at: ["access_token"])
         }).flatMap(to: ResponseEncodable.self, { (accessToken) in
             let session = try request.session()
             
-            try session.set("access_token", to: accessToken)
+            session["access_token"] = accessToken
             try session.set("access_token_service", to: OAuthService.google)
             
-            return try self.callbackCompletion(accessToken)
+            return try self.callbackCompletion(request, accessToken)
         }).flatMap(to: Response.self, { (response) in
             return try response.encode(for: request)
         })
