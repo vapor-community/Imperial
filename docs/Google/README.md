@@ -4,11 +4,11 @@ We need to start by creating a client ID and secret so Google can identify us. G
 
 Select 'Create credentials' > 'OAuth client ID':
 
-![Create Credentials](https://google.com/vapor-community/Imperial/blob/master/docs/Google/create-oauth-credentials.png)
+![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/create-oauth-credentials.png?raw=true)
 
 Select 'Web application'. The name that you enter should be the name of your project. Under the 'Restrictions' section, in 'Authorized redirect URIs', you will need to add a URI for Google to redirect to after the authentication is complete. If you are developing locally, it will be `http://localhost:8080/...` or `https...` if you have configured SSL:
 
-![Create Credentials](https://google.com/vapor-community/Imperial/blob/master/docs/Google/configure-app-creds.png)
+![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/configure-app-creds.png?raw=true)
 
 Now that we have the necessary information for Google, we will setup Imperial with our application.
 
@@ -18,7 +18,7 @@ Add the following line of code to your `dependencies` array in your package mani
 .package(url: "https://google.com/vapor-community/Imperial.git", from: "0.5.3")
 ```
 
-**Note:** Their might be a later version of the package available, in which case you will want to use that version.
+**Note:** There might be a later version of the package available, in which case you will want to use that version.
 
 You will also need to add the package as a dependency for the targets you will be using it in:
 
@@ -77,12 +77,12 @@ try router.oAuth(from: Google.self, authenticate: "google", callback: "gh-auth-c
 If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
 
 ```swift
-try router.oAuth(from: Google.self, authenticate: "google", callback: "gh-auth-complete", redirect: "/")
+try router.oAuth(from: Google.self, authenticate: "google", callback: "http://localhost:8080/google-complete", redirect: "/")
 ```
 
 The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Google:
 
-![The callback path for Google OAuth](https://google.com/vapor-community/Imperial/blob/master/docs/Google/callback-uri.png)
+![The callback path for Google OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/Google/callback-uri.png?raw=true)
 
 The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 
