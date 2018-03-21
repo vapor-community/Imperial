@@ -12,7 +12,7 @@ Add the following line of code to your `dependencies` array in your package mani
 .package(url: "https://github.com/vapor-community/Imperial.git", from: "0.5.3")
 ```
 
-**Note:** Their might be a later version of the package available, in which case you will want to use that version.
+**Note:** There might be a later version of the package available, in which case you will want to use that version.
 
 You will also need to add the package as a dependency for the targets you will be using it in:
 
