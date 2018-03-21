@@ -68,7 +68,7 @@ Imperial uses environment variables to access the client ID and secret to authen
 Now, all we need to do is register the Google service in your main router method, like this:
 
 ```swift
-try router.oAuth(from: Google.self, authenticate: "google", callback: "gh-auth-complete") { (request, token) in
+try router.oAuth(from: Google.self, authenticate: "google", callback: "http://localhost:8080/google-complete") { (request, token) in
     print(token)
     return Future(request.redirect(to: "/"))
 }
