@@ -19,7 +19,8 @@ extension Router {
         redirect redirectURL: String
     )throws where OAuthProvider: FederatedService {
         try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, callback: callback, scope: scope) { (request, token) in
-            return Future(request.redirect(to: redirectURL))
+            let redirect: Response = request.redirect(to: redirectURL)
+            return request.eventLoop.newSucceededFuture(result: redirect)
         }
     }
 }

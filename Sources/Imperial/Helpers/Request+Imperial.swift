@@ -15,7 +15,7 @@ extension Request {
         
         let token = try service.tokenPrefix + self.accessToken()
         
-        return try self.make(Client.self).get(uri, headers: [.authorization: token]).flatMap(to: Model.self, { (response) -> Future<Model> in
+        return try self.make(Client.self).get(uri, headers: ["Authorization": token]).flatMap(to: Model.self, { (response) -> Future<Model> in
             return try model.create(from: response)
         }).map(to: Model.self, { (instance) -> Model in
             let session = try self.session()

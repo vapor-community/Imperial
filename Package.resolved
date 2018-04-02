@@ -2,21 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "Async",
-        "repositoryURL": "https://github.com/vapor/async.git",
-        "state": {
-          "branch": null,
-          "revision": "76ed7841b32dcc47168e8d9040ba03c024224d0c",
-          "version": "1.0.0-rc.1.1"
-        }
-      },
-      {
         "package": "Console",
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
           "branch": null,
-          "revision": "26812edd1d4af8129d194ee25483159b92fed4d5",
-          "version": "3.0.0-rc.1"
+          "revision": "273cf2ed1f4daba88a452494c342020171d8c7b8",
+          "version": "3.0.0-rc.2.2"
         }
       },
       {
@@ -24,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "0dd54c6e369f575a13f2c9964609b6c7d2dab909",
-          "version": "3.0.0-rc.1.0.1"
+          "revision": "225aff2b69049f2a4d9a4aae71d27ba7fb083032",
+          "version": "3.0.1"
         }
       },
       {
@@ -33,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/crypto.git",
         "state": {
           "branch": null,
-          "revision": "e5dbff5eac700fe925f95a4e6eee5424f609d0d6",
-          "version": "3.0.0-rc.1.1.1"
+          "revision": "4c7acb4fbf1720682275f0ef543474c951d84a09",
+          "version": "3.0.0-rc.3"
         }
       },
       {
@@ -42,8 +33,8 @@
         "repositoryURL": "https://github.com/vapor/database-kit.git",
         "state": {
           "branch": null,
-          "revision": "5f247a63f392d260cc7c8e9b916131a67f73dbe4",
-          "version": "1.0.0-rc.1"
+          "revision": "9e77b5b95e3f1f141abdf75d6123f591971162cd",
+          "version": "1.0.0-rc.2.2.1"
         }
       },
       {
@@ -51,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": null,
-          "revision": "e12531d2b37895d21cd8b8d13ad930fa85217e9e",
-          "version": "3.0.0-rc.1.0.1"
+          "revision": "4846ea9abeb04863f82f618ee8cb22650a82ae3c",
+          "version": "3.0.0-rc.2.1.1"
         }
       },
       {
@@ -60,8 +51,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "8210d28691a11d0d27b7a0b32117d7fd81099916",
-          "version": "3.0.0-rc.1"
+          "revision": "2fc1d4de22a54848b35ad17b3e7f7816f19ebf90",
+          "version": "3.0.0-rc.2"
         }
       },
       {
@@ -69,17 +60,44 @@
         "repositoryURL": "https://github.com/vapor/service.git",
         "state": {
           "branch": null,
-          "revision": "90426d62cf1b028c0eef8285cb0293b527e45393",
-          "version": "1.0.0-rc.1"
+          "revision": "02205a16a3f4714a08836529f5a868c2ce256719",
+          "version": "1.0.0-rc.2.2"
         }
       },
       {
-        "package": "Sockets",
-        "repositoryURL": "https://github.com/vapor/sockets.git",
+        "package": "swift-nio",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "738f3ebf3ebb8ea886d5dd8588dd46a54f66af1c",
-          "version": "3.0.0-rc.1"
+          "revision": "a0b7f646fba61402da384b3202f54c27debb5e13",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "package": "swift-nio-ssl",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
+        "state": {
+          "branch": null,
+          "revision": "ea006b6368dbd9dbfd297deb6ddb3f070b72d043",
+          "version": "1.0.1"
+        }
+      },
+      {
+        "package": "swift-nio-ssl-support",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl-support.git",
+        "state": {
+          "branch": null,
+          "revision": "c02eec4e0e6d351cd092938cf44195a8e669f555",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swift-nio-zlib-support",
+        "repositoryURL": "https://github.com/apple/swift-nio-zlib-support.git",
+        "state": {
+          "branch": null,
+          "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
+          "version": "1.0.0"
         }
       },
       {
@@ -87,17 +105,8 @@
         "repositoryURL": "https://github.com/vapor/template-kit.git",
         "state": {
           "branch": null,
-          "revision": "cda3174c5e029526a5b11b19fcfd83bd65b6876a",
-          "version": "1.0.0-rc.1.1"
-        }
-      },
-      {
-        "package": "TLS",
-        "repositoryURL": "https://github.com/vapor/tls.git",
-        "state": {
-          "branch": null,
-          "revision": "cfd8cc0f06841ee15469c5fc98131e47511f8e94",
-          "version": "3.0.0-rc.1.0.1"
+          "revision": "61ed3d3b0df4c181d6b88e06b418f425978ac2af",
+          "version": "1.0.0-rc.2.0.3"
         }
       },
       {
@@ -105,8 +114,8 @@
         "repositoryURL": "https://github.com/vapor/validation.git",
         "state": {
           "branch": null,
-          "revision": "683af11976a732584baf339483aa3206734c913b",
-          "version": "2.0.0-rc.1"
+          "revision": "1ce87fc2d18a8f15a491805825063c8db493a51e",
+          "version": "2.0.0-rc.2.1.1"
         }
       },
       {
@@ -114,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "d8254ba464b211ca6d465703f7f5d37eb0c95b65",
-          "version": "3.0.0-rc.1.1"
+          "revision": "5e59691ef575597aa640da76ccb9fc5ee638f2c1",
+          "version": "3.0.0-rc.2.2.1"
         }
       }
     ]

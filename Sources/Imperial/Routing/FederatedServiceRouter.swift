@@ -60,17 +60,18 @@ public protocol FederatedServiceRouter {
 
 extension FederatedServiceRouter {
     public func authenticate(_ request: Request)throws -> Future<Response> {
-        return Future(request.redirect(to: authURL))
+        let redirect: Response = request.redirect(to: authURL)
+        return request.eventLoop.newSucceededFuture(result: redirect)
     }
     
     public func configureRoutes(withAuthURL authURL: String, on router: Router) throws {
         var callbackPath: String = callbackURL
         if try NSRegularExpression(pattern: "^https?:\\/\\/", options: []).matches(in: callbackURL, options: [], range: NSMakeRange(0, callbackURL.utf8.count)).count > 0 {
-            callbackPath = URI(callbackURL).path
+            callbackPath = URL(string: callbackPath)?.path ?? callbackURL
         }
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
-        router.get(callbackPath.makePathComponent(), use: callback)
-        router.get(authURL.makePathComponent(), use: authenticate)
+        router.get(callbackPath, use: callback)
+        router.get(authURL, use: authenticate)
     }
 }
