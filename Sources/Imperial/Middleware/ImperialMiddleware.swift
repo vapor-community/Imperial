@@ -20,10 +20,11 @@ public class ImperialMiddleware: Middleware {
             _ = try request.accessToken()
             return try next.respond(to: request)
         } catch let error as Abort {
-            guard let redirect = redirectPath else {
+            guard let redirectPath = redirectPath else {
                 throw error
             }
-            return Future(request.redirect(to: redirect))
+            let redirect: Response = request.redirect(to: redirectPath)
+            return request.eventLoop.newSucceededFuture(result: redirect)
         } catch let error {
             throw error
         }
