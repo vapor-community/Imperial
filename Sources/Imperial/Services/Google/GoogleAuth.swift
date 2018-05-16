@@ -10,7 +10,7 @@ public class GoogleAuth: FederatedServiceTokens {
         let idError = ImperialError.missingEnvVar(idEnvKey)
         let secretError = ImperialError.missingEnvVar(secretEnvKey)
         
-        self.clientID = try Environment.get(idEnvKey) ?? idError
-        self.clientSecret = try Environment.get(secretEnvKey) ?? secretError
+        self.clientID = try Environment.get(idEnvKey).value(or: idError)
+        self.clientSecret = try Environment.get(secretEnvKey).value(or: secretError)
     }
 }
