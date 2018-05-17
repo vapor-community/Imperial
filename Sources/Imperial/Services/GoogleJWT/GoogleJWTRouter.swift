@@ -39,6 +39,11 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         }
     }
     
+    public func authenticate(_ request: Request)throws -> Future<Response> {
+        let redirect: Response = request.redirect(to: self.callbackURL)
+        return request.eventLoop.newSucceededFuture(result: redirect)
+    }
+    
     public func jwt() throws -> String {
         let payload = GoogleJWTPayload(
             iss: IssuerClaim(value: self.tokens.clientID),
