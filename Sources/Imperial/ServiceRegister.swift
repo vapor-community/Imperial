@@ -40,7 +40,7 @@ extension Router {
         scope: [String] = [],
         redirect redirectURL: String
     )throws where OAuthProvider: FederatedService {
-        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, callback: callback, scope: scope) { (request, token) in
+        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, callback: callback, scope: scope) { (request, _) in
             let redirect: Response = request.redirect(to: redirectURL)
             return request.eventLoop.newSucceededFuture(result: redirect)
         }
