@@ -1,7 +1,7 @@
 import Vapor
 
 public class GoogleJWTAuth: FederatedServiceTokens {
-    public var idEnvKey: String = "GOOGLEJWT_CLIENT_ID"
+    public var idEnvKey: String = "GOOGLEJWT_CLIENT_EMAIL"
     public var secretEnvKey: String = "GOOGLEJWT_CLIENT_SECRET"
     public var clientID: String
     public var clientSecret: String
