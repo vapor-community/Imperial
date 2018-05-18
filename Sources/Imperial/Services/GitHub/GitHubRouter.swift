@@ -19,7 +19,7 @@ public class GitHubRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
-    public func callback(_ request: Request)throws -> Future<Response> {
+    public func fetchToken(from request: Request)throws -> Future<String> {
         let code: String
         if let queryCode: String = try request.query.get(at: "code") {
             code = queryCode
@@ -40,7 +40,11 @@ public class GitHubRouter: FederatedServiceRouter {
             return try request.make(Client.self).send(request)
         }.flatMap(to: String.self) { response in
             return response.content.get(String.self, at: ["access_token"])
-        }.flatMap(to: ResponseEncodable.self) { accessToken in
+        }
+    }
+    
+    public func callback(_ request: Request)throws -> Future<Response> {
+        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
             let session = try request.session()
             
             session["access_token"] = accessToken

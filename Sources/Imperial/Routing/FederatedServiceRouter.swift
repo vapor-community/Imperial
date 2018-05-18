@@ -41,6 +41,12 @@ public protocol FederatedServiceRouter {
     /// - Throws: N/A
     func configureRoutes(withAuthURL authURL: String, on router: Router)throws
     
+    /// Gets an access token from an OAuth provider.
+    /// This method is the main body of the `callback` handler.
+    ///
+    /// - Parameters: request: The request for the route
+    ///   this method is called in.
+    func fetchToken(from request: Request)throws -> Future<String>
     
     /// The route to call when the user is going to authenticate with the OAuth provider.
     /// By default, this route redirects the user to `authURL`.

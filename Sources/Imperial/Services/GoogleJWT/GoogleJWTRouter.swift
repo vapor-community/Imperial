@@ -18,7 +18,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
-    public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
+    public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
         let headers: HTTPHeaders = ["Content-Type": MediaType.urlEncodedForm.description]
         let token = try self.jwt()
         let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(token)"
@@ -27,13 +27,17 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
             if response.http.status == .ok {
                 return try JSONDecoder().decode(GoogleJWTResponse.self, from: response.http, maxSize: 65_536, on: request)
             } else { throw Abort(.internalServerError) }
-        }.flatMap(to: ResponseEncodable.self) { oauth in
+        }.map { $0.accessToken }
+    }
+    
+    public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
+        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { token in
             let session = try request.session()
             
-            session["access_token"] = oauth.accessToken
+            session["access_token"] = token
             try session.set("access_token_service", to: OAuthService.googleJWT)
             
-            return try self.callbackCompletion(request, oauth.accessToken)
+            return try self.callbackCompletion(request, token)
         }.flatMap(to: Response.self) { body in
             return try body.encode(for: request)
         }
