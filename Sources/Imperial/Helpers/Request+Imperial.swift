@@ -11,7 +11,7 @@ extension Request {
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
     func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService)throws -> Future<Model> {
-        let uri = try service[model.serviceKey] ?? ServiceError.noServiceEndpoint(model.serviceKey)
+        let uri = try service[model.serviceKey].value(or: ServiceError.noServiceEndpoint(model.serviceKey))
         
         let token = try service.tokenPrefix + self.accessToken()
         

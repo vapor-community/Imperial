@@ -19,7 +19,7 @@ public class ImperialMiddleware: Middleware {
         do {
             _ = try request.accessToken()
             return try next.respond(to: request)
-        } catch let error as Abort {
+        } catch let error as Abort where error.status == .unauthorized {
             guard let redirectPath = redirectPath else {
                 throw error
             }
