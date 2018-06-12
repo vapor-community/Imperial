@@ -15,7 +15,7 @@ Now that we have the necessary information for Google, we will setup Imperial wi
 Add the following line of code to your `dependencies` array in your package manifest file:
 
 ```swift
-.package(url: "https://google.com/vapor-community/Imperial.git", from: "0.5.3")
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.5.3")
 ```
 
 **Note:** There might be a later version of the package available, in which case you will want to use that version.
