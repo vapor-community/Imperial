@@ -80,7 +80,7 @@ If you just want to redirect, without doing anything else in the callback, you c
 try router.oAuth(from: Google.self, authenticate: "google", callback: "http://localhost:8080/google-complete", redirect: "/")
 ```
 
-The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Google:
+The `callback` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Google:
 
 ![The callback path for Google OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/Google/callback-uri.png?raw=true)
 
