@@ -7,7 +7,7 @@ struct GoogleCallbackBody: Content {
     let redirectURI: String
     let grantType: String = "authorization_code"
     
-    static var defaultMediaType: MediaType = .urlEncodedForm
+    static var defaultContentType: MediaType = .urlEncodedForm
     
     enum CodingKeys: String, CodingKey {
         case code = "code"
