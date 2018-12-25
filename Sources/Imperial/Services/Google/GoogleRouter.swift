@@ -11,7 +11,7 @@ public class GoogleRouter: FederatedServiceRouter {
         return "https://accounts.google.com/o/oauth2/auth?" +
                "client_id=\(self.tokens.clientID)&" +
                "redirect_uri=\(self.callbackURL)&" +
-               "scope=\(scope.joined(separator: " "))&" +
+               "scope=\(scope.joined(separator: "%20"))&" +
                "response_type=code"
     }
     
