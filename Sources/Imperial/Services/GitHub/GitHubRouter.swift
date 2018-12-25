@@ -9,7 +9,7 @@ public class GitHubRouter: FederatedServiceRouter {
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
     public var authURL: String {
         return "https://github.com/login/oauth/authorize?" +
-               "scope=\(scope.joined(separator: " "))&" +
+               "scope=\(scope.joined(separator: "%20"))&" +
                "client_id=\(self.tokens.clientID)"
     }
     
