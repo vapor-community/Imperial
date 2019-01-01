@@ -1,4 +1,3 @@
-import Imperial
 import Vapor
 
 public class ShopifyAuth: FederatedServiceTokens {

@@ -1,11 +1,3 @@
-//
-//  ShopifyRouter.swift
-//  App
-//
-//  Created by David Muzi on 2018-12-27.
-//
-
-import Imperial
 import Vapor
 
 public class ShopifyRouter: FederatedServiceRouter {
