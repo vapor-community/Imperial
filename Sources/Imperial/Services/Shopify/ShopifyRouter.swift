@@ -83,8 +83,8 @@ public class ShopifyRouter: FederatedServiceRouter {
 			guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
 			
 			let session = try request.session()
-			session.setAccessToken(token: accessToken)
-			session.setShopDomain(domain: domain)
+			session.setAccessToken(accessToken)
+			session.setShopDomain(domain)
 			
 			return try self.callbackCompletion(request, accessToken)
 		}.flatMap(to: Response.self) { response in

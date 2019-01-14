@@ -34,7 +34,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { token in
             let session = try request.session()
             
-            session["access_token"] = token
+            session.setAccessToken(token)
             try session.set("access_token_service", to: OAuthService.googleJWT)
             
             return try self.callbackCompletion(request, token)

@@ -64,12 +64,13 @@ Imperial uses environment variables to access the client ID and secret to authen
 Now, all we need to do is register the Shopify service in your main router method, like this:
 
 ```swift
-try router.oAuth(from: Shopify.self,
-					authenticate: "login-shopify",
-					callback: http://localhost:8080/auth,
-					scope: ["read_products", "read_orders"],
-					redirect: "/")
-}
+import Imperial
+
+try router.oAuth(from: Shopify.self, 
+                 authenticate: "login-shopify", 
+                 callback: "http://localhost:8080/auth", 
+                 scope: ["read_products", "read_orders"], 
+                 redirect: "/")
 ```
 
 The `callback` argument is the path you will go to when you want to authenticate the shop. The `callback` argument has to be the same path that you entered as a *Whitelisted redirection URL* on the app in the Partner Dashboard:
