@@ -9,7 +9,7 @@ Now that we have the necessary information for Shopify, we will setup Imperial w
 Add the following line of code to your `dependencies` array in your package manifest file:
 
 ```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.0")
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.8.0")
 ```
 
 **Note:** There might be a later version of the package available, in which case you will want to use that version.
