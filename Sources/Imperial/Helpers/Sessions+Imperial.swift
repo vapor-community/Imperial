@@ -15,11 +15,12 @@ extension Request {
 }
 
 extension Session {
-	
-	enum Keys {
-		static let token = "access_token"
-	}
-	
+    
+    /// Keys used to store and retrieve items from the session
+    enum Keys {
+        static let token = "access_token"
+    }
+
     /// Gets the access token from the session.
     ///
     /// - Returns: The access token stored with the `access_token` key.
@@ -31,13 +32,12 @@ extension Session {
         return token
     }
 	
-	
-	/// Sets the access token on the session.
-	///
-	/// - Parameter token: the access token to store on the session
-	public func setAccessToken(_ token: String) {
-		self[Keys.token] = token
-	}
+    /// Sets the access token on the session.
+    ///
+    /// - Parameter token: the access token to store on the session
+    public func setAccessToken(_ token: String) {
+        self[Keys.token] = token
+    }
     
     /// Gets an object stored in a session with JSON as a given type.
     ///
