@@ -41,6 +41,9 @@ Then run `vapor update` or `swift package update`. Make sure you regenerate your
 Now that Imperial is installed, we need to add `middlewares.use(SessionsMiddleware.self)` to our middleware configuration in the `configure.swift` file:
 
 ```swift
+import Imperial
+//...
+
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
     //...
 
@@ -76,6 +79,9 @@ try router.oAuth(from: Facebook.self, authenticate: "facebook", callback: "https
 If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
 
 ```swift
+import Imperial
+//...
+
 try router.oAuth(from: Facebook.self, authenticate: "facebook", callback: "https://fancyvapor.app/facebook/callback", redirect: "/")
 ```
 
@@ -90,12 +96,18 @@ The completion handler is fired when the callback route is called by the OAuth p
 The `access_token` is available within a route through an Imperial helper method for the `Request` type:
 
 ```swift
+import Imperial
+//...
+
 let token = try request.accessToken()
 ```
 
 Now that you are authenticating the user, you will want to protect certain routes to make sure the user is authenticated. You can do this by adding the `ImperialMiddleware` to a router group (or maybe your middleware config):
 
 ```swift
+import Imperial
+//...
+
 let protected = router.grouped(ImperialMiddleware())
 ```
 
@@ -108,5 +120,8 @@ protected.get("me", handler: me)
 The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddleware` where they are caught, but you can initialize it with a redirect path to go to when the user is not authenticated:
 
 ```swift
+import Imperial
+//...
+
 let protected = router.grouped(ImperialMiddleware(redirect: "/"))
 ```
