@@ -1,7 +1,7 @@
 # Federated Login with Facebook
 
-1. Register with Facebook
-2. Add Imperial to Vapor App
+1. [Register with Facebook](#register-with-facebook)
+2. [Add Imperial to Vapor App](#add-imperial-to-vapor-app)
 
 ## Register with Facebook
 Start by going to the [Facebook Developer page](https://developers.facebook.com/), and sign-in/register. Then, go to the [Apps page](https://developers.facebook.com/apps/). Click 'Add a New App'. Enter an app Display Name and Contact Email and click Create App ID:
