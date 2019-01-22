@@ -17,4 +17,3 @@ struct FacebookCallbackBody: Content {
         case grantType = "grant_type"
     }
 }
-

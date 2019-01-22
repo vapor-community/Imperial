@@ -13,7 +13,7 @@ public class FacebookRouter: FederatedServiceRouter {
             "&redirect_uri=\(self.callbackURL)"
     }
 
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try FacebookAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -55,4 +55,3 @@ public class FacebookRouter: FederatedServiceRouter {
         }
     }
 }
-

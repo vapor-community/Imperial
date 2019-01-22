@@ -14,4 +14,3 @@ public class FacebookAuth: FederatedServiceTokens {
         self.clientSecret = try Environment.get(secretEnvKey).value(or: secretError)
     }
 }
-
