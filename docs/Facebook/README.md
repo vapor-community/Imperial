@@ -87,6 +87,8 @@ Therefore, the `callback` argument needs to match one of the 'Valid OAuth Redire
 
 ![The callback path for Facebook App](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/add-redirect-uri.png)
 
+**Note:** The callback URL should be an Environment variable in your application so it can change between environments. In development using a `.env` file and including this [`Environment+DotEnv.swift`](https://github.com/vapor-community/vapor-ext/blob/master/Sources/ServiceExt/Environment%2BDotEnv.swift) helper in your project makes it simple.
+
 The completion handler is fired when the callback route is called by the OAuth provider (Facebook). The access token is passed in and a response is returned.
 
 The `access_token` is available within a route through an Imperial helper method for the `Request` type:
@@ -96,6 +98,84 @@ import Imperial
 //...
 
 let token = try request.accessToken()
+```
+
+## Fetching User Data
+
+With the accessToken your application can now access information about the user. The needs of each application differ so you can test out your implementation using [Facebook's Graph API Explorer](https://developers.facebook.com/tools/explorer/).
+
+![Facebook's Graph API Explorer](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/facebook-graph-api-explorer.png)
+
+When a user signs in with Facebook they will see what data your application is requesting and approve or reject the available data. The controller example below shows setting the route in your application which redirects the user to sign-in with Facebook, and the completion handler calls a `processFacebookLogin` function which will use the `accessToken` to fetch the user's data. It also will create a new user or sign-in existing users.
+
+```swift
+import Vapor
+import Imperial
+import Authentication
+
+struct ImperialController: RouteCollection {
+    func boot(router: Router) throws {
+        guard let facebookCallbackURL = Environment.get("FACEBOOK_CALLBACK_URI") else {
+            fatalError("Facebook callback URL not set")
+        }
+        try router.oAuth(from: Facebook.self, authenticate: "login-facebook", callback: facebookCallbackURL,
+                         scope: [], completion: processFacebookLogin)
+    }
+
+    func processFacebookLogin(request: Request, token: String) throws -> Future<ResponseEncodable> {
+        return try Facebook.getUserInfo(on: request).flatMap(to: ResponseEncodable.self) { userInfo in
+            return User.query(on: request).filter(\.username == userInfo.id).first()
+                                          .flatMap(to: ResponseEncodable.self) { foundUser in
+                guard let existingUser = foundUser else {
+                    return self.buildAndSaveNewUser(request: request, userInfo: userInfo)
+                }
+                return self.AuthenticateExistingUser(request: request, user: existingUser)
+            }
+        }
+    }
+
+    private func buildAndSaveNewUser(request: Request, userInfo: FacebookUserInfo) -> Future<ResponseEncodable> {
+        let user = User(name: userInfo.name, username: userInfo.id, password: UUID().uuidString, email: userInfo.email)
+        return user.save(on: request).map(to: ResponseEncodable.self) { user in
+            try request.authenticateSession(user)
+            return request.redirect(to: "users/\(user.id!)")
+        }
+    }
+
+    private func AuthenticateExistingUser(request: Request, user: User) -> Future<ResponseEncodable> {
+        return user.save(on: request).map(to: ResponseEncodable.self) { user in
+            try request.authenticateSession(user)
+            return request.redirect(to: "users/\(user.id!)")
+        }
+    }
+}
+```
+
+We also need to extend the Facebook class to add the `getUserInfo` function. Customizing the last part of the `facebookUserAPIURL` will allow you to access the user data needed by your application. Refer to the Graph Explorer for testing what attributes are available. For convenience we decode the response using a small struct called `FacebookUserInfo`.
+
+```swift
+struct FacebookUserInfo: Content {
+    let id: String
+    let email: String
+    let name: String
+}
+
+extension Facebook {
+    static func getUserInfo(on request: Request) throws -> Future<FacebookUserInfo> {
+        let token = try request.accessToken()
+        let facebookUserAPIURL = "https://graph.facebook.com/v3.2/me?fields=id,name,email&access_token=\(token)"
+        return try request.client().get(facebookUserAPIURL).map(to: FacebookUserInfo.self) { response in
+            guard response.http.status == .ok else {
+                if response.http.status == .unauthorized {
+                    throw Abort.redirect(to: "/login-facebook")
+                } else {
+                    throw Abort(.internalServerError)
+                }
+            }
+            return try response.content.syncDecode(FacebookUserInfo.self)
+        }
+    }
+}
 ```
 
 ## Protecting Routes
