@@ -58,15 +58,15 @@ public class ShopifyRouter: FederatedServiceRouter {
         
         // exchange code for access token
         let body = ShopifyCallbackBody(code: code, clientId: tokens.clientID, clientSecret: tokens.clientSecret)
-        return try body.encode(using: request).flatMap(to: Response.self) { request in
+        return try body.encode(using: request).flatMap(to: Response.self) { req in
             guard let url = URL(string: self.accessTokenURL) else {
                 throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
             }
-            request.http.method = .POST
-            request.http.url = url
-            return try request.make(Client.self).send(request)
-            }.flatMap(to: String.self) { response in
-                return response.content.get(String.self, at: ["access_token"])
+            req.http.method = .POST
+            req.http.url = url
+            return try request.make(Client.self).send(req)
+        }.flatMap(to: String.self) { response in
+            return response.content.get(String.self, at: ["access_token"])
         }
     }
     
