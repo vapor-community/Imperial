@@ -1,22 +1,26 @@
 import Vapor
 
+extension Session.Keys {
+    static let domain = "shop_domain"
+    static let nonce = "nonce"
+}
+
 extension Session {
-	
-	enum SessionKeys {
-		static let domain = "shop_domain"
-		static let token = "access_token"
-	}
-	
-	func shopDomain() throws -> String {
-		guard let domain = self[SessionKeys.domain] else { throw Abort(.notFound) }
-		return domain
-	}
-	
-	func setShopDomain(domain: String) {
-		self[SessionKeys.domain] = domain
-	}
-	
-	func setAccessToken(token: String) {
-		self[SessionKeys.token] = token
-	}
+    
+    func shopDomain() throws -> String {
+        guard let domain = self[Keys.domain] else { throw Abort(.notFound) }
+        return domain
+    }
+    
+    func setShopDomain(_ domain: String) {
+        self[Keys.domain] = domain
+    }
+    
+    func setNonce(_ nonce: String?) {
+        self[Keys.nonce] = nonce
+    }
+    
+    func nonce() -> String? {
+        return self[Keys.nonce]
+    }
 }

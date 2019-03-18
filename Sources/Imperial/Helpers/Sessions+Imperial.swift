@@ -16,15 +16,27 @@ extension Request {
 
 extension Session {
     
+    /// Keys used to store and retrieve items from the session
+    enum Keys {
+        static let token = "access_token"
+    }
+
     /// Gets the access token from the session.
     ///
     /// - Returns: The access token stored with the `access_token` key.
     /// - Throws: `Abort.unauthorized` if no access token exists.m
     public func accessToken()throws -> String {
-        guard let token = self["access_token"] else {
+        guard let token = self[Keys.token] else {
             throw Abort(.unauthorized, reason: "User currently not authenticated")
         }
         return token
+    }
+	
+    /// Sets the access token on the session.
+    ///
+    /// - Parameter token: the access token to store on the session
+    public func setAccessToken(_ token: String) {
+        self[Keys.token] = token
     }
     
     /// Gets an object stored in a session with JSON as a given type.
