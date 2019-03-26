@@ -2,13 +2,14 @@ import Vapor
 import Foundation
 
 public class GitHubRouter: FederatedServiceRouter {
+    public static var baseURL: String = "https://github.com/"
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
-    public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
+    public let accessTokenURL: String = "\(GitHubRouter.baseURL)login/oauth/access_token"
     public var authURL: String {
-        return "https://github.com/login/oauth/authorize?" +
+        return "\(GitHubRouter.baseURL)login/oauth/authorize?" +
                "scope=\(scope.joined(separator: "%20"))&" +
                "client_id=\(self.tokens.clientID)"
     }

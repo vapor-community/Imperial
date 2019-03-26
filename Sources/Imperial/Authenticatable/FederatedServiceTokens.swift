@@ -39,13 +39,13 @@ from environment variables and stores them.
 public protocol FederatedServiceTokens {
     
     /// The name of the environment variable that has the client ID.
-    var idEnvKey: String { get }
+    static var idEnvKey: String { get set }
     
     /// The client ID for the OAuth provider that the service is connected to.
-    var clientID: String { get }
+    var clientID: String { get set }
     
     /// The name of the environment variable that has the client secret.
-    var secretEnvKey: String { get }
+    static var secretEnvKey: String { get }
     
     /// The client secret for the OAuth provider that the service is connected to.
     var clientSecret: String { get }
