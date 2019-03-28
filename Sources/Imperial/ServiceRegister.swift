@@ -7,7 +7,8 @@ extension Router {
     ///
     /// - Parameters:
     ///   - provider: The provider who's router will be used.
-    ///   - authUrl: The path to navigate to to authenticate.
+    ///   - authUrl: The path to navigate to authenticate.
+    ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     ///   - callback: The path or URL that the provider with
     ///     redirect to when authentication completes.
     ///   - scope: The scopes to get access to on authentication.
@@ -16,11 +17,12 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
+        authenticateCallback: ((Request) -> (Future<Void>))? = nil,
         callback: String,
         scope: [String] = [],
         completion: @escaping (Request, String)throws -> Future<ResponseEncodable>
     )throws where OAuthProvider: FederatedService {
-        _ = try OAuthProvider(router: self, authenticate: authUrl, callback: callback, scope: scope, completion: completion)
+        _ = try OAuthProvider(router: self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope, completion: completion)
     }
     
     /// Registers an OAuth provider's router with
@@ -28,7 +30,8 @@ extension Router {
     ///
     /// - Parameters:
     ///   - provider: The provider who's router will be used.
-    ///   - authUrl: The path to navigate to to authenticate.
+    ///   - authUrl: The path to navigate to authenticate.
+    ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     ///   - callback: The path or URL that the provider with
     ///     redirect to when authentication completes.
     ///   - scope: The scopes to get access to on authentication.
@@ -36,11 +39,12 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
+        authenticateCallback: ((Request) -> (Future<Void>))? = nil,
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String
     )throws where OAuthProvider: FederatedService {
-        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, callback: callback, scope: scope) { (request, _) in
+        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
             let redirect: Response = request.redirect(to: redirectURL)
             return request.eventLoop.newSucceededFuture(result: redirect)
         }

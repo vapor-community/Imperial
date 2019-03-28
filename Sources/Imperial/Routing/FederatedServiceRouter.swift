@@ -37,9 +37,11 @@ public protocol FederatedServiceRouter {
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///
-    /// - Parameter authURL: The URL for the route that will redirect the user to the OAuth provider.
+    /// - Parameters:
+    ///   - authURL: The URL for the route that will redirect the user to the OAuth provider.
+    ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     /// - Throws: N/A
-    func configureRoutes(withAuthURL authURL: String, on router: Router)throws
+    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) -> (Future<Void>))?, on router: Router)throws
     
     /// Gets an access token from an OAuth provider.
     /// This method is the main body of the `callback` handler.
@@ -47,14 +49,6 @@ public protocol FederatedServiceRouter {
     /// - Parameters: request: The request for the route
     ///   this method is called in.
     func fetchToken(from request: Request)throws -> Future<String>
-    
-    /// The route to call when the user is going to authenticate with the OAuth provider.
-    /// By default, this route redirects the user to `authURL`.
-    ///
-    /// - Parameter request: The request from the browser.
-    /// - Returns: A response that, by default, redirects the user to `authURL`.
-    /// - Throws: N/A
-    func authenticate(_ request: Request)throws -> Future<Response>
     
     /// The route that the OAuth provider calls when the user has benn authenticated.
     ///
@@ -65,12 +59,7 @@ public protocol FederatedServiceRouter {
 }
 
 extension FederatedServiceRouter {
-    public func authenticate(_ request: Request)throws -> Future<Response> {
-        let redirect: Response = request.redirect(to: authURL)
-        return request.eventLoop.newSucceededFuture(result: redirect)
-    }
-    
-    public func configureRoutes(withAuthURL authURL: String, on router: Router) throws {
+    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) -> (Future<Void>))?, on router: Router) throws {
         var callbackPath: String = callbackURL
         if try NSRegularExpression(pattern: "^https?:\\/\\/", options: []).matches(in: callbackURL, options: [], range: NSMakeRange(0, callbackURL.utf8.count)).count > 0 {
             callbackPath = URL(string: callbackPath)?.path ?? callbackURL
@@ -78,6 +67,14 @@ extension FederatedServiceRouter {
         callbackPath = callbackPath != "/" ? callbackPath : callbackURL
         
         router.get(callbackPath, use: callback)
-        router.get(authURL, use: authenticate)
+        router.get(authURL) { req -> Future<Response> in
+            let redirect: Response = req.redirect(to: authURL)
+            guard let authenticateCallback = authenticateCallback else {
+                return req.eventLoop.newSucceededFuture(result: redirect)
+            }
+            return authenticateCallback(req).map(to: Response.self) { _ in
+                return redirect
+            }
+        }
     }
 }

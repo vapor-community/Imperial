@@ -8,6 +8,7 @@ public class GoogleJWT: FederatedService {
     public required init(
         router: Router,
         authenticate: String,
+        authenticateCallback: ((Request) -> (Future<Void>))?,
         callback: String,
         scope: [String] = [],
         completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)
@@ -16,7 +17,7 @@ public class GoogleJWT: FederatedService {
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, on: router)
+        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
         
         OAuthService.register(.google)
     }
