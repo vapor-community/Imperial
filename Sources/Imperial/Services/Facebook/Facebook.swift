@@ -8,7 +8,7 @@ public class Facebook: FederatedService {
     public required init(
         router: Router,
         authenticate: String,
-        authenticateCallback: ((Request) -> (Future<Void>))?,
+        authenticateCallback: ((Request)throws -> (Future<Void>))?,
         callback: String,
         scope: [String] = [],
         completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)

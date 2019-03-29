@@ -41,7 +41,7 @@ public protocol FederatedServiceRouter {
     ///   - authURL: The URL for the route that will redirect the user to the OAuth provider.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     /// - Throws: N/A
-    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) -> (Future<Void>))?, on router: Router)throws
+    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request)throws -> (Future<Void>))?, on router: Router)throws
     
     /// Gets an access token from an OAuth provider.
     /// This method is the main body of the `callback` handler.
@@ -59,7 +59,7 @@ public protocol FederatedServiceRouter {
 }
 
 extension FederatedServiceRouter {
-    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) -> (Future<Void>))?, on router: Router) throws {
+    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request)throws -> (Future<Void>))?, on router: Router) throws {
         var callbackPath: String = callbackURL
         if try NSRegularExpression(pattern: "^https?:\\/\\/", options: []).matches(in: callbackURL, options: [], range: NSMakeRange(0, callbackURL.utf8.count)).count > 0 {
             callbackPath = URL(string: callbackPath)?.path ?? callbackURL
@@ -72,7 +72,7 @@ extension FederatedServiceRouter {
             guard let authenticateCallback = authenticateCallback else {
                 return req.eventLoop.newSucceededFuture(result: redirect)
             }
-            return authenticateCallback(req).map(to: Response.self) { _ in
+            return try authenticateCallback(req).map(to: Response.self) { _ in
                 return redirect
             }
         }
