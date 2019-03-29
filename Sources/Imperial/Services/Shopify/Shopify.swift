@@ -14,6 +14,7 @@ public class Shopify: FederatedService {
     
     public required init(router: Router,
                          authenticate: String,
+                         authenticateCallback: ((Request) -> (Future<Void>))?,
                          callback: String,
                          scope: [String],
                          completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
@@ -21,6 +22,6 @@ public class Shopify: FederatedService {
         self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
         self.shopifyRouter.scope = scope
         
-        try self.router.configureRoutes(withAuthURL: authenticate, on: router)
+        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
     }
 }
