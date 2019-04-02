@@ -68,7 +68,7 @@ extension FederatedServiceRouter {
         
         router.get(callbackPath, use: callback)
         router.get(authURL) { req -> Future<Response> in
-            let redirect: Response = req.redirect(to: authURL)
+            let redirect: Response = req.redirect(to: self.authURL)
             guard let authenticateCallback = authenticateCallback else {
                 return req.eventLoop.newSucceededFuture(result: redirect)
             }
