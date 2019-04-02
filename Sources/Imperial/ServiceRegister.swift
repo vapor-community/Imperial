@@ -17,7 +17,7 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) -> (Future<Void>))? = nil,
+        authenticateCallback: ((Request)throws -> (Future<Void>))? = nil,
         callback: String,
         scope: [String] = [],
         completion: @escaping (Request, String)throws -> Future<ResponseEncodable>
@@ -39,7 +39,7 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) -> (Future<Void>))? = nil,
+        authenticateCallback: ((Request)throws -> (Future<Void>))? = nil,
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String
