@@ -33,7 +33,7 @@ public class GitlabRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let body = GitlabCallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code)
+        let body = GitlabCallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code, grantType: "authorization_code", redirectUri: GitlabRouter.callbackURL)
         
         return try body.encode(using: request).flatMap(to: Response.self) { request in
             guard let url = URL(string: self.accessTokenURL) else {
