@@ -7,18 +7,19 @@ public class GoogleRouter: FederatedServiceRouter {
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public var authURL: String {
-        return "https://accounts.google.com/o/oauth2/auth?" +
-               "client_id=\(self.tokens.clientID)&" +
-               "redirect_uri=\(self.callbackURL)&" +
-               "scope=\(scope.joined(separator: "%20"))&" +
-               "response_type=code"
-    }
     
     public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GoogleAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+    }
+
+    public func authURL(_ request: Request) throws -> String {
+        return "https://accounts.google.com/o/oauth2/auth?" +
+            "client_id=\(self.tokens.clientID)&" +
+            "redirect_uri=\(self.callbackURL)&" +
+            "scope=\(scope.joined(separator: "%20"))&" +
+        "response_type=code"
     }
     
     public func fetchToken(from request: Request)throws -> Future<String> {

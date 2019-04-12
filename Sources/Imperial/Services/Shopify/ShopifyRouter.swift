@@ -1,20 +1,11 @@
 import Vapor
 
 public class ShopifyRouter: FederatedServiceRouter {
-    
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
-    public var accessTokenURL: String {
-        return _accessTokenURL
-    }
-    public var authURL: String {
-        return _authURL
-    }
-    
-    private var _accessTokenURL: String!
-    private var _authURL: String!
+    public var accessTokenURL: String = ""
     
     required public init(callback: String, completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try ShopifyAuth()
@@ -22,17 +13,14 @@ public class ShopifyRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
-    /// The route thats called to initiate the auth flow
-    /// ex. https://ed4da397.ngrok.io/login-shopify?shop=davidmuzi.myshopify.com
-    ///
-    /// - Parameter request: The request from the browser.
-    /// - Returns: A response that, by default, redirects the user to `authURL`.
-    /// - Throws: N/A
-    public func authenticate(_ request: Request) throws -> Future<Response> {
+    public func authURL(_ request: Request) throws -> String {
+        guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
         
-        _authURL = try generateAuthenticationURL(request: request).absoluteString
-        let redirect: Response = request.redirect(to: _authURL)
-        return request.eventLoop.newSucceededFuture(result: redirect)
+        let nonce = String(UUID().uuidString.prefix(6))
+        try request.session().setNonce(nonce)
+        
+        accessTokenURL = try accessTokenURLFrom(shop)
+        return try authURLFrom(shop, nonce: nonce).absoluteString
     }
     
     /// Gets an access token from an OAuth provider.
@@ -53,8 +41,6 @@ public class ShopifyRouter: FederatedServiceRouter {
         }
         guard URL(string: shop)?.isValidShopifyDomain() == true else { throw Abort(.badRequest) }
         guard request.http.url.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
-        
-        _accessTokenURL = try accessTokenURLFrom(request)
         
         // exchange code for access token
         let body = ShopifyCallbackBody(code: code, clientId: tokens.clientID, clientSecret: tokens.clientSecret)
@@ -92,28 +78,14 @@ public class ShopifyRouter: FederatedServiceRouter {
         }
     }
     
-    /// Creates the authentication URL
-    ///
-    /// - Parameter request: the request from the browser to initiate authorization
-    /// - Returns: fully formed URL that should be used to redirect back to Shopify
-    /// - Throws: Any errors that occur in the implementation code.
-    public func generateAuthenticationURL(request: Request) throws -> URL {
-        let nonce = String(UUID().uuidString.prefix(6))
-        try request.session().setNonce(nonce)
-        return try authURLFrom(request, nonce: nonce)
-    }
-    
-    private func authURLFrom(_ request: Request, nonce: String) throws -> URL {
-        guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
-        
+    private func authURLFrom(_ shop: String, nonce: String) throws -> URL {
         return URL(string: "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" +
             "scope=\(scope.joined(separator: ","))&" +
             "redirect_uri=\(callbackURL)&" +
             "state=\(nonce)")!
     }
     
-    private func accessTokenURLFrom(_ request: Request) throws -> String {
-        guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
+    private func accessTokenURLFrom(_ shop: String) throws -> String {
         return "https://\(shop)/admin/oauth/access_token"
     }
 }

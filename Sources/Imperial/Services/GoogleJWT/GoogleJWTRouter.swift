@@ -18,6 +18,10 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
     
+    public func authURL(_ request: Request) throws -> String {
+        return authURL
+    }
+    
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
         let headers: HTTPHeaders = ["Content-Type": MediaType.urlEncodedForm.description]
         let token = try self.jwt()

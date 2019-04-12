@@ -23,8 +23,7 @@ public protocol FederatedServiceRouter {
     var accessTokenURL: String { get }
     
     /// The URL of the page that the user will be redirected to to get the access token.
-    var authURL: String { get }
-    
+    func authURL(_ request: Request) throws -> String
     
     /// Creates an instence of the type implementing the protocol.
     ///
@@ -68,7 +67,7 @@ extension FederatedServiceRouter {
         
         router.get(callbackPath, use: callback)
         router.get(authURL) { req -> Future<Response> in
-            let redirect: Response = req.redirect(to: self.authURL)
+            let redirect: Response = req.redirect(to: try self.authURL(req))
             guard let authenticateCallback = authenticateCallback else {
                 return req.eventLoop.newSucceededFuture(result: redirect)
             }
