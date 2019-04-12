@@ -8,16 +8,17 @@ public class GitHubRouter: FederatedServiceRouter {
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "\(GitHubRouter.baseURL)login/oauth/access_token"
-    public var authURL: String {
-        return "\(GitHubRouter.baseURL)login/oauth/authorize?" +
-               "scope=\(scope.joined(separator: "%20"))&" +
-               "client_id=\(self.tokens.clientID)"
-    }
     
     public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+    }
+    
+    public func authURL(_ request: Request) throws -> String {
+        return "\(GitHubRouter.baseURL)login/oauth/authorize?" +
+            "scope=\(scope.joined(separator: "%20"))&" +
+        "client_id=\(self.tokens.clientID)"
     }
     
     public func fetchToken(from request: Request)throws -> Future<String> {
