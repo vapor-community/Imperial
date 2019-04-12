@@ -9,7 +9,8 @@ public class GitlabRouter: FederatedServiceRouter {
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "\(GitlabRouter.baseURL.finished(with: "/"))oauth/token"
-    public var authURL: String {
+    
+    public func authURL(_ request: Request) throws -> String {
         return "\(GitlabRouter.baseURL.finished(with: "/"))oauth/authorize?" +
             "client_id=\(self.tokens.clientID)&" +
             "redirect_uri=\(GitlabRouter.callbackURL)&" +
