@@ -3,7 +3,7 @@ import Foundation
 
 public class KeycloakRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-	public let keycloakTokens: KeycloakAuth
+    public let keycloakTokens: KeycloakAuth
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
@@ -11,8 +11,8 @@ public class KeycloakRouter: FederatedServiceRouter {
     
     public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try KeycloakAuth()
-		self.keycloakTokens = self.tokens as! KeycloakAuth
-		self.accessTokenURL = keycloakTokens.accessTokenURL
+        self.keycloakTokens = self.tokens as! KeycloakAuth
+        self.accessTokenURL = keycloakTokens.accessTokenURL
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
