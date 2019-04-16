@@ -22,7 +22,7 @@ public class KeycloakRouter: FederatedServiceRouter {
             "client_id=\(self.tokens.clientID)&" +
             "redirect_uri=\(self.callbackURL)&" +
             "scope=\(scope.joined(separator: "%20"))&" +
-        "response_type=code"
+            "response_type=code"
     }
     
     public func fetchToken(from request: Request)throws -> Future<String> {
