@@ -11,7 +11,9 @@ public class FacebookRouter: FederatedServiceRouter {
     public func authURL(_ request: Request) throws -> String {
         return "https://www.facebook.com/v3.2/dialog/oauth?" +
             "client_id=\(self.tokens.clientID)" +
-            "&redirect_uri=\(self.callbackURL)"
+            "&redirect_uri=\(self.callbackURL)" +
+            "&scope=\(scope.joined(separator: "%20"))" +
+            "&response_type=code"
     }
 
     public required init(callback: String, completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)) throws {
