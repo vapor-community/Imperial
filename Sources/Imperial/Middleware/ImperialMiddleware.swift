@@ -15,18 +15,18 @@ public class ImperialMiddleware: Middleware {
     
     /// Checks that the request contains an access token. If it does, let the request through. If not, redirect the user to the `redirectPath`.
     /// If the `redirectPath` is `nil`, then throw the error from getting the access token (Abort.unauthorized).
-    public func respond(to request: Request, chainingTo next: Responder) throws -> Future<Response> {
+    public func respond(to request: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
         do {
             _ = try request.accessToken()
-            return try next.respond(to: request)
+            return next.respond(to: request)
         } catch let error as Abort where error.status == .unauthorized {
             guard let redirectPath = redirectPath else {
-                throw error
+                return request.eventLoop.makeFailedFuture(error)
             }
             let redirect: Response = request.redirect(to: redirectPath)
-            return request.eventLoop.newSucceededFuture(result: redirect)
+            return request.eventLoop.makeSucceededFuture(redirect)
         } catch let error {
-            throw error
+            return request.eventLoop.makeFailedFuture(error)
         }
     }
 }

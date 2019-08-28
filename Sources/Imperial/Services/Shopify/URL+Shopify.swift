@@ -1,20 +1,19 @@
-import Crypto
+import Foundation
+import OpenCrypto
 
 extension URL {
 	
 	func generateHMAC(key: String) -> String {
-		
 		let components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
 		let params = components.queryItems!.filter { $0.name != "hmac" }
 		let queryItems = params.map { $0.name + "=" + $0.value! }
 		let queryString = queryItems.joined(separator: "&")
 		
-		let hmac =  try! HMAC.SHA256.authenticate(queryString, key: key)
-		return hmac.hexEncodedString()
+        let hmac =  try! HMAC<SHA256>.authenticationCode(for: queryString.bytes, using: .init(data: key.bytes))
+		return hmac.description
 	}
 
 	func isValidShopifyDomain() -> Bool {
-		
 		let domain = "myshopify.com"
 		
 		guard absoluteString.suffix(domain.count) == domain else { return false }

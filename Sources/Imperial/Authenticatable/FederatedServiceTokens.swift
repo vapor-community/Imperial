@@ -51,5 +51,5 @@ public protocol FederatedServiceTokens {
     var clientSecret: String { get }
     
     /// Gets the client ID and secret from the environment variables and store them.
-    init()throws
+    init() throws
 }

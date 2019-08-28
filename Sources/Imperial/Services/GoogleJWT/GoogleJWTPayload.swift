@@ -1,5 +1,5 @@
 import Vapor
-import JWT
+import JWTKit
 
 public struct GoogleJWTPayload: JWTPayload {
     public var iss: IssuerClaim

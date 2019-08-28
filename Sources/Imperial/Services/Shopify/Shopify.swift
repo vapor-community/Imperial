@@ -14,7 +14,7 @@ public class Shopify: FederatedService {
     
     public required init(router: Router,
                          authenticate: String,
-                         authenticateCallback: ((Request)throws -> (Future<Void>))?,
+                         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
                          callback: String,
                          scope: [String],
                          completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {

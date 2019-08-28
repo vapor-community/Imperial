@@ -17,11 +17,11 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request)throws -> (Future<Void>))? = nil,
+        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String)throws -> Future<ResponseEncodable>
-    )throws where OAuthProvider: FederatedService {
+        completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
+    ) throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(router: self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope, completion: completion)
     }
     
@@ -39,14 +39,14 @@ extension Router {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request)throws -> (Future<Void>))? = nil,
+        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))? = nil,
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String
-    )throws where OAuthProvider: FederatedService {
+    ) throws where OAuthProvider: FederatedService {
         try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
             let redirect: Response = request.redirect(to: redirectURL)
-            return request.eventLoop.newSucceededFuture(result: redirect)
+            return request.eventLoop.makeSucceededFuture(redirect)
         }
     }
 }
