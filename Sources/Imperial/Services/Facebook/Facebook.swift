@@ -8,10 +8,10 @@ public class Facebook: FederatedService {
     public required init(
         router: Router,
         authenticate: String,
-        authenticateCallback: ((Request)throws -> (Future<Void>))?,
+        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
         ) throws {
         self.router = try FacebookRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
