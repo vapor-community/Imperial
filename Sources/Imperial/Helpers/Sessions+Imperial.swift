@@ -45,7 +45,7 @@ extension Session {
     /// Sets the access token on the session.
     ///
     /// - Parameter token: the access token to store on the session
-    public func setAccessToken(_ token: String) {
+    public func setAccessToken(_ token: String) throws {
         try set(Keys.token, to: token)
     }
 

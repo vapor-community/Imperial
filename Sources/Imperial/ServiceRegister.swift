@@ -22,7 +22,8 @@ extension Router {
         scope: [String] = [],
         completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
     ) throws where OAuthProvider: FederatedService {
-        _ = try OAuthProvider(router: self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope, completion: completion)
+//        _ = try OAuthProvider(router: self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope, completion: completion)
+        fatalError()
     }
     
     /// Registers an OAuth provider's router with

@@ -16,7 +16,9 @@ public protocol FederatedCreatable: Codable {
 }
 
 extension FederatedCreatable {
-    static func create(from response: Response) throws -> EventLoopFuture<Self> {
+    
+    static func create(from response: Response) throws -> Self {
         return try response.content.decode(Self.self)
     }
+    
 }

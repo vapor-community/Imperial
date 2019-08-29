@@ -22,39 +22,41 @@ public class GitHubRouter: FederatedServiceRouter {
     }
     
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
-        let code: String
-        if let queryCode: String = try request.query.get(at: "code") {
-            code = queryCode
-        } else if let error: String = try request.query.get(at: "error") {
-            throw Abort(.badRequest, reason: error)
-        } else {
-            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
-        }
-        
-        let body = GitHubCallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code)
-        
-        return try body.encode(using: request).flatMap(to: Response.self) { request in
-            guard let url = URL(string: self.accessTokenURL) else {
-                throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
-            }
-            request.method = .POST
-            request.url = url
-            return try request.make(Client.self).send(request)
-        }.flatMap(to: String.self) { response in
-            return response.content.get(String.self, at: ["access_token"])
-        }
+//        let code: String
+//        if let queryCode: String = try request.query.get(at: "code") {
+//            code = queryCode
+//        } else if let error: String = try request.query.get(at: "error") {
+//            throw Abort(.badRequest, reason: error)
+//        } else {
+//            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
+//        }
+//
+//        let body = GitHubCallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code)
+//
+//        return try body.encode(using: request).flatMap(to: Response.self) { request in
+//            guard let url = URL(string: self.accessTokenURL) else {
+//                throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
+//            }
+//            request.method = .POST
+//            request.url = url
+//            return try request.make(Client.self).send(request)
+//        }.flatMap(to: String.self) { response in
+//            return response.content.get(String.self, at: ["access_token"])
+//        }
+        fatalError()
     }
     
     public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
-            let session = try request.session
-            
-            session.setAccessToken(accessToken)
-            try session.set("access_token_service", to: OAuthService.github)
-            
-            return try self.callbackCompletion(request, accessToken)
-        }.flatMap(to: Response.self) { response in
-            return try response.encode(for: request)
-        }
+//        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
+//            let session = try request.session
+//
+//            session.setAccessToken(accessToken)
+//            try session.set("access_token_service", to: OAuthService.github)
+//
+//            return try self.callbackCompletion(request, accessToken)
+//        }.flatMap(to: Response.self) { response in
+//            return try response.encode(for: request)
+//        }
+        fatalError()
     }
 }
