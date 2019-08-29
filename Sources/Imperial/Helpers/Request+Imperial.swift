@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-extension Request {
+extension Container {
     
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
     ///
@@ -10,19 +10,24 @@ extension Request {
     ///   - service: The service to get the data from.
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
-    func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService) throws -> EventLoopFuture<Model> {
-//        let uri = try service[model.serviceKey].value(or: ServiceError.noServiceEndpoint(model.serviceKey))
+    func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService, on req: Request) throws -> EventLoopFuture<Model> {
+//        let url = try service[model.serviceKey].value(or: ServiceError.noServiceEndpoint(model.serviceKey))
 //
-//        let token = try service.tokenPrefix + self.accessToken()
+//        let token = try service.tokenPrefix + req
+//            .accessToken()
 //
-//        return try self.make(Client.self).get(uri, headers: ["Authorization": token]).flatMap(to: Model.self, { (response) -> EventLoopFuture<Model> in
-//            return try model.create(from: response)
-//        }).map(to: Model.self, { (instance) -> Model in
-//            try session.set("imperial-\(model)", to: instance)
-//            return instance
-//        })
+//        return self.make(Client.self).get(URI(string: url), headers: ["Authorization": token]).flatMap { response in
+//            return try! model.create(from: response).map { instance in
+//                try session.set("imperial-\(model)", to: instance)
+//                return instance
+//            }
+//        }
         fatalError()
     }
+    
+}
+
+extension Request {
     
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
     ///

@@ -12,12 +12,12 @@ public protocol FederatedCreatable: Codable {
     /// - Parameter response: The JSON in the response from the `dataUri`.
     /// - Returns: An instence of the type that conforms to this protocol.
     /// - Throws: Any errors that could be thrown inside the method.
-    static func create(from response: Response) throws -> EventLoopFuture<Self>
+    static func create(from response: ClientResponse) throws -> EventLoopFuture<Self>
 }
 
 extension FederatedCreatable {
     
-    static func create(from response: Response) throws -> Self {
+    static func create(from response: ClientResponse) throws -> Self {
         return try response.content.decode(Self.self)
     }
     
