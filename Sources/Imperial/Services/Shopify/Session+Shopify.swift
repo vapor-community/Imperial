@@ -8,19 +8,19 @@ extension Session.Keys {
 extension Session {
     
     func shopDomain() throws -> String {
-        guard let domain = self[Keys.domain] else { throw Abort(.notFound) }
+        guard let domain = try? get(Keys.domain, as: String.self) else { throw Abort(.notFound) }
         return domain
     }
     
-    func setShopDomain(_ domain: String) {
-        self[Keys.domain] = domain
+    func setShopDomain(_ domain: String) throws {
+        try set(Keys.domain, to: domain)
     }
     
-    func setNonce(_ nonce: String?) {
-        self[Keys.nonce] = nonce
+    func setNonce(_ nonce: String?) throws {
+        try set(Keys.nonce, to: nonce)
     }
     
     func nonce() -> String? {
-        return self[Keys.nonce]
+        return try? get(Keys.nonce, as: String.self)
     }
 }

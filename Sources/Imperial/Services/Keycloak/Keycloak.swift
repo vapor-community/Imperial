@@ -6,7 +6,7 @@ public class Keycloak: FederatedService {
     
     @discardableResult
     public required init(
-        router: Router,
+        router: Routes,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
         callback: String,

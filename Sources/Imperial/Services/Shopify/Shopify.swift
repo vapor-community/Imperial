@@ -12,7 +12,7 @@ public class Shopify: FederatedService {
     
     public var shopifyRouter: ShopifyRouter
     
-    public required init(router: Router,
+    public required init(router: Routes,
                          authenticate: String,
                          authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
                          callback: String,
