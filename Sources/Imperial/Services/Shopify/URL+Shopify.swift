@@ -9,7 +9,7 @@ extension URL {
 		let queryItems = params.map { $0.name + "=" + $0.value! }
 		let queryString = queryItems.joined(separator: "&")
 		
-        let hmac =  try! HMAC<SHA256>.authenticationCode(for: queryString.bytes, using: .init(data: key.bytes))
+        let hmac = HMAC<SHA256>.authenticationCode(for: queryString.bytes, using: .init(data: key.bytes))
 		return hmac.description
 	}
 

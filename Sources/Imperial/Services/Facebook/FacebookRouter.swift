@@ -45,18 +45,20 @@ public class FacebookRouter: FederatedServiceRouter {
 //        }
         fatalError()
     }
-
+    
     public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-//        return try self.fetchToken(from: request).flatMap { accessToken in
-//            let session = try request.session
-//
-//            session["access_token"] = accessToken
-//            try session.set("access_token_service", to: OAuthService.facebook)
-//
-//            return try self.callbackCompletion(request, accessToken)
-//            }.flatMap(to: Response.self) { response in
-//                return try response.encode(for: request)
-//        }
-        fatalError()
+        return try self.fetchToken(from: request).flatMap { accessToken in
+            let session = request.session
+            do {
+                try session.set("access_token", to: accessToken)
+                try session.set("access_token_service", to: OAuthService.facebook)
+                return try self.callbackCompletion(request, accessToken).map { response in
+//                    return try! response.encode(for: request)
+                    fatalError()
+                }
+            } catch {
+                return request.eventLoop.makeFailedFuture(error)
+            }
+        }
     }
 }
