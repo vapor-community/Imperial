@@ -5,7 +5,7 @@ Imperial is a Federated Login service, allowing you to easily integrate your Vap
 - [Usage Guides](https://github.com/vapor-community/Imperial/blob/master/docs)
 
 ## Attribution
-Author(s): @calebkleveter
+Author(s): @calebkleveter, @rafiki270
 
 ## License
 
