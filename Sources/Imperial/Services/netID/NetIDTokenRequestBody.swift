@@ -1,6 +1,6 @@
 import Vapor
 
-struct NetIDCallbackBody: Content {
+struct NetIDTokenRequestBody: Content {
 
     let code: String
     let redirectURI: String

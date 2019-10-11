@@ -20,7 +20,8 @@ public final class NetID: FederatedService {
             callback: callback,
             scope: scope,
             claims: [],
-            state: nil
+            state: nil,
+            stateVerify: nil
         )
         try self.init(router: router, config: config, completion: completion)
     }
@@ -34,6 +35,7 @@ public final class NetID: FederatedService {
         let netIDRouter = try NetIDRouter(callback: config.callback, completion: completion)
         netIDRouter.claims = config.claims
         netIDRouter.state = config.state
+        netIDRouter.stateVerify = config.stateVerify
         self.router = netIDRouter
         self.tokens = self.router.tokens
         

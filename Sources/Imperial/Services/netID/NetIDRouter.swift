@@ -8,6 +8,7 @@ public class NetIDRouter: FederatedServiceRouter {
     public var scope: [String] = []
     public var claims: [String] = []
     public var state: ((Request) throws -> String)?
+    public var stateVerify: ((Request, String) throws -> Bool)?
     public let callbackURL: String
     public let accessTokenURL: String = "https://broker.netid.de/token"
     
@@ -67,19 +68,34 @@ public class NetIDRouter: FederatedServiceRouter {
     }
     
     public func fetchToken(from request: Request)throws -> Future<String> {
+
+        // if configured
+        // get state from request and verify
+        if let stateVerify = stateVerify {
+            let stateString = try request.query.get(String.self, at: "state")
+            let stateVerification = try stateVerify(request, stateString)
+            guard stateVerification == true else {
+                throw Abort(.forbidden, reason: "OIDC: State from callback request invalid")
+            }
+        }
+
+        // get code from request
         let code: String
         if let queryCode: String = try request.query.get(at: "code") {
             code = queryCode
         } else if let error: String = try request.query.get(at: "error") {
             throw Abort(.badRequest, reason: error)
         } else {
-            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
+            throw Abort(.badRequest, reason: "OIDC: Auth code missing in callback request")
         }
-        
-        let body = NetIDCallbackBody(code: code, redirectURI: self.callbackURL)
+
+        // build token request
+        let body = NetIDTokenRequestBody(code: code, redirectURI: self.callbackURL)
         return try body.encode(using: request).flatMap(to: Response.self) { request in
             guard let url = URL(string: self.accessTokenURL) else {
-                throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
+                throw Abort(.internalServerError,
+                    reason: "Unable to convert String '\(self.accessTokenURL)' to URL"
+                )
             }
             request.http.method = .POST
             request.http.url = url

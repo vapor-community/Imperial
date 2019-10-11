@@ -21,6 +21,9 @@ let config = NetIDConfig(
             throw Abort(.internalServerError)
         }
         return state
+    },
+    stateVerify: { request, state_from_request in
+        return state_from_request == state_created_before
     }
 )
 try Imperial.NetID(router: router, config: config) { request, token in
@@ -39,7 +42,7 @@ The `callback` argument is the URL you will go to when you want to authenticate 
 
 Using `claims` you can specify which information from the end user you want to retrieve.
 
-The optional `state` closure can be used to add a state parameter to the authorization request (see [State Parameter](https://auth0.com/docs/protocols/oauth2/oauth-state)). This parameter is returned on the `callback` uri and will be available on the request object given to the completion closure. If you want to use a state the `state` closure should return a string containing a unique and non-guessable value associated with each authentication. You MUST validate the state parameter in the completion handler.
+The optional `state` closure can be used to add a state parameter to the authorization request (see [State Parameter](https://auth0.com/docs/protocols/oauth2/oauth-state)). This parameter is returned on the `callback` uri and will be available on the request object given to the completion closure. If you want to use a state the `state` closure should return a string containing a unique and non-guessable value associated with each authentication. You can provide an optional closure `stateVerify` to verify the state returned by the provider before an access token gets requested. If you do not provide `stateVerify` you MUST validate the state parameter in the completion handler by yourself.
 
 The completion handler is fired when the callback route is called by the login provider. The callback request and the access token is passed in and a response is returned.
 
