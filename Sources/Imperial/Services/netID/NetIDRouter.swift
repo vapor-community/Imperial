@@ -31,12 +31,12 @@ public class NetIDRouter: FederatedServiceRouter {
     
     private func claimsValue() throws -> String {
         var userinfo = [String: Any]()
-        for claim in claims {
+        for claim in self.claims {
             userinfo[claim] = [ "essential": true ]
         }
-        let claims: [String: Any] = [ "userinfo": userinfo ]
+        let claimsInfo: [String: Any] = [ "userinfo": userinfo ]
         
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: claims) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: claimsInfo) else {
             throw Abort(.badRequest, reason: "Encoding claims to JSON data failed!")
         }
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
