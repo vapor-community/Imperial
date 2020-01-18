@@ -5,11 +5,11 @@ public class Auth0Router: FederatedServiceRouter {
     public let baseURL: String
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
-    public var scope: [String] = []
+    public var scope: [String] = [ "openid", "profile" ]
     public let callbackURL: String
     public let accessTokenURL: String
 
-    private func serviceUrl(path: String) -> String {
+    private func providerUrl(path: String) -> String {
         return self.baseURL.finished(with: "/") + path
     }
     
@@ -23,25 +23,20 @@ public class Auth0Router: FederatedServiceRouter {
     }
     
     public func authURL(_ request: Request) throws -> String {
-        
-//        let urlString = "https://\(self.domain)/authorize?response_type=code&client_id=NNtF2VMDe4SXaZlkpeNSo2Ci6oVw3Y27&redirect_uri=\(authCallbackUrl)&scope=\(scope)&state=xyzABC123&"
         let path="authorize"
-//        let scope = self.scope.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        let scopes = self.scope.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
 
         let params=[
             "response_type=code",
             "client_id=\(self.tokens.clientID)",
-//            "redirect_uri=\("")",
-//            "scope=\(scope)",
-            "scope=openid"
+            "redirect_uri=\(self.callbackURL)",
+//            "scope=\(scopes)",
+            "scope=openid%20profile"
 //            "state=xyzABC123" // TODO: to prevent CSRF attacks
         ]
 
-        return self.serviceUrl(path: path + "?" + params.joined(separator: "&"))
-        
-//        return "\(Auth0Router.baseURL.finished(with: "/"))login/oauth/authorize?" +
-//            "scope=\(scope.joined(separator: "%20"))&" +
-//            "client_id=\(self.tokens.clientID)"
+        let rtn = self.providerUrl(path: path + "?" + params.joined(separator: "&"))
+        return rtn
     }
     
     public func fetchToken(from request: Request)throws -> Future<String> {
@@ -54,7 +49,10 @@ public class Auth0Router: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let body = Auth0CallbackBody(clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, code: code)
+        let body = Auth0CallbackBody(clientId: self.tokens.clientID,
+                                     clientSecret: self.tokens.clientSecret,
+                                     code: code,
+                                     redirectURI: self.callbackURL)
         
         return try body.encode(using: request).flatMap(to: Response.self) { request in
             guard let url = URL(string: self.accessTokenURL) else {
@@ -62,6 +60,15 @@ public class Auth0Router: FederatedServiceRouter {
             }
             request.http.method = .POST
             request.http.url = url
+            request.http.contentType = .urlEncodedForm
+//            request.http.contentType = .init(type: "application", subType: "x-www-form-urlencoded")
+
+            print("request url: \(request.http.method) \(url.absoluteString)")
+            print("request headers:")
+            print(request.http.headers)
+            print("request body:")
+            print(request.http.body)
+            
             return try request.make(Client.self).send(request)
         }.flatMap(to: String.self) { response in
             return response.content.get(String.self, at: ["access_token"])
@@ -82,3 +89,28 @@ public class Auth0Router: FederatedServiceRouter {
         }
     }
 }
+/*
+extension Session.Keys {
+    static let idToken = "id_token"
+}
+
+extension Session {
+    /// Gets the access token from the session.
+    ///
+    /// - Returns: The access token stored with the `access_token` key.
+    /// - Throws: `Abort.unauthorized` if no access token exists.m
+    public func idToken()throws -> String {
+        guard let token = self[Keys.idToken] else {
+            throw Abort(.unauthorized, reason: "User currently not authenticated")
+        }
+        return token
+    }
+    
+    /// Sets the access token on the session.
+    ///
+    /// - Parameter token: the access token to store on the session
+    public func setIdToken(_ token: String) {
+        self[Keys.idToken] = token
+    }
+}
+*/
