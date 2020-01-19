@@ -122,3 +122,106 @@ The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddle
 let protected = router.grouped(ImperialMiddleware(redirect: "/"))
 ```
 
+## Supporting SSL
+
+Vapor 3 does not natively support SSL.  To get by for local testing:
+
+Generate certificates for your localhost by:
+
+ - Installing [mkcert](https://github.com/FiloSottile/mkcert)
+ - Run `mkcert -install`
+ - Run `mkcert localhost 127.0.0.1 ::1`
+
+Then create an nginx.conf file like so:
+
+```
+events {
+  worker_connections  512;  ## Default: 1024
+}
+
+http {
+    server {
+        listen      443 ssl;
+        server_name localhost;
+
+        ssl_certificate        /path/to/localhost.pem;
+        ssl_certificate_key    /path/to/localhost-key.pem;
+        #ssl_client_certificate /etc/ssl/certs/ca.crt;
+        #ssl_verify_client      optional;
+
+        location / {
+            proxy_pass http://localhost:8080/;
+        }
+    }
+}
+```
+
+Then run nginx like so:
+
+```sh
+# nginx -c $(pwd)/nginx.conf
+```
+
+nginx will now be running and listening to https (port 443) requests and
+forwarding to your localhost port 8080, which your vapor app is listening on.
+
+You can stop nginx by executing:
+
+```sh
+# killall nginx
+```
+
+## Authenticated Routes
+
+You can require authenticated routes by adding these lines to your `routes()`:
+
+```swift
+    let protected = router.grouped(ImperialMiddleware())
+
+    protected.get("members_only") { req -> Future<View> in
+        return try req.view().render("hello")
+    }
+```
+
+This will ensure that the /members_only path is accessible to authenticated users.  If an unauthenticated user hits this route, they will get a 401 error with a message like the following:
+
+```text
+    {"error":true,"reason":"User currently not authenticated"}
+```
+
+## Authenticated + Unauthenticated Routes
+
+To allow a route to support both authenticated and unauthenticated users, you can add these lines to your `routes()`:
+
+```swift
+    router.get { req -> Future<View> in
+        let view: String
+        do {
+            guard try req.accessToken() != "" else {
+                throw Abort(.unauthorized, reason: "User currently not authenticated")
+            }
+            view = "welcome-auth"
+        } catch let error as Abort where error.status == .unauthorized {
+            view = "welcome"
+        }
+        return try req.view().render(view)
+    }
+```
+
+This creates a route for "/".  If the access token is available (and not empty), it will present the "welcome-auth" view.  And if not available, it will present the "welcome" view.
+
+## Logout
+
+To support logout, you can create a route like so:
+
+```swift
+    let auth0 = try Auth0Auth()
+    router.get("/logout") { req -> Response in
+        let return_url = "https://localhost/"
+        let logout_url = "https://\(auth0.domain)/v2/logout?client_id=\(auth0.clientID)&returnTo=\(return_url)"
+        try req.destroySession()
+        return req.redirect(to: logout_url)
+    }
+```
+
+This route must exist on an unauthenticated route.  This is because the destroySession call will eliminate the session.  If you attempt to do this on a protected route, you will get an "unauthorized" error rather than the redirect.
