@@ -82,11 +82,13 @@ Now, all we need to do is register the Auth0 service in your main router method,
 
 
 ```swift
-try router.oAuth(from: Auth0.self, authenticate: "login", callback: "http://localhost/login/callback") { (request, token) in
+try router.oAuth(from: Auth0.self, authenticate: "login", callback: "http://localhost/login/callback", scope: ["profile"]) { (request, token) in
     print(token)
     return Future(request.redirect(to: "/"))
 }
 ```
+
+The `profile` scope will allow you to get more profile information about the user via the resulting access token.  Auth0 requires the `openid` scope, which will automatically be included for you.
 
 If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
 
