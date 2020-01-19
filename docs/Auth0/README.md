@@ -227,3 +227,11 @@ To support logout, you can create a route like so:
 ```
 
 This route must exist on an unauthenticated route.  This is because the destroySession call will eliminate the session.  If you attempt to do this on a protected route, you will get an "unauthorized" error rather than the redirect.
+
+### References
+
+Some potentially useful references:
+
+* [Auth0 Login Using Authorization Code Flow](https://auth0.com/docs/flows/guides/auth-code/add-login-auth-code)
+* [Auth0 Troubleshooting Guide](https://auth0.com/docs/troubleshoot/guides/check-login-logout-issues)
+* [nginx full example configuration](https://www.nginx.com/resources/wiki/start/topics/examples/full/)
