@@ -5,7 +5,8 @@ public class Auth0Router: FederatedServiceRouter {
     public let baseURL: String
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
-    public var scope: [String] = [ "openid", "profile" ]
+    public var scope: [String] = [ ]
+    public var requiredScopes = [ "openid" ]
     public let callbackURL: String
     public let accessTokenURL: String
 
@@ -24,17 +25,16 @@ public class Auth0Router: FederatedServiceRouter {
     
     public func authURL(_ request: Request) throws -> String {
         let path="authorize"
-        let scopes = self.scope.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        let scopes = self.scope + self.requiredScopes
+        let scopeString = scopes.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
 
         let params=[
             "response_type=code",
             "client_id=\(self.tokens.clientID)",
             "redirect_uri=\(self.callbackURL)",
-//            "scope=\(scopes)",
-            "scope=openid%20profile"
+            "scope=\(scopeString)",
 //            "state=xyzABC123" // TODO: to prevent CSRF attacks
         ]
-
         let rtn = self.providerUrl(path: path + "?" + params.joined(separator: "&"))
         return rtn
     }
