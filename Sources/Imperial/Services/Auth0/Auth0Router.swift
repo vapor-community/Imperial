@@ -61,7 +61,6 @@ public class Auth0Router: FederatedServiceRouter {
             request.http.method = .POST
             request.http.url = url
             request.http.contentType = .urlEncodedForm
-//            request.http.contentType = .init(type: "application", subType: "x-www-form-urlencoded")
 
             print("request url: \(request.http.method) \(url.absoluteString)")
             print("request headers:")
@@ -89,28 +88,3 @@ public class Auth0Router: FederatedServiceRouter {
         }
     }
 }
-/*
-extension Session.Keys {
-    static let idToken = "id_token"
-}
-
-extension Session {
-    /// Gets the access token from the session.
-    ///
-    /// - Returns: The access token stored with the `access_token` key.
-    /// - Throws: `Abort.unauthorized` if no access token exists.m
-    public func idToken()throws -> String {
-        guard let token = self[Keys.idToken] else {
-            throw Abort(.unauthorized, reason: "User currently not authenticated")
-        }
-        return token
-    }
-    
-    /// Sets the access token on the session.
-    ///
-    /// - Parameter token: the access token to store on the session
-    public func setIdToken(_ token: String) {
-        self[Keys.idToken] = token
-    }
-}
-*/
