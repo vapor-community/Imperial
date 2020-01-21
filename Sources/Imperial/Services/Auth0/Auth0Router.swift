@@ -25,16 +25,19 @@ public class Auth0Router: FederatedServiceRouter {
     
     public func authURL(_ request: Request) throws -> String {
         let path="authorize"
-        let scopes = self.scope + self.requiredScopes
-        let scopeString = scopes.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
 
-        let params=[
+        var params=[
             "response_type=code",
             "client_id=\(self.tokens.clientID)",
             "redirect_uri=\(self.callbackURL)",
-            "scope=\(scopeString)",
-//            "state=xyzABC123" // TODO: to prevent CSRF attacks
         ]
+
+        let allScopes = self.scope + self.requiredScopes
+        let scopeString = allScopes.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+        if let scopes = scopeString {
+            params += [ "scope=\(scopes)" ]
+        }
+
         let rtn = self.providerUrl(path: path + "?" + params.joined(separator: "&"))
         return rtn
     }
@@ -62,16 +65,9 @@ public class Auth0Router: FederatedServiceRouter {
             request.http.url = url
             request.http.contentType = .urlEncodedForm
 
-            print("request url: \(request.http.method) \(url.absoluteString)")
-            print("request headers:")
-            print(request.http.headers)
-            print("request body:")
-            print(request.http.body)
-            
             return try request.make(Client.self).send(request)
         }.flatMap(to: String.self) { response in
             return response.content.get(String.self, at: ["access_token"])
-            // TODO: refresh_token, id_token, token_type ?
         }
     }
     

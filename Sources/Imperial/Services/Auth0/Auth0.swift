@@ -1,7 +1,5 @@
 import Vapor
 
-// https://auth0.com/docs/flows/guides/auth-code/add-login-auth-code
-
 public class Auth0: FederatedService {
     public var tokens: FederatedServiceTokens
     public var router: FederatedServiceRouter
