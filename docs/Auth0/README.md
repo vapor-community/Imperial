@@ -28,26 +28,20 @@ Now that we have the necessary information for Auth0, we will setup Imperial wit
 Add the following line of code to your `dependencies` array in your package manifest file:
 
 ```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.13.1")
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.14.0")
 ```
-
-**Note:** There might be a later version of the package available, in which case you will want to use that version.
 
 You will also need to add the package as a dependency for the targets you will be using it in:
 
 ```swift
-.target(name: "App", dependencies: ["Vapor", "Imperial"],
-               exclude: [
-                   "Config",
-                   "Database",
-                   "Public",
-                   "Resources"
-               ]),
+.target(name: "App", dependencies: ["Vapor", "Imperial"]),
 ```
 
-Then run `vapor update` or `swift package update`. Make sure you regenerate your Xcode project afterwards if you are using Xcode.
+If using Xcode 11, then updating the Packages.swift is sufficient.  However, if
+you're using the generated xcodeproj file, then run `vapor update` or `swift
+package update` to regenerate the xcodeproj file.
 
-Now that Imperial is installed, we need to add `SessionMiddleware` to our middleware configuration:
+If not already configured, be sure to add `SessionMiddleware` to our middleware configuration:
 
 ```swift
 public func configure(
@@ -126,7 +120,8 @@ let protected = router.grouped(ImperialMiddleware(redirect: "/"))
 
 ## Supporting SSL
 
-Vapor 3 does not natively support SSL.  To get by for local testing:
+Auth0 requires https for the Login URI.  However, Vapor 3 does not natively
+support SSL.  To get by for local testing:
 
 Generate certificates for your localhost by:
 
