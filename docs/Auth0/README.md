@@ -4,7 +4,17 @@ We need to start by creating a regular web application so Auth0 can identify us.
 
 Select '+ Create Application'.  Provide a name for your app and select 'Regular Web Applications'.  Then select 'Create'.
 
+![Create Application Screenshot](Applications-Marked.png)
+
+
 Go to the 'Settings' tab for your application to find your Domain, Client ID, and Client Secret.
+
+![Setting-1](SamplePortal-Settings-1.png)
+
+You'll want to configure this is a "Regular Web Application" using "POST" for the Token Endpoint Authentication Method.
+
+![Settings-2](SamplePortal-Settings-2.png)
+
 
 Be sure to configure the proper settings for:
  - Allowed Callback URLs
@@ -22,6 +32,11 @@ If testing on your local system, you can start with the following settings:
     - http://localhost:8080/, https://localhost/, https://127.0.0.1/
  - Allowed Logout URLs:
     - http://localhost:8080/, https://localhost/, https://127.0.0.1/
+
+![Settings-3](SamplePortal-Settings-3.png)
+
+![Settings-4](SamplePortal-Settings-4.png)
+
 
 Now that we have the necessary information for Auth0, we will setup Imperial with our application.
 
