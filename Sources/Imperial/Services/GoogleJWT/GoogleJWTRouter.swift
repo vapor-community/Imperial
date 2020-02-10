@@ -65,8 +65,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         
         let pk = try RSAKey.private(pem: self.tokens.clientSecret.bytes)
         let signer = JWTSigner.rs256(key: pk)
-        let jwt = JWT<GoogleJWTPayload>(payload: payload)
-        let jwtData = try jwt.sign(using: signer)
-        return String(data: Data(jwtData), encoding: .utf8)!
+        let jwtData = try signer.sign(payload)
+        return jwtData
     }
 }
