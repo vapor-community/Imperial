@@ -1,6 +1,6 @@
 import Vapor
 
-extension Routes {
+extension RoutesBuilder {
     
     /// Registers an OAuth provider's router with
     /// the parent route.
@@ -23,7 +23,7 @@ extension Routes {
         completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
     ) throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(
-            router: self,
+            routes: self,
             authenticate: authUrl,
             authenticateCallback: authenticateCallback,
             callback: callback,

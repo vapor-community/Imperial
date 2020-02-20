@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-extension Container {
+extension Request {
     
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
     ///
@@ -24,11 +24,7 @@ extension Container {
 //        }
         fatalError()
     }
-    
-}
-
-extension Request {
-    
+	
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
     ///
     /// - Parameters:

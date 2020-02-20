@@ -23,30 +23,36 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     }
     
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
-//        let headers: HTTPHeaders = ["Content-Type": MediaType.urlEncodedForm.description]
-//        let token = try self.jwt()
-//        let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(token)"
-//
-//        return try request.make(Client.self).post(self.accessTokenURL, headers: headers) { $0.body = HTTPBody(string: body) }.flatMap(to: GoogleJWTResponse.self) { response in
-//            if response.status == .ok {
-//                return try JSONDecoder().decode(GoogleJWTResponse.self, from: response, maxSize: 65_536, on: request)
-//            } else { throw Abort(.internalServerError) }
-//        }.map { $0.accessToken }
-        fatalError()
+        let headers: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
+        let token = try self.jwt()
+        let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(token)"
+
+		let url = URI(string: self.accessTokenURL)
+
+		return body.encodeResponse(for: request).map {
+			$0.body
+		}.flatMap { body in
+			return request.client.post(url, headers: headers, beforeSend: { client in
+				client.body = body.buffer
+			})
+		}.flatMapThrowing { response in
+			return try response.content.get(GoogleJWTResponse.self)
+		}.map { $0.accessToken }
     }
     
     public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-//        return try self.fetchToken(from: request).flatMap { token in
-//            let session = try request.session
-//
-//            session.setAccessToken(token)
-//            try session.set("access_token_service", to: OAuthService.googleJWT)
-//
-//            return try self.callbackCompletion(request, token)
-//        }.flatMap(to: Response.self) { body in
-//            return try body.encode(for: request)
-//        }
-        fatalError()
+        return try self.fetchToken(from: request).flatMap { accessToken in
+            let session = request.session
+            do {
+				try session.setAccessToken(accessToken)
+                try session.set("access_token_service", to: OAuthService.googleJWT)
+                return try self.callbackCompletion(request, accessToken).flatMap { response in
+					return response.encodeResponse(for: request)
+                }
+            } catch {
+                return request.eventLoop.makeFailedFuture(error)
+            }
+        }
     }
     
     public func authenticate(_ request: Request) throws -> EventLoopFuture<Response> {
