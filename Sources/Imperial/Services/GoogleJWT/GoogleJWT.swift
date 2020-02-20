@@ -6,7 +6,7 @@ public class GoogleJWT: FederatedService {
     
     @discardableResult
     public required init(
-        router: Routes,
+        routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
         callback: String,
@@ -17,7 +17,7 @@ public class GoogleJWT: FederatedService {
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
+        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
         OAuthService.register(.google)
     }
