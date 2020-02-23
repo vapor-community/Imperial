@@ -32,12 +32,13 @@ public class GoogleRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
 
-        let body = GoogleCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
+        let headers: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
+		let body = GoogleCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
 		let url = URI(string: self.accessTokenURL)
         return body.encodeResponse(for: request).map {
 			$0.body
 		}.flatMap { body in
-			return request.client.post(url, beforeSend: { client in
+			return request.client.post(url, headers: headers, beforeSend: { client in
 				client.body = body.buffer
 			})
         }.flatMapThrowing { response in
