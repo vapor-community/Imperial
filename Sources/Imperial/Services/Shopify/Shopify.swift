@@ -12,7 +12,7 @@ public class Shopify: FederatedService {
     
     public var shopifyRouter: ShopifyRouter
     
-    public required init(router: Routes,
+    public required init(routes: RoutesBuilder,
                          authenticate: String,
                          authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
                          callback: String,
@@ -22,6 +22,6 @@ public class Shopify: FederatedService {
         self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
         self.shopifyRouter.scope = scope
         
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
+        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }

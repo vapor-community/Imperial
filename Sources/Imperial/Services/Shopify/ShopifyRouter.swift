@@ -14,14 +14,13 @@ public class ShopifyRouter: FederatedServiceRouter {
     }
     
     public func authURL(_ request: Request) throws -> String {
-//        guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
-//
-//        let nonce = String(UUID().uuidString.prefix(6))
-//        try request.session.setNonce(nonce)
-//
-//        accessTokenURL = try accessTokenURLFrom(shop)
-//        return try authURLFrom(shop, nonce: nonce).absoluteString
-        fatalError()
+        guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
+
+        let nonce = String(UUID().uuidString.prefix(6))
+        try request.session.setNonce(nonce)
+
+        accessTokenURL = try accessTokenURLFrom(shop)
+        return try authURLFrom(shop, nonce: nonce).absoluteString
     }
     
     /// Gets an access token from an OAuth provider.
@@ -29,32 +28,31 @@ public class ShopifyRouter: FederatedServiceRouter {
     ///
     /// - Parameters: request: The request for the route this method is called in.
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
-//        // Extract the parameters to verify
-//        guard let code = request.query[String.self, at: "code"],
-//            let shop = request.query[String.self, at: "shop"],
-//            let hmac = request.query[String.self, at: "hmac"] else { throw Abort(.badRequest) }
-//
-//        // Verify the request
-//        if let state = request.query[String.self, at: "state"] {
-//            let nonce = try request.session.nonce()
-//            guard state == nonce else { throw Abort(.badRequest) }
-//        }
-//        guard URL(string: shop)?.isValidShopifyDomain() == true else { throw Abort(.badRequest) }
-//        guard request.url.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
-//
-//        // exchange code for access token
-//        let body = ShopifyCallbackBody(code: code, clientId: tokens.clientID, clientSecret: tokens.clientSecret)
-//        return try body.encode(using: request).flatMap(to: Response.self) { req in
-//            guard let url = URL(string: self.accessTokenURL) else {
-//                throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
-//            }
-//            req.method = .POST
-//            req.url = url
-//            return try request.make(Client.self).send(req)
-//        }.flatMap(to: String.self) { response in
-//            return response.content.get(String.self, at: ["access_token"])
-//        }
-        fatalError()
+        // Extract the parameters to verify
+        guard let code = request.query[String.self, at: "code"],
+            let shop = request.query[String.self, at: "shop"],
+            let hmac = request.query[String.self, at: "hmac"] else { throw Abort(.badRequest) }
+
+        // Verify the request
+        if let state = request.query[String.self, at: "state"] {
+            let nonce = request.session.nonce()
+            guard state == nonce else { throw Abort(.badRequest) }
+        }
+        guard URL(string: shop)?.isValidShopifyDomain() == true else { throw Abort(.badRequest) }
+		guard URL(string: request.url.string)?.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
+
+        // exchange code for access token
+        let body = ShopifyCallbackBody(code: code, clientId: tokens.clientID, clientSecret: tokens.clientSecret)
+		let url = URI(string: self.accessTokenURL)
+		return body.encodeResponse(for: request).map {
+			$0.body
+		}.flatMap { body in
+			return request.client.post(url, beforeSend: { client in
+				client.body = body.buffer
+			})
+        }.flatMapThrowing { response in
+			return try response.content.get(String.self, at: ["access_token"])
+		}
     }
     
     /// The route that the OAuth provider calls when the user has benn authenticated.
@@ -63,20 +61,22 @@ public class ShopifyRouter: FederatedServiceRouter {
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: Any errors that occur in the implementation code.
     public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-//        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
-//            guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
-//
-//            let session = try request.session
-//            session.setAccessToken(accessToken)
-//            session.setShopDomain(domain)
-//            session.setNonce(nil)
-//
-//            return try self.callbackCompletion(request, accessToken)
-//            }.flatMap(to: Response.self) { response in
-//                return try response.encode(for: request)
-//        }
-        fatalError()
-    }
+        return try self.fetchToken(from: request).flatMap { accessToken in
+            let session = request.session
+            do {
+				guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
+
+				try session.setAccessToken(accessToken)
+				try session.setShopDomain(domain)
+				try session.setNonce(nil)
+                return try self.callbackCompletion(request, accessToken).flatMap { response in
+					return response.encodeResponse(for: request)
+                }
+            } catch {
+                return request.eventLoop.makeFailedFuture(error)
+            }
+        }
+	}
     
     private func authURLFrom(_ shop: String, nonce: String) throws -> URL {
         return URL(string: "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" +
