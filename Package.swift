@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Imperial",
     platforms: [
-       .macOS(.v10_14)
+       .macOS(.v10_15)
     ],
     products: [
         .library(name: "Imperial", targets: ["Imperial"]),
