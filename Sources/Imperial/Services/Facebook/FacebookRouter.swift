@@ -49,10 +49,10 @@ public class FacebookRouter: FederatedServiceRouter {
         return try self.fetchToken(from: request).flatMap { accessToken in
             let session = request.session
             do {
-				try session.setAccessToken(accessToken)
+                try session.setAccessToken(accessToken)
                 try session.set("access_token_service", to: OAuthService.facebook)
                 return try self.callbackCompletion(request, accessToken).flatMap { response in
-					return response.encodeResponse(for: request)
+                    return response.encodeResponse(for: request)
                 }
             } catch {
                 return request.eventLoop.makeFailedFuture(error)
