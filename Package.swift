@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "Imperial", targets: ["Imperial"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0-alpha.3"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0-beta.3.25"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0-alpha.1.1")
     ],
     targets: [
