@@ -1,5 +1,10 @@
 import Foundation
+#if canImport(CryptoKit)
+import CryptoKit
+#else
 import OpenCrypto
+#endif
+
 
 extension URL {
 	
