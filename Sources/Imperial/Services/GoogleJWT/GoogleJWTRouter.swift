@@ -1,9 +1,5 @@
 import Foundation
-#if canImport(CryptoKit)
-import CryptoKit
-#else
-import OpenCrypto
-#endif
+import Crypto
 import Vapor
 import JWTKit
 
