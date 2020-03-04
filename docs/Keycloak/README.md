@@ -47,7 +47,7 @@ public func configure(
 	// Other Middleware...
     middlewares.use(SessionsMiddleware.self)
     services.register(middlewares)
-    
+
 	//...
 }
 
@@ -61,7 +61,7 @@ Now, when you run your app and you are using `FluentSQLite`, you will probably g
 
 Just pick one of the listed suggestions and place it at the top of your `configure` function. If you want your data to persist across server reboots, use `config.prefer(FluentCache<SQLiteDatabase>.self, for: KeyedCache.self)`
 
-Imperial uses environment variables to access the client ID and secret to authenticate with Keycloak. To allow Imperial to access these tokens, you will create these variables, called `KEYCLOAK_CLIENT_ID`, `KEYCLOAK_CLIENT_SECRET`, `KEYCLOAK_ACCESS_TOKEN_URL` and `KEYCLOAK_AUTH_URL`, with the client ID and secret assigned to them. Imperial can then access these vars and use there values to authenticate with Keycloak.
+Imperial uses environment variables to access the client ID and secret to authenticate with Keycloak. To allow Imperial to access these tokens, you will create these variables, called `KEYCLOAK_CLIENT_ID`, `KEYCLOAK_CLIENT_SECRET`, `KEYCLOAK_ACCESS_TOKEN_URL` and `KEYCLOAK_AUTH_URL`, with the client ID and secret assigned to them. Imperial can then access these vars and use their values to authenticate with Keycloak.
 
 In many case, `KEYCLOAK_ACCESS_TOKEN_URL` have the current patern `http://localhost:8080/auth/realms/{realmName]/protocol/openid-connect/token` (but may vary if you use a proxy). And `KEYCLOAK_AUTH_URL` is generally `http://localhost:8080/auth/realms/{realmName}/protocol/openid-connect`.
 
