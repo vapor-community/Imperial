@@ -1,21 +1,13 @@
-# Federated Login with Google
+# Federated Login with Microsoft
 
-We need to start by creating a client ID and secret so Google can identify us. Go to the [Credentials tab][1] of the Google Developer's Console on the API page.
+We need to start by registering an app in [Azure Active Directory admin center][1] as described in [this tutorial][2], creating a client ID and secret so Microsoft can identify us. Make sure to save the Client ID and Client secret.
 
-Select 'Create credentials' > 'OAuth client ID':
-
-![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/create-oauth-credentials.png?raw=true)
-
-Select 'Web application'. The name that you enter should be the name of your project. Under the 'Restrictions' section, in 'Authorized redirect URIs', you will need to add a URI for Google to redirect to after the authentication is complete. If you are developing locally, it will be `http://localhost:8080/...` or `https...` if you have configured SSL:
-
-![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/configure-app-creds.png?raw=true)
-
-Now that we have the necessary information for Google, we will setup Imperial with our application.
+Now that we have the necessary information for Microsoft, we will setup Imperial with our application.
 
 Add the following line of code to your `dependencies` array in your package manifest file:
 
 ```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.7.0")
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "0.14.0")
 ```
 
 **Note:** There might be a later version of the package available, in which case you will want to use that version.
@@ -24,12 +16,13 @@ You will also need to add the package as a dependency for the targets you will b
 
 ```swift
 .target(name: "App", dependencies: ["Vapor", "Imperial"],
-               exclude: [
-                   "Config",
-                   "Database",
-                   "Public",
-                   "Resources"
-               ]),
+    exclude: [
+        "Config",
+        "Database",
+        "Public",
+        "Resources"
+    ]
+),
 ```
 
 Then run `vapor update` or `swift package update`. Make sure you regenerate your Xcode project afterwards if you are using Xcode.
@@ -49,7 +42,7 @@ public func configure(
 	// Other Middleware...
     middlewares.use(SessionsMiddleware.self)
     services.register(middlewares)
-
+    
 	//...
 }
 
@@ -63,12 +56,12 @@ Now, when you run your app and you are using `FluentSQLite`, you will probably g
 
 Just pick one of the listed suggestions and place it at the top of your `configure` function. If you want your data to persist across server reboots, use `config.prefer(FluentCache<SQLiteDatabase>.self, for: KeyedCache.self)`
 
-Imperial uses environment variables to access the client ID and secret to authenticate with Google. To allow Imperial to access these tokens, you will create these variables, called `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, with the client ID and secret assigned to them. Imperial can then access these vars and use their values to authenticate with Google.
+Imperial uses environment variables to access the client ID and secret to authenticate with Microsoft. To allow Imperial to access these tokens, you will create these variables, called `MICROSOFT_CLIENT_ID` and `MICROSOFT_CLIENT_SECRET`, with the client ID and secret assigned to them. Imperial can then access these vars and use there values to authenticate with Microsoft.
 
-Now, all we need to do is register the Google service in your main router method, like this:
+Now, all we need to do is register the Microsoft service in your main router method, like this:
 
 ```swift
-try router.oAuth(from: Google.self, authenticate: "google", callback: "http://localhost:8080/google-complete") { (request, token) in
+try router.oAuth(from: Microsoft.self, authenticate: "microsoft", callback: "http://localhost:8080/microsoft-complete") { (request, token) in
     print(token)
     return Future(request.redirect(to: "/"))
 }
@@ -77,12 +70,12 @@ try router.oAuth(from: Google.self, authenticate: "google", callback: "http://lo
 If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
 
 ```swift
-try router.oAuth(from: Google.self, authenticate: "google", callback: "http://localhost:8080/google-complete", redirect: "/")
+try router.oAuth(from: Microsoft.self, authenticate: "microsoft", callback: "http://localhost:8080/microsoft-complete", redirect: "/")
 ```
 
-The `callback` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Google:
+The `callback` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered as `Redirect URI`when you registered your application on Microsoft Azure Active Directory admin center:
 
-![The callback path for Google OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/Google/callback-uri.png?raw=true)
+![The callback path for Microsoft OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/Microsoft/callback-uri.png?raw=true)
 
 The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 
@@ -110,4 +103,5 @@ The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddle
 let protected = router.grouped(ImperialMiddleware(redirect: "/"))
 ```
 
-[1]: https://console.developers.google.com/apis/credentials
+[1]: https://aad.portal.azure.com/
+[2]: https://docs.microsoft.com/en-us/graph/tutorials/php?tutorial-step=2

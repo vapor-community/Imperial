@@ -43,7 +43,7 @@ public func configure(
 	// Other Middleware...
     middlewares.use(SessionsMiddleware.self)
     services.register(middlewares)
-    
+
 	//...
 }
 
@@ -57,7 +57,7 @@ Now, when you run your app and you are using `FluentSQLite`, you will probably g
 
 Just pick one of the listed suggestions and place it at the top of your `configure` function. If you want your data to persist across server reboots, use `config.prefer(FluentCache<SQLiteDatabase>.self, for: KeyedCache.self)`
 
-Imperial uses environment variables to access the client ID and secret to authenticate with Shopify. To allow Imperial to access these tokens, you will create these variables, called `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET`, with the *API key* and *API secret key* found in the App credentials in the Partner Dashboard. Imperial can then access these vars and use there values to authenticate with Shopify.
+Imperial uses environment variables to access the client ID and secret to authenticate with Shopify. To allow Imperial to access these tokens, you will create these variables, called `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET`, with the *API key* and *API secret key* found in the App credentials in the Partner Dashboard. Imperial can then access these vars and use their values to authenticate with Shopify.
 
 ![](configure-app-creds.png)
 
@@ -66,10 +66,10 @@ Now, all we need to do is register the Shopify service in your main router metho
 ```swift
 import Imperial
 
-try router.oAuth(from: Shopify.self, 
-                 authenticate: "login-shopify", 
-                 callback: "http://localhost:8080/auth", 
-                 scope: ["read_products", "read_orders"], 
+try router.oAuth(from: Shopify.self,
+                 authenticate: "login-shopify",
+                 callback: "http://localhost:8080/auth",
+                 scope: ["read_products", "read_orders"],
                  redirect: "/")
 ```
 
