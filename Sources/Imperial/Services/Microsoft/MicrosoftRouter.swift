@@ -3,14 +3,14 @@ import Foundation
 
 public class MicrosoftRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
     
     public required init(
         callback: String,
-        completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
@@ -27,7 +27,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
             + "prompt=consent"
     }
     
-    public func fetchToken(from request: Request)throws -> Future<String> {
+    public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
         let code: String
 
         if let queryCode: String = try request.query.get(at: "code") {
@@ -45,34 +45,32 @@ public class MicrosoftRouter: FederatedServiceRouter {
             redirectURI: self.callbackURL,
             scope: scope.joined(separator: "%20")
         )
+		
+		let url = URI(string: self.accessTokenURL)
+		return body.encodeResponse(for: request).map {
+			$0.body
+		}.flatMap { body in
+			return request.client.post(url, beforeSend: { client in
+				client.body = body.buffer
+			})
+        }.flatMapThrowing { response in
+			return try response.content.get(String.self, at: ["access_token"])
+		}
 
-        return try body.encode(using: request).flatMap(to: Response.self) { request in
-            guard let url = URL(string: self.accessTokenURL) else {
-                throw Abort(
-                    .internalServerError,
-                    reason: "Unable to convert String '\(self.accessTokenURL)' to URL"
-                )
-            }
-
-            request.http.method = .POST
-            request.http.url = url
-
-            return try request.make(Client.self).send(request)
-        }.flatMap(to: String.self) { response in
-            return response.content.get(String.self, at: ["access_token"])
-        }
     }
     
-    public func callback(_ request: Request)throws -> Future<Response> {
-        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
-            let session = try request.session()
-            
-            session.setAccessToken(accessToken)
-            try session.set("access_token_service", to: OAuthService.microsoft)
-            
-            return try self.callbackCompletion(request, accessToken)
-        }.flatMap(to: Response.self) { response in
-            return try response.encode(for: request)
-        }
+    public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
+		return try self.fetchToken(from: request).flatMap { accessToken in
+			  let session = request.session
+			  do {
+				  try session.setAccessToken(accessToken)
+				  try session.set("access_token_service", to: OAuthService.microsoft)
+				  return try self.callbackCompletion(request, accessToken).flatMap { response in
+					  return response.encodeResponse(for: request)
+				  }
+			  } catch {
+				  return request.eventLoop.makeFailedFuture(error)
+			  }
+		  }
     }
 }

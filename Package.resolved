@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/async-kit.git",
         "state": {
           "branch": null,
-          "revision": "8e9d41f31848809732661563b334c1bb1c93cf1a",
-          "version": "1.0.0-beta.2.2"
+          "revision": "094dad1142e4e272a328ab44edd39730f246fb3e",
+          "version": "1.0.0-rc.1"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/console-kit.git",
         "state": {
           "branch": null,
-          "revision": "54585747b6a5c435b7852c026028710fd7a94bec",
-          "version": "4.0.0-beta.2.1"
+          "revision": "de99d83c9f3c298371002729cc0601e4b5d9e0c9",
+          "version": "4.0.0-rc.1"
         }
       },
       {
@@ -38,39 +38,30 @@
         }
       },
       {
-        "package": "multipart-kit",
-        "repositoryURL": "https://github.com/vapor/multipart-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "b41a49b5756ac3fbf8f2b07228a7e75f9b60731a",
-          "version": "4.0.0-beta.2"
-        }
-      },
-      {
-        "package": "open-crypto",
-        "repositoryURL": "https://github.com/vapor/open-crypto.git",
-        "state": {
-          "branch": null,
-          "revision": "90c49bc68ee6d992fa13cf84ca8fc54b97eaf4cc",
-          "version": "4.0.0-beta.2"
-        }
-      },
-      {
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {
           "branch": null,
-          "revision": "6a8a1636ad26494b03f3c72d74a420fc3a44949c",
-          "version": "4.0.0-beta.3"
+          "revision": "dbc3eafdbe243e9a46eeb6fd7d99266bee52f89f",
+          "version": "4.0.0-rc.1"
         }
       },
       {
         "package": "swift-backtrace",
-        "repositoryURL": "https://github.com/ianpartridge/swift-backtrace.git",
+        "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
           "branch": null,
           "revision": "eaf2cef011c0c23d1701aa60b364def8015dc3c7",
           "version": "1.1.1"
+        }
+      },
+      {
+        "package": "swift-crypto",
+        "repositoryURL": "https://github.com/apple/swift-crypto.git",
+        "state": {
+          "branch": null,
+          "revision": "9be4a93a76d4b80105044747b35d456de7289c87",
+          "version": "1.0.0"
         }
       },
       {
@@ -132,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "a9e417a0040a32368c49a0af14266e02d963779b",
-          "version": "4.0.0-beta.3.12"
+          "revision": "46c3db00c5eef7dd908855d5cf2b9cb48f4e882c",
+          "version": "4.0.0-rc.1.3"
         }
       },
       {
@@ -141,8 +132,8 @@
         "repositoryURL": "https://github.com/vapor/websocket-kit.git",
         "state": {
           "branch": null,
-          "revision": "766b4b0005a158550c345671c8e7cea42af104b6",
-          "version": "2.0.0-beta.2.3"
+          "revision": "aac462481bcd3039d5db9a0fbe7f4e47eefe2295",
+          "version": "2.0.0-rc.1"
         }
       }
     ]

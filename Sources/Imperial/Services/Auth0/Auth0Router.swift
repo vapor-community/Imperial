@@ -4,7 +4,7 @@ import Foundation
 public class Auth0Router: FederatedServiceRouter {
     public let baseURL: String
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = [ ]
     public var requiredScopes = [ "openid" ]
     public let callbackURL: String
@@ -14,7 +14,7 @@ public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
     
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         let auth = try Auth0Auth()
         self.tokens = auth
         self.baseURL = "https://\(auth.domain)"
@@ -42,7 +42,7 @@ public class Auth0Router: FederatedServiceRouter {
         return rtn
     }
     
-    public func fetchToken(from request: Request)throws -> Future<String> {
+    public func fetchToken(from request: Request)throws -> EventLoopFuture<String> {
         let code: String
         if let queryCode: String = try request.query.get(at: "code") {
             code = queryCode
@@ -56,31 +56,31 @@ public class Auth0Router: FederatedServiceRouter {
                                      clientSecret: self.tokens.clientSecret,
                                      code: code,
                                      redirectURI: self.callbackURL)
-        
-        return try body.encode(using: request).flatMap(to: Response.self) { request in
-            guard let url = URL(string: self.accessTokenURL) else {
-                throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")
-            }
-            request.http.method = .POST
-            request.http.url = url
-            request.http.contentType = .urlEncodedForm
-
-            return try request.make(Client.self).send(request)
-        }.flatMap(to: String.self) { response in
-            return response.content.get(String.self, at: ["access_token"])
-        }
+        		
+		let url = URI(string: self.accessTokenURL)
+		return body.encodeResponse(for: request).map {
+			$0.body
+		}.flatMap { body in
+			return request.client.post(url, beforeSend: { client in
+				client.body = body.buffer
+			})
+        }.flatMapThrowing { response in
+			return try response.content.get(String.self, at: ["access_token"])
+		}
     }
     
-    public func callback(_ request: Request)throws -> Future<Response> {
-        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
-            let session = try request.session()
-            
-            session.setAccessToken(accessToken)
-            try session.set("access_token_service", to: OAuthService.auth0)
-            
-            return try self.callbackCompletion(request, accessToken)
-        }.flatMap(to: Response.self) { response in
-            return try response.encode(for: request)
-        }
+    public func callback(_ request: Request)throws -> EventLoopFuture<Response> {
+		return try self.fetchToken(from: request).flatMap { accessToken in
+			  let session = request.session
+			  do {
+				  try session.setAccessToken(accessToken)
+				  try session.set("access_token_service", to: OAuthService.auth0)
+				  return try self.callbackCompletion(request, accessToken).flatMap { response in
+					  return response.encodeResponse(for: request)
+				  }
+			  } catch {
+				  return request.eventLoop.makeFailedFuture(error)
+			  }
+		  }
     }
 }
