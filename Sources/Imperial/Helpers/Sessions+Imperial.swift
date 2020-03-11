@@ -12,6 +12,16 @@ extension Request {
     public func accessToken()throws -> String {
         return try self.session().accessToken()
     }
+
+    /// Gets the refresh token from the current session.
+    ///
+    /// - Returns: The refresh token in the current session.
+    /// - Throws:
+    ///   - `Abort.unauthorized` if no refresh token exists.
+    ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
+    public func refreshToken()throws -> String {
+        return try self.session().refreshToken()
+    }
 }
 
 extension Session {
@@ -19,12 +29,13 @@ extension Session {
     /// Keys used to store and retrieve items from the session
     enum Keys {
         static let token = "access_token"
+        static let refresh = "refresh_token"
     }
 
     /// Gets the access token from the session.
     ///
     /// - Returns: The access token stored with the `access_token` key.
-    /// - Throws: `Abort.unauthorized` if no access token exists.m
+    /// - Throws: `Abort.unauthorized` if no access token exists.
     public func accessToken()throws -> String {
         guard let token = self[Keys.token] else {
             throw Abort(.unauthorized, reason: "User currently not authenticated")
@@ -38,7 +49,25 @@ extension Session {
     public func setAccessToken(_ token: String) {
         self[Keys.token] = token
     }
-    
+
+    /// Gets the refresh token from the session.
+    ///
+    /// - Returns: The refresh token stored with the `refresh_token` key.
+    /// - Throws: `Abort.unauthorized` if no refresh token exists.
+    public func refreshToken()throws -> String {
+        guard let token = self[Keys.refresh] else {
+            throw Abort(.unauthorized, reason: "User currently not authenticated")
+        }
+        return token
+    }
+
+    /// Sets the refresh token on the session.
+    ///
+    /// - Parameter token: the refresh token to store on the session
+    public func setRefreshToken(_ token: String) {
+        self[Keys.refresh] = token
+    }
+
     /// Gets an object stored in a session with JSON as a given type.
     ///
     /// - Parameters:
