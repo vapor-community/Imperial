@@ -61,12 +61,12 @@ Now, when you run your app and you are using `FluentSQLite`, you will probably g
 
 Just pick one of the listed suggestions and place it at the top of your `configure` function. If you want your data to persist across server reboots, use `config.prefer(FluentCache<SQLiteDatabase>.self, for: KeyedCache.self)`
 
-Imperial uses environment variables to access the client ID and secret to authenticate with Dropbox. To allow Imperial to access these tokens, you will create these variables, called `DROPBOX_CLIENT_ID` and `DROPBOX_CLIENT_SECRET`, with the App key and App secret assigned to them. Imperial can then access these vars and use their values to authenticate with GitHub.
+Imperial uses environment variables to access the client ID and secret to authenticate with Dropbox. To allow Imperial to access these tokens, you will create these variables, called `DROPBOX_CLIENT_ID` and `DROPBOX_CLIENT_SECRET`, with the App key and App secret assigned to them. Imperial can then access these vars and use their values to authenticate with Dropbox.
 
 Now, all we need to do is register the Dropbox service in your main router method, like this:
 
 ```swift
-try router.oAuth(from: Dropbox.self, authenticate: "dropbox-login", callback: "dropbox-auth-complete") { (request, token) in
+try router.oAuth(from: Dropbox.self, authenticate: "dropbox-login", callback: "http://localhost:8080/dropbox-auth-complete") { (request, token) in
     print(token)
     return Future(request.redirect(to: "/"))
 }
@@ -75,10 +75,10 @@ try router.oAuth(from: Dropbox.self, authenticate: "dropbox-login", callback: "d
 If you just want to redirect, without doing anything else in the callback, you can use the helper `Route.oAuth` method that takes in a redirect string:
 
 ```swift
-try router.oAuth(from: GitHub.self, authenticate: "dropbox-login", callback: "dropbox-auth-complete", redirect: "/")
+try router.oAuth(from: Dropbox.self, authenticate: "dropbox-login", callback: "http://localhost:8080/dropbox-auth-complete", redirect: "/")
 ```
 
-The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Dropbox:
+The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be one of the paths that you entered when you registered your application on Dropbox:
 
 ![The callback path for Dropbox OAuth](callback-url.png)
 
