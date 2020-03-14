@@ -53,7 +53,7 @@ public class GitlabRouter: FederatedServiceRouter {
             let session = request.session
             do {
 				try session.setAccessToken(accessToken)
-                try session.set("access_token_service", to: OAuthService.gitlab)
+                try session.set("access_token_service", to: GitlabOAuth())
                 return try self.callbackCompletion(request, accessToken).flatMap { response in
 					return response.encodeResponse(for: request)
                 }

@@ -1,3 +1,9 @@
+public struct ShopifyOAuth: OAuthServiceProtocol {
+    public static let name = "shopify"
+
+    public init() { }
+}
+
 extension OAuthService {
-	public static let shopify = OAuthService.init(name: "shopify", endpoints: [:])
+    public static let shopify = OAuthService(ShopifyOAuth())
 }

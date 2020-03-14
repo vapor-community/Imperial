@@ -20,7 +20,7 @@ public class Gitlab: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
-        OAuthService.register(.gitlab)
+//        OAuthService.register(.gitlab)
     }
 }
 

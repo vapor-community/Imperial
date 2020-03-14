@@ -1,6 +1,9 @@
+public struct KeycloakOAuth: OAuthServiceProtocol {
+    public static let name = "keycloak"
+
+    public init() { }
+}
+
 extension OAuthService {
-    public static let keycloak = OAuthService.init(
-        name: "keycloak",
-        endpoints: [:]
-    )
+    public static let keycloak = OAuthService(KeycloakOAuth())
 }
