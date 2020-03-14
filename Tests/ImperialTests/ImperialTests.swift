@@ -1,5 +1,5 @@
 import XCTest
-@testable import Imperial
+@testable import ImperialCore
 
 class ImperialTests: XCTestCase {
     func testExists() {}

@@ -69,7 +69,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
             exp: ExpirationClaim(value: Date().addingTimeInterval(3600))
         )
         
-        let pk = try RSAKey.private(pem: self.tokens.clientSecret.bytes)
+        let pk = try RSAKey.private(pem: self.tokens.clientSecret.utf8)
         let signer = JWTSigner.rs256(key: pk)
         let jwtData = try signer.sign(payload)
         return jwtData

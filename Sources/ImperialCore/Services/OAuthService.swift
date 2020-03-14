@@ -43,7 +43,8 @@ public struct OAuthService: Codable, Content {
     /// Registers a service as available for use.
     ///
     /// - Parameter service: The service to register.
-    internal static func register(_ service: OAuthService) {
+    public static func register(_ service: OAuthService) {
+        #warning("It would be nice if this method could be internal")
         services[service.name] = service
     }
     
