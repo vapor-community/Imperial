@@ -1,10 +1,7 @@
 import Foundation
 import RoutingKit
 
-extension String {
-    
-    var bytes: [UInt8] { .init(utf8) }
-    
+extension String {    
 	var pathComponents: [PathComponent] {
 		var pathComponentArray = [PathComponent]()
 		if let components = URL(string: self)?.pathComponents {
@@ -15,4 +12,12 @@ extension String {
 		return pathComponentArray
 	}
 
+}
+
+extension String.UTF8View: DataProtocol {
+    public var regions: CollectionOfOne<Array<UInt8>> { Array(self).regions }
+}
+
+extension Substring.UTF8View: DataProtocol {
+    public var regions: CollectionOfOne<Array<UInt8>> { Array(self).regions }
 }
