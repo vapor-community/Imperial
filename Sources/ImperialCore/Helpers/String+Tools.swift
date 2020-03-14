@@ -1,10 +1,7 @@
 import Foundation
 import RoutingKit
 
-extension String {
-    
-    var bytes: [UInt8] { .init(utf8) }
-    
+extension String {    
 	var pathComponents: [PathComponent] {
 		var pathComponentArray = [PathComponent]()
 		if let components = URL(string: self)?.pathComponents {
