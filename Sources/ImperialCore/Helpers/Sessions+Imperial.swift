@@ -47,6 +47,7 @@ extension Session {
     /// - Throws: Errors when no object is stored in the session with the given key, or decoding fails.
     public func get<T>(_ key: String, as type: T.Type) throws -> T where T: Codable {
         guard let stored = data[key] else {
+            if _isOptional(T.self) { return Optional<Void>.none as! T }
             throw Abort(.internalServerError, reason: "No element found in session with ket '\(key)'")
         }
         return try JSONDecoder().decode(T.self, from: Data(stored.utf8))
