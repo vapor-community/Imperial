@@ -1,4 +1,4 @@
-@testable import Imperial
+@testable import ImperialShopify
 import XCTest
 
 final class ShopifyTests: XCTestCase {
