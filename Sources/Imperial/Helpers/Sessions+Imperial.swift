@@ -56,7 +56,14 @@ extension Session {
     /// - Throws: `Abort.unauthorized` if no refresh token exists.
     public func refreshToken()throws -> String {
         guard let token = self[Keys.refresh] else {
-            throw Abort(.unauthorized, reason: "User currently not authenticated")
+            if self[Keys.token] == nil {
+                throw Abort(.unauthorized, reason: "User currently not authenticated")
+            } else {
+                let oauth_data = self["access_token_service"]?.data(using: .utf8) ?? Data()
+                let oauth = try? JSONSerialization.jsonObject(with: oauth_data, options: [])
+                let oauth_name = (oauth as? NSDictionary)?["name"] ?? "???"
+                throw Abort(.methodNotAllowed, reason: "OAuth provider '\(oauth_name)' uses no refresh tokens")
+            }
         }
         return token
     }
