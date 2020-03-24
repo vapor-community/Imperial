@@ -1,0 +1,26 @@
+name: test
+on:
+- pull_request
+jobs:
+  imperial_macos:
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4_beta.app/Contents/Developer
+    steps:
+    - uses: actions/checkout@v2
+    - run: brew install pkg-config libressl
+    - run: xcrun swift test --enable-test-discovery --sanitize=thread
+  imperial_xenial:
+    container: 
+      image: vapor/swift:5.2-xenial
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: swift test --enable-test-discovery --sanitize=thread
+  imperial_bionic:
+    container: 
+      image: vapor/swift:5.2-bionic
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: swift test --enable-test-discovery --sanitize=thread
