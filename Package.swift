@@ -25,7 +25,7 @@ let package = Package(
         ]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0-rc"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0-rc.3.5"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0-rc")
     ],
     targets: [
