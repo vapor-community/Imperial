@@ -59,10 +59,10 @@ extension Session {
             if self[Keys.token] == nil {
                 throw Abort(.unauthorized, reason: "User currently not authenticated")
             } else {
-                let oauth_data = self["access_token_service"]?.data(using: .utf8) ?? Data()
-                let oauth = try? JSONSerialization.jsonObject(with: oauth_data, options: [])
-                let oauth_name = (oauth as? NSDictionary)?["name"] ?? "???"
-                throw Abort(.methodNotAllowed, reason: "OAuth provider '\(oauth_name)' uses no refresh tokens")
+                let oauthData = self["access_token_service"]?.data(using: .utf8) ?? Data()
+                let oauth = try? JSONSerialization.jsonObject(with: oauthData, options: [])
+                let oauthName = (oauth as? NSDictionary)?["name"] ?? "???"
+                throw Abort(.methodNotAllowed, reason: "OAuth provider '\(oauthName)' uses no refresh tokens")
             }
         }
         return token
