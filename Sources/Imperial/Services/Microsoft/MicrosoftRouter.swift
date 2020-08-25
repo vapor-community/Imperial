@@ -2,12 +2,15 @@ import Vapor
 import Foundation
 
 public class MicrosoftRouter: FederatedServiceRouter {
+    public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
+
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
-    public let accessTokenURL: String = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
-    
+    public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
+    public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
+
     public required init(
         callback: String,
         completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)
@@ -18,7 +21,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     }
 
     public func authURL(_ request: Request) throws -> String {
-        return "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?"
+        return "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/authorize?"
             + "client_id=\(self.tokens.clientID)&"
             + "response_type=code&"
             + "redirect_uri=\(self.callbackURL)&"
