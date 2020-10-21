@@ -105,7 +105,7 @@ extension FederatedServiceRouter {
         return body.encodeResponse(for: request)
             .map { $0.body.buffer }
             .flatMap { buffer in
-                return request.client.post(url, headers: callbackHeaders) { $0.body = buffer }
+                return request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
             }.flatMapThrowing { response in
                 return try response.content.get(String.self, at: ["access_token"])
             }
@@ -116,7 +116,7 @@ extension FederatedServiceRouter {
             let session = request.session
             do {
                 try session.setAccessToken(accessToken)
-                try session.set("access_token_service", to: service)
+                try session.set("access_token_service", to: self.service)
                 return try self.callbackCompletion(request, accessToken).flatMap { response in
                     return response.encodeResponse(for: request)
                 }
