@@ -49,7 +49,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
                               clientId: tokens.clientID,
                               clientSecret: tokens.clientSecret,
                               redirectURI: callbackURL,
-                              scope: scope.joined(separator: "%20"))
+                              scope: scope.joined(separator: " "))
     }
     
 }
