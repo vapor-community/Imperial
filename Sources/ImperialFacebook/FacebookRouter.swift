@@ -11,11 +11,22 @@ public class FacebookRouter: FederatedServiceRouter {
     public let service: OAuthService = .facebook
 
     public func authURL(_ request: Request) throws -> String {
-        return "https://www.facebook.com/v3.2/dialog/oauth?" +
-            "client_id=\(self.tokens.clientID)" +
-            "&redirect_uri=\(self.callbackURL)" +
-            "&scope=\(scope.joined(separator: "%20"))" +
-            "&response_type=code"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.facebook.com"
+        components.path = "/v3.2/dialog/oauth"
+        components.queryItems = [
+            clientIDItem,
+            redirectURIItem,
+            scopeItem,
+            codeResponseTypeItem
+        ]
+        
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+        
+        return url.absoluteString
     }
 
     public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {

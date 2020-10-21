@@ -22,6 +22,7 @@ public protocol FederatedServiceRouter {
     /// The key to acess the error URL query parameter
     var errorKey: String { get }
     
+    /// The OAuthService associated with the router
     var service: OAuthService { get }
     
     /// The URL (or URI) for that route that the provider will fire when the user authenticates with the OAuth provider.
@@ -75,7 +76,7 @@ extension FederatedServiceRouter {
     public var codeKey: String { "code" }
     public var errorKey: String { "error" }
     public var callbackHeaders: HTTPHeaders { [:] }
-    
+   
     public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: RoutesBuilder) throws {
 		router.get(callbackURL.pathComponents, use: callback)
 		router.get(authURL.pathComponents) { req -> EventLoopFuture<Response> in
@@ -124,5 +125,24 @@ extension FederatedServiceRouter {
                 return request.eventLoop.makeFailedFuture(error)
             }
         }
+    }
+}
+
+/// Convenience URLQueryItems
+extension FederatedServiceRouter {
+    public var clientIDItem: URLQueryItem {
+        .init(name: "client_id", value: tokens.clientID)
+    }
+    
+    public var redirectURIItem: URLQueryItem {
+        .init(name: "redirect_uri", value: callbackURL)
+    }
+    
+    public var scopeItem: URLQueryItem {
+        .init(name: "scope", value: scope.joined(separator: " "))
+    }
+    
+    public var codeResponseTypeItem: URLQueryItem {
+        .init(name: "response_type", value: "code")
     }
 }

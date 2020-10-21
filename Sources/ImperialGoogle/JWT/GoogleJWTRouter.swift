@@ -12,7 +12,11 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public var authURL: String
     public let service: OAuthService = .googleJWT
-    public let callbackHeaders: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
+    public let callbackHeaders: HTTPHeaders = {
+        var headers = HTTPHeaders()
+        headers.contentType = .urlEncodedForm
+        return headers
+    }()
     
     public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GoogleJWTAuth()

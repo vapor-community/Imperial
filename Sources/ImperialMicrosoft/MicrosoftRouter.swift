@@ -24,13 +24,24 @@ public class MicrosoftRouter: FederatedServiceRouter {
     }
 
     public func authURL(_ request: Request) throws -> String {
-        return "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/authorize?"
-            + "client_id=\(self.tokens.clientID)&"
-            + "response_type=code&"
-            + "redirect_uri=\(self.callbackURL)&"
-            + "response_mode=query&"
-            + "scope=\(scope.joined(separator: "%20"))&"
-            + "prompt=consent"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.login.microsoftonline.com"
+        components.path = "/\(tenantID)/oauth2/v2.0/authorize"
+        components.queryItems = [
+            clientIDItem,
+            redirectURIItem,
+            scopeItem,
+            codeResponseTypeItem,
+            .init(name: "response_mode", value: "query"),
+            .init(name: "prompt", value: "consent"),
+        ]
+        
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+        
+        return url.absoluteString
     }
     
     public func callbackBody(with code: String) -> ResponseEncodable {
