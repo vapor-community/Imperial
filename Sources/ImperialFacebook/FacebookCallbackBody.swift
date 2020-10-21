@@ -10,7 +10,7 @@ struct FacebookCallbackBody: Content {
     static var defaultContentType: HTTPMediaType = .urlEncodedForm
 
     enum CodingKeys: String, CodingKey {
-        case code = "code"
+        case code
         case clientId = "client_id"
         case clientSecret = "client_secret"
         case redirectURI = "redirect_uri"

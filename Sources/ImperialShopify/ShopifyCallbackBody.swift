@@ -6,7 +6,7 @@ struct ShopifyCallbackBody: Content {
 	let clientSecret: String
 		
 	enum CodingKeys: String, CodingKey {
-		case code = "code"
+		case code
 		case clientId = "client_id"
 		case clientSecret = "client_secret"
 	}

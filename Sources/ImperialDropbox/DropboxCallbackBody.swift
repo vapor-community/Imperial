@@ -8,7 +8,7 @@ struct DropboxCallbackBody: Content {
     static var defaultContentType: HTTPMediaType = .urlEncodedForm
     
     enum CodingKeys: String, CodingKey {
-        case code = "code"
+        case code
         case redirectURI = "redirect_uri"
         case grantType = "grant_type"
     }
