@@ -10,6 +10,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     public var callbackURL: String
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public var authURL: String
+    public let service: OAuthService = .googleJWT
     
     public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GoogleJWTAuth()
@@ -38,21 +39,6 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
 		}.flatMapThrowing { response in
 			return try response.content.get(GoogleJWTResponse.self)
 		}.map { $0.accessToken }
-    }
-    
-    public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-        return try self.fetchToken(from: request).flatMap { accessToken in
-            let session = request.session
-            do {
-				try session.setAccessToken(accessToken)
-                try session.set("access_token_service", to: OAuthService.googleJWT)
-                return try self.callbackCompletion(request, accessToken).flatMap { response in
-					return response.encodeResponse(for: request)
-                }
-            } catch {
-                return request.eventLoop.makeFailedFuture(error)
-            }
-        }
     }
     
     public func authenticate(_ request: Request) throws -> EventLoopFuture<Response> {
