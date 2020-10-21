@@ -33,7 +33,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
             + "prompt=consent"
     }
     
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         MicrosoftCallbackBody(code: code,
                               clientId: tokens.clientID,
                               clientSecret: tokens.clientSecret,

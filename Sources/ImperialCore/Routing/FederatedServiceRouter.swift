@@ -28,7 +28,7 @@ public protocol FederatedServiceRouter {
     var callbackURL: String { get }
     
     /// HTTPHeaders for the Callback request
-    var headers: HTTPHeaders { get }
+    var callbackHeaders: HTTPHeaders { get }
 
     /// The URL on the app that will redirect to the `authURL` to get the access token from the OAuth provider.
     var accessTokenURL: String { get }
@@ -60,7 +60,7 @@ public protocol FederatedServiceRouter {
     func fetchToken(from request: Request) throws -> EventLoopFuture<String>
     
     /// Creates CallbackBody with authorization code
-    func body(with code: String) -> ResponseEncodable
+    func callbackBody(with code: String) -> ResponseEncodable
     
     /// The route that the OAuth provider calls when the user has benn authenticated.
     ///
@@ -74,7 +74,7 @@ extension FederatedServiceRouter {
     
     public var codeKey: String { "code" }
     public var errorKey: String { "error" }
-    public var headers: HTTPHeaders { [:] }
+    public var callbackHeaders: HTTPHeaders { [:] }
     
     public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: RoutesBuilder) throws {
 		router.get(callbackURL.pathComponents, use: callback)
@@ -99,17 +99,18 @@ extension FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
         
-        let body = self.body(with: code)
-        let uri = URI(string: accessTokenURL)
+        let body = callbackBody(with: code)
+        let url = URI(string: accessTokenURL)
         
-        return body.encodeResponse(for: request).map { $0.body }
-            .flatMap { body in
-                return request.client.post(uri, headers: headers) { $0.body = body.buffer }
+        return body.encodeResponse(for: request)
+            .map { $0.body.buffer }
+            .flatMap { buffer in
+                return request.client.post(url, headers: callbackHeaders) { $0.body = buffer }
             }.flatMapThrowing { response in
                 return try response.content.get(String.self, at: ["access_token"])
             }
     }
-
+    
     public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
         return try self.fetchToken(from: request).flatMap { accessToken in
             let session = request.session

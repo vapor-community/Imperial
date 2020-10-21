@@ -25,7 +25,7 @@ public class ShopifyRouter: FederatedServiceRouter {
         return try authURLFrom(shop, nonce: nonce).absoluteString
     }
     
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         ShopifyCallbackBody(code: code,
                             clientId: tokens.clientID,
                             clientSecret: tokens.clientSecret)
@@ -50,17 +50,15 @@ public class ShopifyRouter: FederatedServiceRouter {
 		guard URL(string: request.url.string)?.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
 
         // exchange code for access token
-        let body = self.body(with: code)
+        let body = callbackBody(with: code)
 		let url = URI(string: self.accessTokenURL)
-		return body.encodeResponse(for: request).map {
-			$0.body
-		}.flatMap { body in
-			return request.client.post(url, beforeSend: { client in
-				client.body = body.buffer
-			})
-        }.flatMapThrowing { response in
-			return try response.content.get(String.self, at: ["access_token"])
-		}
+		return body.encodeResponse(for: request)
+            .map { $0.body.buffer }
+            .flatMap { buffer in
+                return request.client.post(url) { $0.body = buffer }
+            }.flatMapThrowing { response in
+                return try response.content.get(String.self, at: ["access_token"])
+            }
     }
     
     /// The route that the OAuth provider calls when the user has benn authenticated.

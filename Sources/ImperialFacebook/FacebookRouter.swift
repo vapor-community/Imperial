@@ -24,7 +24,7 @@ public class FacebookRouter: FederatedServiceRouter {
         self.callbackCompletion = completion
     }
 
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         FacebookCallbackBody(code: code,
                              clientId: tokens.clientID,
                              clientSecret: tokens.clientSecret,
