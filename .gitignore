@@ -4,8 +4,5 @@
 /*.xcodeproj
 build
 DerivedData/
-<<<<<<< HEAD
-.swiftpm/
-=======
 .swiftpm
->>>>>>> removing .swiftpm
+Package.resolved
