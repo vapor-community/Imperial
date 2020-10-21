@@ -9,12 +9,10 @@ public class DropboxRouter: FederatedServiceRouter {
     public let accessTokenURL: String = "https://api.dropboxapi.com/oauth2/token"
     
     public var callbackHeaders: HTTPHeaders {
-        ["Content-Type": HTTPMediaType.urlEncodedForm.description,
-         "Authorization": "Basic \(encodedClientCredentials)"]
-    }
-    
-    private var encodedClientCredentials: String {
-        Data("\(tokens.clientID):\(tokens.clientSecret)".utf8).base64EncodedString()
+        var headers = HTTPHeaders()
+        headers.basicAuthorization = .init(username: tokens.clientID, password: tokens.clientSecret)
+        headers.contentType = .urlEncodedForm
+        return headers
     }
     
     public let service: OAuthService = .dropbox
@@ -24,12 +22,24 @@ public class DropboxRouter: FederatedServiceRouter {
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
-
+    
     public func authURL(_ request: Request) throws -> String {
-        return "https://www.dropbox.com/oauth2/authorize?" +
-            "client_id=\(self.tokens.clientID)&" +
-            "redirect_uri=\(self.callbackURL)&" +
-            "response_type=code"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.dropbox.com"
+        components.path = "/oauth2/authorize"
+        components.queryItems = [
+            clientIDItem,
+            redirectURIItem,
+            scopeItem,
+            codeResponseTypeItem
+        ]
+        
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+        
+        return url.absoluteString
     }
     
     public func callbackBody(with code: String) -> ResponseEncodable {

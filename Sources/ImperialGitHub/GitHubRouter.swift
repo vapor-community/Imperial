@@ -18,9 +18,21 @@ public class GitHubRouter: FederatedServiceRouter {
     }
     
     public func authURL(_ request: Request) throws -> String {
-        return "\(GitHubRouter.baseURL.finished(with: "/"))login/oauth/authorize?" +
-            "scope=\(scope.joined(separator: "%20"))&" +
-            "client_id=\(self.tokens.clientID)"
+        
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.github.com"
+        components.path = "/login/oauth/authorize"
+        components.queryItems = [
+            clientIDItem,
+            scopeItem
+        ]
+        
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+        
+        return url.absoluteString
     }
     
     public func callbackBody(with code: String) -> ResponseEncodable {

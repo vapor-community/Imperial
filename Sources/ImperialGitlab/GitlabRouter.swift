@@ -19,11 +19,22 @@ public class GitlabRouter: FederatedServiceRouter {
     }
     
     public func authURL(_ request: Request) throws -> String {
-        return "\(GitlabRouter.baseURL.finished(with: "/"))oauth/authorize?" +
-            "client_id=\(self.tokens.clientID)&" +
-            "redirect_uri=\(GitlabRouter.callbackURL)&" +
-            "scope=\(scope.joined(separator: "%20"))&" +
-            "response_type=code"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.gitlab.com"
+        components.path = "/oauth/authorize"
+        components.queryItems = [
+            clientIDItem,
+            .init(name: "redirect_uri", value: GitlabRouter.callbackURL),
+            scopeItem,
+            codeResponseTypeItem
+        ]
+        
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+        
+        return url.absoluteString
     }
     
     public func callbackBody(with code: String) -> ResponseEncodable {
