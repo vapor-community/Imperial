@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "ImperialGitlab", targets: ["ImperialCore", "ImperialGitlab"]),
         .library(name: "ImperialGoogle", targets: ["ImperialCore", "ImperialGoogle"]),
         .library(name: "ImperialKeycloak", targets: ["ImperialCore", "ImperialKeycloak"]),
+        .library(name: "ImperialMicrosoft", targets: ["ImperialCore", "ImperialMicrosoft"]),
         .library(name: "ImperialShopify", targets: ["ImperialCore", "ImperialShopify"]),
         .library(name: "Imperial", targets: [
             "ImperialCore",
@@ -21,6 +22,7 @@ let package = Package(
             "ImperialGitlab",
             "ImperialGoogle",
             "ImperialKeycloak",
+            "ImperialMicrosoft",
             "ImperialShopify"
         ]),
     ],
@@ -41,6 +43,7 @@ let package = Package(
         .target(name: "ImperialGitlab", dependencies: ["ImperialCore"]),
         .target(name: "ImperialGoogle", dependencies: ["ImperialCore"]),
         .target(name: "ImperialKeycloak", dependencies: ["ImperialCore"]),
+        .target(name: "ImperialMicrosoft", dependencies: ["ImperialCore"]),
         .target(name: "ImperialShopify", dependencies: ["ImperialCore"]),
         .testTarget(name: "ImperialTests", dependencies: ["ImperialCore", "ImperialShopify"]),
     ]

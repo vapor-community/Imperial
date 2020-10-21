@@ -1,11 +1,13 @@
 import Vapor
 
 public class ShopifyRouter: FederatedServiceRouter {
+    
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public var accessTokenURL: String = ""
+    public let service: OAuthService = .shopify
     
     required public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try ShopifyAuth()
@@ -21,6 +23,12 @@ public class ShopifyRouter: FederatedServiceRouter {
 
         accessTokenURL = try accessTokenURLFrom(shop)
         return try authURLFrom(shop, nonce: nonce).absoluteString
+    }
+    
+    public func body(with code: String) -> ResponseEncodable {
+        ShopifyCallbackBody(code: code,
+                            clientId: tokens.clientID,
+                            clientSecret: tokens.clientSecret)
     }
     
     /// Gets an access token from an OAuth provider.
@@ -42,7 +50,7 @@ public class ShopifyRouter: FederatedServiceRouter {
 		guard URL(string: request.url.string)?.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
 
         // exchange code for access token
-        let body = ShopifyCallbackBody(code: code, clientId: tokens.clientID, clientSecret: tokens.clientSecret)
+        let body = self.body(with: code)
 		let url = URI(string: self.accessTokenURL)
 		return body.encodeResponse(for: request).map {
 			$0.body
