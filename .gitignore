@@ -5,3 +5,4 @@
 build
 DerivedData/
 .swiftpm
+Package.resolved
