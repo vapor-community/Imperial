@@ -7,7 +7,7 @@ public class GoogleRouter: FederatedServiceRouter {
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public let headers: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
+    public let callbackHeaders: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
     public let service: OAuthService = .google
 
     public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
@@ -24,7 +24,7 @@ public class GoogleRouter: FederatedServiceRouter {
         "response_type=code"
     }
     
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         GoogleCallbackBody(code: code,
                            clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,

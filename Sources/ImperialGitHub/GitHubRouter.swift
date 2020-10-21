@@ -23,7 +23,7 @@ public class GitHubRouter: FederatedServiceRouter {
             "client_id=\(self.tokens.clientID)"
     }
     
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         GitHubCallbackBody(clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,
                            code: code)

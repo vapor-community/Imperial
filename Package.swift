@@ -8,6 +8,7 @@ let package = Package(
     ],
     products: [
         .library(name: "ImperialCore", targets: ["ImperialCore"]),
+        .library(name: "ImperialDropbox", targets: ["ImperialCore", "ImperialDropbox"]),
         .library(name: "ImperialFacebook", targets: ["ImperialCore", "ImperialFacebook"]),
         .library(name: "ImperialGitHub", targets: ["ImperialCore", "ImperialGitHub"]),
         .library(name: "ImperialGitlab", targets: ["ImperialCore", "ImperialGitlab"]),
@@ -17,6 +18,7 @@ let package = Package(
         .library(name: "ImperialShopify", targets: ["ImperialCore", "ImperialShopify"]),
         .library(name: "Imperial", targets: [
             "ImperialCore",
+            "ImperialDropbox",
             "ImperialFacebook",
             "ImperialGitHub",
             "ImperialGitlab",
@@ -38,6 +40,7 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
             ]
         ),
+        .target(name: "ImperialDropbox", dependencies: ["ImperialCore"]),
         .target(name: "ImperialFacebook", dependencies: ["ImperialCore"]),
         .target(name: "ImperialGitHub", dependencies: ["ImperialCore"]),
         .target(name: "ImperialGitlab", dependencies: ["ImperialCore"]),

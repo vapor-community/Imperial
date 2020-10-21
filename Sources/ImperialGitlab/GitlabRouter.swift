@@ -26,7 +26,7 @@ public class GitlabRouter: FederatedServiceRouter {
             "response_type=code"
     }
     
-    public func body(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> ResponseEncodable {
         GitlabCallbackBody(clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,
                            code: code,

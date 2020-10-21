@@ -4,6 +4,7 @@ import Vapor
 import JWTKit
 
 public final class GoogleJWTRouter: FederatedServiceRouter {
+    
     public var tokens: FederatedServiceTokens
     public var callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
@@ -11,6 +12,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public var authURL: String
     public let service: OAuthService = .googleJWT
+    public let callbackHeaders: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
     
     public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GoogleJWTAuth()
@@ -23,22 +25,22 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return authURL
     }
     
+    public func callbackBody(with code: String) -> ResponseEncodable {
+        return "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(code)"
+    }
+    
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
-        let headers: HTTPHeaders = ["Content-Type": HTTPMediaType.urlEncodedForm.description]
         let token = try self.jwt()
-        let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(token)"
-
+        
+        let body = callbackBody(with: token)
 		let url = URI(string: self.accessTokenURL)
-
-		return body.encodeResponse(for: request).map {
-			$0.body
-		}.flatMap { body in
-			return request.client.post(url, headers: headers, beforeSend: { client in
-				client.body = body.buffer
-			})
-		}.flatMapThrowing { response in
-			return try response.content.get(GoogleJWTResponse.self)
-		}.map { $0.accessToken }
+		return body.encodeResponse(for: request)
+            .map { $0.body.buffer }
+            .flatMap { buffer in
+                return request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
+            }.flatMapThrowing { response in
+                return try response.content.get(GoogleJWTResponse.self)
+            }.map { $0.accessToken }
     }
     
     public func authenticate(_ request: Request) throws -> EventLoopFuture<Response> {
