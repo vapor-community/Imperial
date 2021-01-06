@@ -19,7 +19,7 @@ extension Request {
     ///   - `Abort.unauthorized` if no refresh token exists.
     ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
     public func refreshToken()throws -> String {
-        return try self.session().refreshToken()
+        return try self.session.refreshToken()
     }
 }
 
@@ -54,11 +54,11 @@ extension Session {
     /// - Returns: The refresh token stored with the `refresh_token` key.
     /// - Throws: `Abort.unauthorized` if no refresh token exists.
     public func refreshToken()throws -> String {
-        guard let token = self[Keys.refresh] else {
-            if self[Keys.token] == nil {
+        guard let token = self.data[Keys.refresh] else {
+            if self.data[Keys.token] == nil {
                 throw Abort(.unauthorized, reason: "User currently not authenticated")
             } else {
-                let oauthData = self["access_token_service"]?.data(using: .utf8) ?? Data()
+                let oauthData = self.data["access_token_service"]?.data(using: .utf8) ?? Data()
                 let oauth = try? JSONSerialization.jsonObject(with: oauthData, options: [])
                 let oauthName = (oauth as? NSDictionary)?["name"] ?? "???"
                 throw Abort(.methodNotAllowed, reason: "OAuth provider '\(oauthName)' uses no refresh tokens")
@@ -71,7 +71,7 @@ extension Session {
     ///
     /// - Parameter token: the refresh token to store on the session
     public func setRefreshToken(_ token: String) {
-        self[Keys.refresh] = token
+        self.data[Keys.refresh] = token
     }
 
     /// Gets an object stored in a session with JSON as a given type.
