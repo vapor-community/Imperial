@@ -1,5 +1,8 @@
 name: test
-on: [ pull_request ]
+push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   
 jobs:
   macos:
@@ -23,8 +26,6 @@ jobs:
         swiftver:
           - swift:5.2
           - swift:5.3
-          - swiftlang/swift:nightly-5.3
-          - swiftlang/swift:nightly-master
         swiftos:
           - xenial
           - bionic
