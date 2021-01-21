@@ -23,7 +23,7 @@ public class GoogleRouter: FederatedServiceRouter {
     public func authURL(_ request: Request) throws -> String {        
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "www.accounts.google.com"
+        components.host = "accounts.google.com"
         components.path = "/o/oauth2/auth"
         components.queryItems = [
             clientIDItem,
