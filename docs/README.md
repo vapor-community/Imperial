@@ -29,6 +29,27 @@ Imperial relies on the [sessions middleware](https://docs.vapor.codes/4.0/sessio
 app.middleware.use(app.sessions.middleware)
 ```
 
+## Route Registration
+
+Imperial uses environment variables to access the client ID and secret to authenticate with the provider. See the provider specific docs for details on what they should be.
+
+You need to register the OAuth service with your route. For example, to register a GitHub integration add the following:
+
+```swift
+try routes.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete") { (request, token) in
+    print(token)
+    return request.eventLoop.future(request.redirect(to: "/"))
+}
+```
+
+This registers a route to `/github`. When you visit that route, Imperial will trigger the OAuth flow using the `GitHub` service. The callback path is the one registered with the OAuth provider when you create your application. The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
+
+If you just want to redirect, without doing anything else in the callback, you can use the helper `RoutesBuilder.oAuth(from:authenticate:authenticateCallback:callback:scope:redirect:)` method that takes in a redirect string:
+
+```swift
+try router.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete", redirect: "/")
+```
+
 ## Access Tokens and Middleware
 
 If you ever want to get the `access_token` in a route, you can use a helper method for the `Request` type that comes with Imperial:
@@ -52,7 +73,7 @@ protected.get("me", use: me)
 The `ImperialMiddleware` by default passes the errors it finds onto `ErrorMiddleware` where they are caught, but you can initialize it with a redirect path to go to if the user is not authenticated:
 
 ```swift
-let protected = route.grouped(ImperialMiddleware(redirect: "/"))
+let protected = routes.grouped(ImperialMiddleware(redirect: "/"))
 ```
 
 ## Provider Specific Docs
