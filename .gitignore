@@ -4,4 +4,5 @@
 /*.xcodeproj
 build
 DerivedData/
-.swiftpm/
+.swiftpm
+Package.resolved
