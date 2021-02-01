@@ -63,7 +63,7 @@ public protocol FederatedServiceRouter {
     /// Creates CallbackBody with authorization code
     func callbackBody(with code: String) -> ResponseEncodable
     
-    /// The route that the OAuth provider calls when the user has benn authenticated.
+    /// The route that the OAuth provider calls when the user has been authenticated.
     ///
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
