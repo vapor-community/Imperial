@@ -26,7 +26,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     public func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "www.login.microsoftonline.com"
+        components.host = "login.microsoftonline.com"
         components.path = "/\(tenantID)/oauth2/v2.0/authorize"
         components.queryItems = [
             clientIDItem,
