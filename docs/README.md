@@ -85,3 +85,4 @@ Below are links to the documentation to setup federated login with various OAuth
 - [Shopify](https://github.com/vapor-community/Imperial/blob/master/docs/Shopify/README.md)
 - [Facebook](https://github.com/vapor-community/Imperial/tree/master/docs/Facebook/README.md)
 - [Keycloak](https://github.com/vapor-community/Imperial/tree/master/docs/Keycloak/README.md)
+- [Discord](https://github.com/vapor-community/Imperial/tree/master/docs/Discord/README.md)
