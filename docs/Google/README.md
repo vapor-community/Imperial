@@ -14,7 +14,7 @@ This provides you with an OAuth Client ID and secret you can provide to Imperial
 
 ## Imperial Integration
 
-You can use GitHub with the `ImperialGitHub` package. This expects two environment variables:
+You can use Google with the `ImperialGoogle` package. This expects two environment variables:
 
 * `GOOGLE_CLIENT_ID`
 * `GOOGLE_CLIENT_SECRET`
