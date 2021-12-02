@@ -8,7 +8,7 @@ This provides you with an OAuth Client ID and secret you can provide to Imperial
 
 ## Imperial Integration
 
-You can use GitHub with the `ImperialGitHub` package. This expects two environment variables:
+You can use Microsoft with the `ImperialMicrosoft` package. This expects two environment variables:
 
 * `MICROSOFT_CLIENT_ID`
 * `MICROSOFT_CLIENT_SECRET`
