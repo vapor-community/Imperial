@@ -4,11 +4,11 @@ We need to start by creating a client ID and secret so Google can identify us. G
 
 Select 'Create credentials' > 'OAuth client ID':
 
-![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/create-oauth-credentials.png?raw=true)
+![Create Credentials](https://github.com/vapor-community/Imperial/blob/main/docs/Google/create-oauth-credentials.png?raw=true)
 
 Select 'Web application'. The name that you enter should be the name of your project. Under the 'Restrictions' section, in 'Authorized redirect URIs', you will need to add a URI for Google to redirect to after the authentication is complete. If you are developing locally, it will be `http://localhost:8080/...` or `https...` if you have configured SSL:
 
-![Create Credentials](https://github.com/vapor-community/Imperial/blob/master/docs/Google/configure-app-creds.png?raw=true)
+![Create Credentials](https://github.com/vapor-community/Imperial/blob/main/docs/Google/configure-app-creds.png?raw=true)
 
 Now that we have the necessary information for Google, we will setup Imperial with our application.
 
@@ -82,7 +82,7 @@ try router.oAuth(from: Google.self, authenticate: "google", callback: "http://lo
 
 The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on Google:
 
-![The callback path for Google OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/Google/callback-uri.png?raw=true)
+![The callback path for Google OAuth](https://github.com/vapor-community/Imperial/blob/main/docs/Google/callback-uri.png?raw=true)
 
 The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 

@@ -2,7 +2,7 @@
 
 Start by going to the [GitHub Developer Program page](https://developer.github.com/program/), and register. Then, go to your Account Settings, then the [Developer Settings](https://github.com/settings/developers). Select 'New OAuth App'. Fill out the information required and register the application:
 
-![Create the app](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/create-application.png)
+![Create the app](https://github.com/vapor-community/Imperial/blob/main/docs/GitHub/create-application.png)
 
 Now that we have an OAuth application registered with GitHub, we can add Imperial to our project (We will not be going over how to create the project, as I will assume that you have already done that).
 
@@ -76,7 +76,7 @@ try router.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-c
 
 The `authenticate` argument is the path you will go to when you want to authenticate the user. The `callback` argument has to be the same path that you entered when you registered your application on GitHub:
 
-![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/callback-url.png)
+![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/main/docs/GitHub/callback-url.png)
 
 The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 

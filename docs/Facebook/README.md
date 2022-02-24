@@ -3,17 +3,17 @@
 ## Register with Facebook
 Start by going to the [Facebook Developer page](https://developers.facebook.com/), and sign-in/register. Then, go to the [Apps page](https://developers.facebook.com/apps/). Click 'Add a New App'. Enter an app 'Display Name' and 'Contact Email', then click 'Create App ID':
 
-![Create the app](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/create-application.png)
+![Create the app](https://github.com/vapor-community/Imperial/blob/main/docs/Facebook/create-application.png)
 
 Select 'Integrate Facebook Login' and click the 'Confirm' button. This will redirect to the 'Settings > Basic' screen where you can find the generated 'App ID' and 'App Secret'. It will also add the 'Facebook Login' Product in the left sidebar. Before the app is live you will need to fill out some of the other fields for privacy and GDPR disclosure.
 
-![App ID and App Secret](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/application-id.png)
+![App ID and App Secret](https://github.com/vapor-community/Imperial/blob/main/docs/Facebook/application-id.png)
 
 In the left sidebar under Products, click 'Facebook Login > Settings'. Enter one or more 'Valid OAuth Redirect URIs'. Ex) https://fancyvapor.app/facebook/callback.
 
 **Note:** Facebook requires https for redirect URIs so you'll need to use https in development and production environments. Setting up https is outside the scope of this tutorial.
 
-![Add Redirect URI](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/add-redirect-uri.png)
+![Add Redirect URI](https://github.com/vapor-community/Imperial/blob/main/docs/Facebook/add-redirect-uri.png)
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
@@ -30,7 +30,7 @@ You can then register the OAuth provider like normal.
 
 With the accessToken your application can now access information about the user. The needs of each application differ so you can test out your implementation using [Facebook's Graph API Explorer](https://developers.facebook.com/tools/explorer/).
 
-![Facebook's Graph API Explorer](https://github.com/vapor-community/Imperial/blob/master/docs/Facebook/facebook-graph-api-explorer.png)
+![Facebook's Graph API Explorer](https://github.com/vapor-community/Imperial/blob/main/docs/Facebook/facebook-graph-api-explorer.png)
 
 You can extend `Facebook` to add a `getUserInfo` function to get the user details. Customizing the last part of the `facebookUserAPIURL` will allow you to access the user data needed by your application. Refer to the Graph Explorer for testing what attributes are available. For convenience we decode the response using a small struct called `FacebookUserInfo`.
 

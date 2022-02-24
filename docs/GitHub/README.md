@@ -4,11 +4,11 @@
 
 Start by going to the [GitHub Developer Program page](https://developer.github.com/program/), and register. Then, go to your Account Settings, then the [Developer Settings](https://github.com/settings/developers). Select 'New OAuth App'. Fill out the information required and register the application:
 
-![Create the app](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/create-application.png)
+![Create the app](https://github.com/vapor-community/Imperial/blob/main/docs/GitHub/create-application.png)
 
 You must also specify a callback URL. Imperial will register a route to this URL to handle the redirect for you:
 
-![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/master/docs/GitHub/callback-url.png)
+![The callback path for GitHub OAuth](https://github.com/vapor-community/Imperial/blob/main/docs/GitHub/callback-url.png)
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
