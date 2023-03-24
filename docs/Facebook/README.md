@@ -42,12 +42,12 @@ struct FacebookUserInfo: Content {
 }
 
 extension Facebook {
-    static func getUserInfo(on request: Request) throws -> EventLoopFutures<FacebookUserInfo> {
+    static func getUserInfo(on request: Request) throws -> EventLoopFuture<FacebookUserInfo> {
         let token = try request.accessToken()
         let facebookUserAPIURL: URI = "https://graph.facebook.com/v3.2/me?fields=id,name,email&access_token=\(token)"
         return request.client.get(facebookUserAPIURL).flatMapThrowing { response in
-            guard response.http.status == .ok else {
-                if response.http.status == .unauthorized {
+            guard response.status == .ok else {
+                if response.status == .unauthorized {
                     throw Abort.redirect(to: "/login-facebook")
                 } else {
                     throw Abort(.internalServerError)
