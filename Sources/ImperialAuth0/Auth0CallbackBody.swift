@@ -7,7 +7,7 @@ struct Auth0CallbackBody: Content {
     let redirectURI: String
     let grantType: String = "authorization_code"
 
-    static var defaultContentType: MediaType = .urlEncodedForm
+    static var defaultContentType: HTTPMediaType = .urlEncodedForm
 
     enum CodingKeys: String, CodingKey {
         case clientId = "client_id"
