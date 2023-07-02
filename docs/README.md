@@ -86,3 +86,4 @@ Below are links to the documentation to setup federated login with various OAuth
 - [Facebook](https://github.com/vapor-community/Imperial/tree/main/docs/Facebook/README.md)
 - [Keycloak](https://github.com/vapor-community/Imperial/tree/main/docs/Keycloak/README.md)
 - [Discord](https://github.com/vapor-community/Imperial/tree/main/docs/Discord/README.md)
+- [Auth0](https://github.com/vapor-community/Imperial/tree/main/docs/Auth0/README.md)
