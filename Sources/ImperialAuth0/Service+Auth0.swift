@@ -1,5 +1,5 @@
 extension OAuthService {
-    public static let auth0 = OAuthService.init(
+    public static let auth0 = OAuthService(
         name: "auth0",
         endpoints: [:]
     )

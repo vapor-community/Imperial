@@ -43,8 +43,9 @@ This provides you with an OAuth Client ID and secret you can provide to Imperial
 
 ## Imperial Integration
 
-You can use Auth0 with the `ImperialAuth-` package. This expects two environment variables:
+You can use Auth0 with the `ImperialAuth0` package. This expects three environment variables:
 
+* `AUTH0_DOMAIN`
 * `AUTH0_CLIENT_ID`
 * `AUTH0_CLIENT_SECRET`
 
