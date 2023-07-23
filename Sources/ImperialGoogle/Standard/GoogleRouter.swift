@@ -34,7 +34,7 @@ public class GoogleRouter: FederatedServiceRouter {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "accounts.google.com"
-        components.path = "/o/oauth2/auth"
+        components.path = "/o/oauth2/v2/auth"
         components.queryItems = [
             clientIDItem,
             redirectURIItem,
