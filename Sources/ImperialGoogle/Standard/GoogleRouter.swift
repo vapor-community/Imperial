@@ -42,6 +42,10 @@ public class GoogleRouter: FederatedServiceRouter {
             codeResponseTypeItem,
             accessTypeItem
         ]
+
+        if accessType == .offline {
+            components.queryItems?.append(promptItem)
+        }
         
         guard let url = components.url else {
             throw Abort(.internalServerError)
@@ -59,6 +63,10 @@ public class GoogleRouter: FederatedServiceRouter {
 
     public var accessTypeItem: URLQueryItem {
         .init(name: "access_type", value: accessType.rawValue)
+    }
+
+    public var promptItem: URLQueryItem {
+        .init(name: "prompt", value: "consent")
     }
 
 }
