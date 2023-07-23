@@ -8,6 +8,7 @@ public class GoogleRouter: FederatedServiceRouter {
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public let service: OAuthService = .google
+    public var accessType: GoogleAccessType = .online
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .urlEncodedForm
@@ -19,6 +20,15 @@ public class GoogleRouter: FederatedServiceRouter {
         self.callbackURL = callback
         self.callbackCompletion = completion
     }
+
+    public convenience init(
+        callback: String, 
+        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>), 
+        accessType: GoogleAccessType
+    ) throws {
+        try self.init(callback: callback, completion: completion)
+        self.accessType = accessType
+    }
     
     public func authURL(_ request: Request) throws -> String {        
         var components = URLComponents()
@@ -29,7 +39,8 @@ public class GoogleRouter: FederatedServiceRouter {
             clientIDItem,
             redirectURIItem,
             scopeItem,
-            codeResponseTypeItem
+            codeResponseTypeItem,
+            accessTypeItem
         ]
         
         guard let url = components.url else {
@@ -44,6 +55,10 @@ public class GoogleRouter: FederatedServiceRouter {
                            clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,
                            redirectURI: callbackURL)
+    }
+
+    public var accessTypeItem: URLQueryItem {
+        .init(name: "access_type", value: accessType.rawValue)
     }
 
 }
