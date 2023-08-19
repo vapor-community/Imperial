@@ -1,10 +1,10 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.8
 import PackageDescription
 
 let package = Package(
     name: "Imperial",
     platforms: [
-       .macOS(.v10_15)
+        .macOS(.v12)
     ],
     products: [
         .library(name: "ImperialCore", targets: ["ImperialCore"]),

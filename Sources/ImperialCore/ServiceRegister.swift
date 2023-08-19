@@ -21,8 +21,8 @@ extension RoutesBuilder {
         callback: String,
         scope: [String] = [],
         completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
-    ) throws where OAuthProvider: FederatedService {
-        _ = try OAuthProvider(
+    ) throws -> OAuthProvider where OAuthProvider: FederatedService {
+        return try OAuthProvider(
             routes: self,
             authenticate: authUrl,
             authenticateCallback: authenticateCallback,
@@ -50,7 +50,7 @@ extension RoutesBuilder {
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String
-    ) throws where OAuthProvider: FederatedService {
+    ) throws -> OAuthProvider where OAuthProvider: FederatedService {
         try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
             let redirect: Response = request.redirect(to: redirectURL)
             return request.eventLoop.makeSucceededFuture(redirect)

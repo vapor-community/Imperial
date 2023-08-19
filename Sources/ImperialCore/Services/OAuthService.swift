@@ -1,18 +1,8 @@
 import class NIO.ThreadSpecificVariable
 import Vapor
 
-fileprivate var services: ThreadSpecificVariable<OAuthServiceContainer> = .init(value: .init())
-
 /// Represents a service that interacts with an OAuth provider.
 public struct OAuthService: Codable, Content {
-
-    /// The services that are available for use in the application.
-    /// Services are added and fetched with the `Service.register` and `.get` static methods.
-    private static var services: OAuthServiceContainer {
-        get { ImperialCore.services.currentValue! }
-        set { ImperialCore.services.currentValue  = newValue }
-    }
-
 
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
@@ -51,34 +41,8 @@ public struct OAuthService: Codable, Content {
             endpoints[key] = newValue
         }
     }
-    
-    /// Registers a service as available for use.
-    ///
-    /// - Parameter service: The service to register.
+
+    @available(*, deprecated, message: "Register OAuth services with app.storage ")
     public static func register(_ service: OAuthService) {
-        #warning("It would be nice if this method could be internal")
-        self.services[service.name] = service
-    }
-    
-    /// Gets a service if it is available for use.
-    ///
-    /// - Parameter name: The name of the service to fetch.
-    /// - Returns: The service that matches the name passed in.
-    /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
-    public static func get(service name: String) throws -> OAuthService {
-        return try self.services[name].value(or: ServiceError.noServiceFound(name))
-    }
-}
-
-private final class OAuthServiceContainer {
-    var services: [String: OAuthService]
-
-    init() {
-        self.services = [:]
-    }
-
-    subscript(service: String) -> OAuthService? {
-        get { self.services[service] }
-        set { self.services[service] = newValue }
     }
 }
