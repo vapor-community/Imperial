@@ -13,7 +13,7 @@ public class Mixcloud: FederatedService {
         authenticateCallback: ((Request)throws -> (Future<Void>))?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) async throws -> Response
     ) throws {
         self.router = try MixcloudRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens

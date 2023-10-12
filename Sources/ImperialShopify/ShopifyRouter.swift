@@ -3,13 +3,13 @@ import Vapor
 public class ShopifyRouter: FederatedServiceRouter {
     
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> Response
     public var scope: [String] = []
     public let callbackURL: String
     public var accessTokenURL: String = ""
     public let service: OAuthService = .shopify
     
-    required public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    required public init(callback: String, completion: @escaping (Request, String) async throws -> Response) async throws {
         self.tokens = try ShopifyAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -25,7 +25,7 @@ public class ShopifyRouter: FederatedServiceRouter {
         return try authURLFrom(shop, nonce: nonce).absoluteString
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any Content {
         ShopifyCallbackBody(code: code,
                             clientId: tokens.clientID,
                             clientSecret: tokens.clientSecret)
@@ -66,22 +66,17 @@ public class ShopifyRouter: FederatedServiceRouter {
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: Any errors that occur in the implementation code.
-    public func callback(_ request: Request) throws -> EventLoopFuture<Response> {
-        return try self.fetchToken(from: request).flatMap { accessToken in
-            let session = request.session
-            do {
-				guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
+    public func callback(_ request: Request) async throws -> Response {
+        let accessToken = try await self.fetchToken(from: request)
+        let session = request.session
+            
+        guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
 
-				try session.setAccessToken(accessToken)
-				try session.setShopDomain(domain)
-				try session.setNonce(nil)
-                return try self.callbackCompletion(request, accessToken).flatMap { response in
-					return response.encodeResponse(for: request)
-                }
-            } catch {
-                return request.eventLoop.makeFailedFuture(error)
-            }
-        }
+        try session.setAccessToken(accessToken)
+        try session.setShopDomain(domain)
+        try session.setNonce(nil)
+        return try await self.callbackCompletion(request, accessToken)
+        
 	}
     
     private func authURLFrom(_ shop: String, nonce: String) throws -> URL {
