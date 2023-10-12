@@ -6,7 +6,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (EventLoopFuture<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> Response
     public var scope: [String] = []
     public let callbackURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
@@ -16,8 +16,8 @@ public class MicrosoftRouter: FederatedServiceRouter {
     
     public required init(
         callback: String,
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    ) throws {
+        completion: @escaping (Request, String) async throws -> Response
+    ) async throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -44,7 +44,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
         return url.absoluteString
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any Content {
         MicrosoftCallbackBody(code: code,
                               clientId: tokens.clientID,
                               clientSecret: tokens.clientSecret,

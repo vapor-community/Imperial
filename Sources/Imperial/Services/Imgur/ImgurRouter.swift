@@ -3,12 +3,12 @@ import Foundation
 
 public class ImgurRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> Response
     public var scope: [String] = []
     public var callbackURL: String
     public let accessTokenURL: String = "https://api.imgur.com/oauth2/token"
 
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> Response) throws {
         self.tokens = try ImgurAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -20,7 +20,7 @@ public class ImgurRouter: FederatedServiceRouter {
             "response_type=code"
     }
 
-    public func fetchToken(from request: Request)throws -> Future<String> {
+    public func fetchToken(from request: Request) async throws -> String {
         let code: String
         if let queryCode: String = try request.query.get(at: "code") {
             code = queryCode
@@ -50,8 +50,8 @@ public class ImgurRouter: FederatedServiceRouter {
         }
     }
 
-    public func callback(_ request: Request)throws -> Future<Response> {
-        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
+    public func callback(_ request: Request) async throws -> Response {
+        return try self.fetchToken(from: request).flatMap(to: Response.self) { accessToken in
             let session = try request.session()
 
             session.setAccessToken(accessToken)

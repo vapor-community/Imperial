@@ -2,6 +2,8 @@
 import Vapor
 
 public class Dropbox: FederatedService {
+
+    
     public var tokens: FederatedServiceTokens
     public var router: FederatedServiceRouter
     
@@ -9,16 +11,16 @@ public class Dropbox: FederatedService {
     public required init(
         routes: RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
+        authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    ) throws {
+        completion: @escaping (Request, String) async throws -> Response
+    ) async throws {
         self.router = try DropboxRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        try await self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
         OAuthService.register(.dropbox)
     }

@@ -8,10 +8,10 @@ public class Imgur: FederatedService {
     public required init(
         router: Router,
         authenticate: String,
-        authenticateCallback: ((Request)throws -> (Future<Void>))?,
+        authenticateCallback: ((Request) async throws -> Void?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) async throws -> Response
     ) throws {
         self.router = try ImgurRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
