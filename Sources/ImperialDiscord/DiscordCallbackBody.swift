@@ -8,7 +8,6 @@ struct DiscordCallbackBody: Content {
     let grantType: String
     let code: String
     let redirectUri: String
-    let scope: String
 
     enum CodingKeys: String, CodingKey {
         case clientId = "client_id"
@@ -16,6 +15,5 @@ struct DiscordCallbackBody: Content {
         case grantType = "grant_type"
         case code
         case redirectUri = "redirect_uri"
-        case scope
     }
 }

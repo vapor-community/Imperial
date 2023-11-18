@@ -15,3 +15,9 @@ You can use Discord with the `ImperialDiscord` package. This expects two environ
 Additionally you must set `DiscordRouter.callbackURL` to an valid Redirect URL you added in the Developer Portal.
 
 You can then register the OAuth provider like normal.
+
+### References
+
+Some potentially useful references:
+
+* [Discord OAuth2 scopes](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes)
