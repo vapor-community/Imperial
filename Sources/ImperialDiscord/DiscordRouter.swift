@@ -1,13 +1,13 @@
-import Vapor
 import Foundation
+import Vapor
 
 public class DiscordRouter: FederatedServiceRouter {
-
     public static var baseURL: String = "https://discord.com/"
     public static var callbackURL: String = "callback"
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
+    public var requiredScopes = ["identify"]
     public let callbackURL: String
     public let accessTokenURL: String = "\(DiscordRouter.baseURL.finished(with: "/"))api/oauth2/token"
     public let service: OAuthService = .discord
@@ -20,6 +20,7 @@ public class DiscordRouter: FederatedServiceRouter {
     }
 
     public func authURL(_ request: Request) throws -> String {
+        let allScopes = scope + requiredScopes
 
         var components = URLComponents()
         components.scheme = "https"
@@ -27,9 +28,9 @@ public class DiscordRouter: FederatedServiceRouter {
         components.path = "/api/oauth2/authorize"
         components.queryItems = [
             clientIDItem,
-            .init(name: "redirect_uri", value: DiscordRouter.callbackURL),
+            .init(name: "redirect_uri", value: callbackURL),
             .init(name: "response_type", value: "code"),
-            scopeItem
+            .init(name: "scope", value: allScopes.joined(separator: " "))
         ]
 
         guard let url = components.url else {
@@ -45,9 +46,7 @@ public class DiscordRouter: FederatedServiceRouter {
             clientSecret: tokens.clientSecret,
             grantType: "authorization_code",
             code: code,
-            redirectUri: DiscordRouter.callbackURL,
-            scope: scope.joined(separator: " ")
+            redirectUri: callbackURL
         )
     }
-
 }
