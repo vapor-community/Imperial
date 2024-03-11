@@ -84,7 +84,7 @@ extension Session {
     public func get<T>(_ key: String, as type: T.Type) throws -> T where T: Codable {
         guard let stored = data[key] else {
             if _isOptional(T.self) { return Optional<Void>.none as! T }
-            throw Abort(.internalServerError, reason: "No element found in session with ket '\(key)'")
+            throw Abort(.internalServerError, reason: "No element found in session with key '\(key)'")
         }
         return try JSONDecoder().decode(T.self, from: Data(stored.utf8))
     }
