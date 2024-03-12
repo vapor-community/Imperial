@@ -92,13 +92,13 @@ extension FederatedServiceRouter {
     
     public func fetchToken(from request: Request) throws -> EventLoopFuture<String> {
         let code: String
+        let codeError = ImperialError.missingCodeKey
+      
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
         } else if let error: String = try request.query.get(at: errorKey) {
             throw Abort(.badRequest, reason: error)
-        } else {
-            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
-        }
+        } else { throw codeError }
         
         let body = callbackBody(with: code)
         let url = URI(string: accessTokenURL)
