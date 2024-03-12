@@ -12,11 +12,11 @@ public final class Shopify: FederatedService {
         routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
-        callback: String,
+        redirectURL: String,
         scope: [String],
         completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
-        self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
+        self.shopifyRouter = try ShopifyRouter(redirectURL: redirectURL, completion: completion)
         self.shopifyRouter.scope = scope
 
         try self.router.configureRoutes(

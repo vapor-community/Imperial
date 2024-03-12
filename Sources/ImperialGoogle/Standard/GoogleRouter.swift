@@ -5,7 +5,7 @@ public class GoogleRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public let service: OAuthService = .google
     public let callbackHeaders: HTTPHeaders = {
@@ -14,9 +14,9 @@ public class GoogleRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GoogleAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
     
@@ -43,7 +43,7 @@ public class GoogleRouter: FederatedServiceRouter {
         GoogleCallbackBody(code: code,
                            clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,
-                           redirectURI: callbackURL)
+                           redirectURI: redirectURL)
     }
 
 }

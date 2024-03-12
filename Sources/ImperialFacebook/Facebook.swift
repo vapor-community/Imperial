@@ -10,11 +10,11 @@ public class Facebook: FederatedService {
         routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
-        callback: String,
+        redirectURL: String,
         scope: [String] = [],
         completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
-        self.router = try FacebookRouter(callback: callback, completion: completion)
+        self.router = try FacebookRouter(redirectURL: redirectURL, completion: completion)
         self.tokens = self.router.tokens
 
         self.router.scope = scope

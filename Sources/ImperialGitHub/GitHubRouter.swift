@@ -7,7 +7,7 @@ public class GitHubRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public let accessTokenURL: String = "\(GitHubRouter.baseURL.finished(with: "/"))login/oauth/access_token"
     public let service: OAuthService = .github
     public let callbackHeaders: HTTPHeaders = {
@@ -16,9 +16,9 @@ public class GitHubRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GitHubAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
     

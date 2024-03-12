@@ -8,7 +8,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     public var tokens: FederatedServiceTokens
     public var callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public var callbackURL: String
+    public var redirectURL: String
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public var authURL: String
     public let service: OAuthService = .googleJWT
@@ -18,10 +18,10 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     
-    public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try GoogleJWTAuth()
-        self.callbackURL = callback
-        self.authURL = callback
+        self.redirectURL = redirectURL
+        self.authURL = redirectURL
         self.callbackCompletion = completion
     }
     
@@ -48,7 +48,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     }
     
     public func authenticate(_ request: Request) throws -> EventLoopFuture<Response> {
-        let redirect: Response = request.redirect(to: self.callbackURL)
+        let redirect: Response = request.redirect(to: self.redirectURL)
         return request.eventLoop.makeSucceededFuture(redirect)
     }
     

@@ -5,12 +5,12 @@ public class ImgurRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
-    public var callbackURL: String
+    public var redirectURL: String
     public let accessTokenURL: String = "https://api.imgur.com/oauth2/token"
 
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try ImgurAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 

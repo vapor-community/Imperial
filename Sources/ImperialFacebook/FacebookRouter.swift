@@ -6,7 +6,7 @@ public class FacebookRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public var accessTokenURL: String = "https://graph.facebook.com/v3.2/oauth/access_token"
     public let service: OAuthService = .facebook
 
@@ -29,9 +29,9 @@ public class FacebookRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try FacebookAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 
@@ -39,7 +39,7 @@ public class FacebookRouter: FederatedServiceRouter {
         FacebookCallbackBody(code: code,
                              clientId: tokens.clientID,
                              clientSecret: tokens.clientSecret,
-                             redirectURI: callbackURL)
+                             redirectURI: redirectURL)
     }
 
 }

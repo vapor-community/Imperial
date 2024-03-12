@@ -8,14 +8,14 @@ public class DiscordRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public let accessTokenURL: String = "\(DiscordRouter.baseURL.finished(with: "/"))api/oauth2/token"
     public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try DiscordAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 
