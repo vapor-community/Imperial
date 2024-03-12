@@ -36,9 +36,9 @@ extension Session {
     /// - Returns: The access token stored with the `access_token` key.
     /// - Throws: `Abort.unauthorized` if no access token exists.
     public func accessToken() throws -> String {
+        let notauthenticatedError = SessionError.usernotAuthenticated
         guard let token = try? get(Keys.token, as: String.self) else {
-            throw Abort(.unauthorized, reason: "User currently not authenticated")
-        }
+            throw notauthenticatedError }
         return token
     }
 	
@@ -54,10 +54,10 @@ extension Session {
     /// - Returns: The refresh token stored with the `refresh_token` key.
     /// - Throws: `Abort.unauthorized` if no refresh token exists.
     public func refreshToken()throws -> String {
+      let notauthenticatedError = SessionError.usernotAuthenticated
         guard let token = self.data[Keys.refresh] else {
-            if self.data[Keys.token] == nil {
-                throw Abort(.unauthorized, reason: "User currently not authenticated")
-            } else {
+            if self.data[Keys.token] == nil { throw notauthenticatedError }
+            else {
                 let oauthData = self.data["access_token_service"]?.data(using: .utf8) ?? Data()
                 let oauth = try? JSONSerialization.jsonObject(with: oauthData, options: [])
                 let oauthName = (oauth as? NSDictionary)?["name"] ?? "???"
@@ -82,9 +82,10 @@ extension Session {
     /// - Returns: The JSON from the session, decoded to the type passed in.
     /// - Throws: Errors when no object is stored in the session with the given key, or decoding fails.
     public func get<T>(_ key: String, as type: T.Type) throws -> T where T: Codable {
+        let keynotfoundError = SessionError.keynotFound(key)
         guard let stored = data[key] else {
             if _isOptional(T.self) { return Optional<Void>.none as! T }
-            throw Abort(.internalServerError, reason: "No element found in session with ket '\(key)'")
+            throw keynotfoundError
         }
         return try JSONDecoder().decode(T.self, from: Data(stored.utf8))
     }

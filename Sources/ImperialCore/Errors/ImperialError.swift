@@ -9,10 +9,11 @@ public enum ImperialError: Error, CustomStringConvertible {
     /// no JSON in the response from the the request to `dataUri`.
     case missingJSONFromResponse(String)
     
-    
-    
     /// Thrown when `request.fetch` is called with a type that has not been run through `request.create`.
     case typeNotInitialized(String)
+  
+    /// Thrown when `code` is missing from within the authentication URL query
+    case missingCodeKey
     
     /// A human readable version of the error thrown.
     public var description: String {
@@ -20,6 +21,7 @@ public enum ImperialError: Error, CustomStringConvertible {
         case let .missingEnvVar(variable): return "Missing enviroment variable '\(variable)'"
         case let .missingJSONFromResponse(uri): return "Reponse returned from '\(uri)' does not contain JSON"
         case let .typeNotInitialized(type): return "No instence of type '\(type)' has been created"
+        case .missingCodeKey: return "Missing 'code' key in URL query"
         }
     }
 }
