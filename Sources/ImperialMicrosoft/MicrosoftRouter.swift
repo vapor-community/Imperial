@@ -8,18 +8,18 @@ public class MicrosoftRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
     public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
     public let service: OAuthService = .microsoft
     public let errorKey = "error_description"
     
     public required init(
-        callback: String,
+        redirectURL: String,
         completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
         self.tokens = try MicrosoftAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 
@@ -48,7 +48,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
         MicrosoftCallbackBody(code: code,
                               clientId: tokens.clientID,
                               clientSecret: tokens.clientSecret,
-                              redirectURI: callbackURL,
+                              redirectURI: redirectURL,
                               scope: scope.joined(separator: " "))
     }
     

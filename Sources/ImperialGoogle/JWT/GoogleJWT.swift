@@ -9,11 +9,11 @@ public class GoogleJWT: FederatedService {
         routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
-        callback: String,
+        redirectURL: String,
         scope: [String] = [],
         completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
-        self.router = try GoogleJWTRouter(callback: callback, completion: completion)
+        self.router = try GoogleJWTRouter(redirectURL: redirectURL, completion: completion)
         self.tokens = self.router.tokens
         
         self.router.scope = scope

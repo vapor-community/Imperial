@@ -8,7 +8,7 @@ public class Auth0Router: FederatedServiceRouter {
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = [ ]
     public var requiredScopes = [ "openid" ]
-    public let callbackURL: String
+    public let redirectURL: String
     public let accessTokenURL: String
     public var service: OAuthService = .auth0
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
@@ -17,12 +17,12 @@ public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
     
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         let auth = try Auth0Auth()
         self.tokens = auth
         self.baseURL = "https://\(auth.domain)"
         self.accessTokenURL = baseURL.finished(with: "/") + "oauth/token"
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
     
@@ -32,7 +32,7 @@ public class Auth0Router: FederatedServiceRouter {
         var params=[
             "response_type=code",
             "client_id=\(self.tokens.clientID)",
-            "redirect_uri=\(self.callbackURL)",
+            "redirect_uri=\(self.redirectURL)",
         ]
 
         let allScopes = self.scope + self.requiredScopes
@@ -49,6 +49,6 @@ public class Auth0Router: FederatedServiceRouter {
         Auth0CallbackBody(clientId: self.tokens.clientID,
                           clientSecret: self.tokens.clientSecret,
                           code: code,
-                          redirectURI: self.callbackURL)
+                          redirectURI: self.redirectURL)
     }
 }

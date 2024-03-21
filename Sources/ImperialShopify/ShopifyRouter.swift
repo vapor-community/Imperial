@@ -1,17 +1,18 @@
 import Vapor
 
 public class ShopifyRouter: FederatedServiceRouter {
+  
     
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public var accessTokenURL: String = ""
     public let service: OAuthService = .shopify
     
-    required public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    required public init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try ShopifyAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
     
@@ -87,7 +88,7 @@ public class ShopifyRouter: FederatedServiceRouter {
     private func authURLFrom(_ shop: String, nonce: String) throws -> URL {
         return URL(string: "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" +
             "scope=\(scope.joined(separator: ","))&" +
-            "redirect_uri=\(callbackURL)&" +
+            "redirect_uri=\(redirectURL)&" +
             "state=\(nonce)")!
     }
     

@@ -5,12 +5,12 @@ public class DeviantArtRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
-    public var callbackURL: String
+    public var redirectURL: String
     public let accessTokenURL: String = "https://www.deviantart.com/oauth2/token"
 
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try DeviantArtAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 
@@ -23,7 +23,7 @@ public class DeviantArtRouter: FederatedServiceRouter {
         }
         return "https://www.deviantart.com/oauth2/authorize?" +
             "client_id=\(self.tokens.clientID)&" +
-            "redirect_uri=\(self.callbackURL)&\(scope)" +
+            "redirect_uri=\(self.redirectURL)&\(scope)" +
             "response_type=code"
     }
 
@@ -37,7 +37,7 @@ public class DeviantArtRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
 
-        let body = DeviantArtCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
+        let body = DeviantArtCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.redirectURL)
         return try body.encode(using: request).flatMap(to: Response.self) { request in
             guard let url = URL(string: self.accessTokenURL) else {
                 throw Abort(.internalServerError, reason: "Unable to convert String '\(self.accessTokenURL)' to URL")

@@ -5,7 +5,7 @@ public class DropboxRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []
-    public let callbackURL: String
+    public let redirectURL: String
     public let accessTokenURL: String = "https://api.dropboxapi.com/oauth2/token"
     
     public var callbackHeaders: HTTPHeaders {
@@ -17,9 +17,9 @@ public class DropboxRouter: FederatedServiceRouter {
     
     public let service: OAuthService = .dropbox
     
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
         self.tokens = try DropboxAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
     
@@ -43,8 +43,7 @@ public class DropboxRouter: FederatedServiceRouter {
     }
     
     public func callbackBody(with code: String) -> ResponseEncodable {
-        DropboxCallbackBody(code: code,
-                            redirectURI: callbackURL)
+        DropboxCallbackBody(code: code, redirectURI: redirectURL)
     }
     
 }

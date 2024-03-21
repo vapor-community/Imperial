@@ -5,19 +5,19 @@ public class MixcloudRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
     public var scope: [String] = []
-    public var callbackURL: String
+    public var redirectURL: String
     public let accessTokenURL: String = "https://www.mixcloud.com/oauth/access_token"
 
-    public required init(callback: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
+    public required init(redirectURL: String, completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)) throws {
         self.tokens = try MixcloudAuth()
-        self.callbackURL = callback
+        self.redirectURL = redirectURL
         self.callbackCompletion = completion
     }
 
     public func authURL(_ request: Request) throws -> String {
         return "https://www.mixcloud.com/oauth/authorize?" +
             "client_id=\(self.tokens.clientID)&" +
-            "redirect_uri=\(self.callbackURL)"
+            "redirect_uri=\(self.redirectURL)"
     }
 
     public func fetchToken(from request: Request)throws -> Future<String> {
@@ -30,7 +30,7 @@ public class MixcloudRouter: FederatedServiceRouter {
             throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
         }
 
-        let body = MixcloudCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.callbackURL)
+        let body = MixcloudCallbackBody(code: code, clientId: self.tokens.clientID, clientSecret: self.tokens.clientSecret, redirectURI: self.redirectURL)
         return try request
         .client()
         .get(self.accessTokenURL) { request in

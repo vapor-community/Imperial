@@ -26,7 +26,7 @@ public protocol FederatedServiceRouter {
     var service: OAuthService { get }
     
     /// The URL (or URI) for that route that the provider will fire when the user authenticates with the OAuth provider.
-    var callbackURL: String { get }
+    var redirectURL: String { get }
     
     /// HTTPHeaders for the Callback request
     var callbackHeaders: HTTPHeaders { get }
@@ -43,7 +43,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws
+    init(redirectURL: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///
@@ -78,7 +78,7 @@ extension FederatedServiceRouter {
     public var callbackHeaders: HTTPHeaders { [:] }
    
     public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: RoutesBuilder) throws {
-		router.get(callbackURL.pathComponents, use: callback)
+		router.get(redirectURL.pathComponents, use: callback)
 		router.get(authURL.pathComponents) { req -> EventLoopFuture<Response> in
             let redirect: Response = req.redirect(to: try self.authURL(req))
             guard let authenticateCallback = authenticateCallback else {
@@ -135,7 +135,7 @@ extension FederatedServiceRouter {
     }
     
     public var redirectURIItem: URLQueryItem {
-        .init(name: "redirect_uri", value: callbackURL)
+        .init(name: "redirect_uri", value: redirectURL)
     }
     
     public var scopeItem: URLQueryItem {
