@@ -5,7 +5,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (Future<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> Response
     public var scope: [String] = []
     public let callbackURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
@@ -13,7 +13,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
 
     public required init(
         callback: String,
-        completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) assync throws -> Response
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
@@ -30,7 +30,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
             + "prompt=consent"
     }
     
-    public func fetchToken(from request: Request)throws -> Future<String> {
+    public func fetchToken(from request: Request) async throws -> String {
         let code: String
 
         if let queryCode: String = try request.query.get(at: "code") {
@@ -66,8 +66,8 @@ public class MicrosoftRouter: FederatedServiceRouter {
         }
     }
     
-    public func callback(_ request: Request)throws -> Future<Response> {
-        return try self.fetchToken(from: request).flatMap(to: ResponseEncodable.self) { accessToken in
+    public func callback(_ request: Request) async throws -> Response {
+        return try self.fetchToken(from: request).flatMap(to: Response.self) { accessToken in
             let session = try request.session()
             
             session.setAccessToken(accessToken)

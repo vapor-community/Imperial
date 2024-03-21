@@ -3,7 +3,7 @@ import Foundation
 
 public class GoogleRouter: FederatedServiceRouter {
     public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> Response
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
@@ -14,7 +14,7 @@ public class GoogleRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> Response) throws {
         self.tokens = try GoogleAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -39,7 +39,7 @@ public class GoogleRouter: FederatedServiceRouter {
         return url.absoluteString
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any Content {
         GoogleCallbackBody(code: code,
                            clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,

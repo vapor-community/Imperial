@@ -1,6 +1,6 @@
 import Vapor
 
-struct GitHubCallbackBody: Content {
+public struct GitHubCallbackBody: Content {
     let clientId: String
     let clientSecret: String
     let code: String
