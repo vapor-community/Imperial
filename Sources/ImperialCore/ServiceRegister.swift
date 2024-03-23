@@ -17,12 +17,12 @@ extension RoutesBuilder {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))? = nil,
+        authenticateCallback: ((Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
-    ) throws where OAuthProvider: FederatedService {
-        _ = try OAuthProvider(
+        completion: @escaping (Request, String) async throws -> Response
+    ) async throws where OAuthProvider: FederatedService {
+        _ = try await OAuthProvider(
             routes: self,
             authenticate: authUrl,
             authenticateCallback: authenticateCallback,
@@ -46,14 +46,14 @@ extension RoutesBuilder {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))? = nil,
+        authenticateCallback: ((Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String
-    ) throws where OAuthProvider: FederatedService {
-        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
+    ) async throws where OAuthProvider: FederatedService {
+        try await self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
             let redirect: Response = request.redirect(to: redirectURL)
-            return request.eventLoop.makeSucceededFuture(redirect)
+            return redirect
         }
     }
 }

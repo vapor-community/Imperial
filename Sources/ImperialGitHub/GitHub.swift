@@ -9,16 +9,16 @@ public class GitHub: FederatedService {
     public required init(
         routes: RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
+        authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    ) throws {
-        self.router = try GitHubRouter(callback: callback, completion: completion)
+        completion: @escaping (Request, String) async throws -> Response
+    ) async throws {
+        self.router = try await GitHubRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
 
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        try await self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
         OAuthService.register(.github)
     }
