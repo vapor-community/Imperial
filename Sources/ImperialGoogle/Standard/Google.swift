@@ -7,6 +7,7 @@ public class Google: FederatedService {
     
     @discardableResult
     public required init(
+        grouped: [PathComponent],
         routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
@@ -18,7 +19,7 @@ public class Google: FederatedService {
         self.tokens = self.router.tokens
         
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        try self.router.configureRoutes(grouped: grouped, withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
         OAuthService.register(.google)
     }

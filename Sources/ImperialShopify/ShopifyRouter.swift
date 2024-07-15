@@ -1,7 +1,6 @@
 import Vapor
 
 public class ShopifyRouter: FederatedServiceRouter {
-    
     public let tokens: FederatedServiceTokens
     public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     public var scope: [String] = []

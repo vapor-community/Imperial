@@ -6,6 +6,7 @@ public class Imgur: FederatedService {
 
     @discardableResult
     public required init(
+        grouped: [PathComponent],
         router: Router,
         authenticate: String,
         authenticateCallback: ((Request)throws -> (Future<Void>))?,
@@ -17,7 +18,7 @@ public class Imgur: FederatedService {
         self.tokens = self.router.tokens
 
         self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
+        try self.router.configureRoutes(grouped: grouped, withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
 
         OAuthService.register(.imgur)
     }
