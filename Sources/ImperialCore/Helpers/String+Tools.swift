@@ -10,6 +10,7 @@ extension String {
                 .filter{ $0 != "/" }
                 .map{ .init(stringLiteral: $0) }
             if !grouped.isEmpty {
+                // find duplicate components at head of path
                 var indexes = IndexSet()
                 for (i, groupComponent) in grouped.enumerated() {
                     if i < pathComponentArray.count && groupComponent == pathComponentArray[i] {
@@ -18,7 +19,7 @@ extension String {
                         break   // after first component mismatch
                     }
                 }
-                // remove components at indexes in reverse order
+                // remove components
                 for index in indexes.reversed() {
                     pathComponentArray.remove(at: index)
                 }

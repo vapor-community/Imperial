@@ -1,6 +1,5 @@
 import XCTest
 @testable import ImperialCore
-@testable import Vapor
 
 class ImperialTests: XCTestCase {
     func testExists() {}

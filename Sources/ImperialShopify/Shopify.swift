@@ -9,7 +9,7 @@ public final class Shopify: FederatedService {
     public var shopifyRouter: ShopifyRouter
 
     public init(
-        grouped: [PathComponent] = [],
+        grouped: [PathComponent],
         routes: RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
