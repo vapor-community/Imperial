@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Imperial",
     platforms: [
-       .macOS(.v10_15)
+       .macOS(.v13)
     ],
     products: [
         .library(name: "ImperialCore", targets: ["ImperialCore"]),
@@ -39,7 +39,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0")
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0-rc.1")
     ],
     targets: [
         .target(
