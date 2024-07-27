@@ -1,39 +1,11 @@
 name: test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  
+  pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
+  push: { branches: [ main ] }
+
 jobs:
-  macos:
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: [latest, latest-stable]
-    runs-on: macos-latest
-    steps:
-      - name: Select latest available Xcode
-        uses: maxim-lobanov/setup-xcode@v1.1
-        with: { 'xcode-version': '${{ matrix.xcode }}' }
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Run tests with Thread Sanitizer
-        run: swift test --enable-test-discovery --sanitize=thread
-  linux:
-    strategy:
-      fail-fast: false
-      matrix:
-        swiftver:
-          - swift:5.10
-        swiftos:
-          - jammy
-          - mantic
-          - focal
-    container: ${{ format('{0}-{1}', matrix.swiftver, matrix.swiftos) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Run tests with Thread Sanitizer
-        run: swift test --enable-test-discovery --sanitize=thread
+  unit-tests:
+     uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
