@@ -34,10 +34,10 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     }
     
     public func fetchToken(from request: Request) async throws -> String {
-        let token = try self.jwt()
+        let token = try await self.jwt()
         
         let body = callbackBody(with: token)
-		let url = URI(string: self.accessTokenURL)
+        let url = URI(string: self.accessTokenURL)
         let buffer = try ByteBuffer(data:JSONEncoder().encode(body))
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
         return try response.content.get(GoogleJWTResponse.self).accessToken
@@ -48,7 +48,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return redirect
     }
     
-    public func jwt() throws -> String {
+    public func jwt() async throws -> String {
         let payload = GoogleJWTPayload(
             iss: IssuerClaim(value: self.tokens.clientID),
             scope: self.scope.joined(separator: " "),
@@ -56,10 +56,10 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
             iat: IssuedAtClaim(value: Date()),
             exp: ExpirationClaim(value: Date().addingTimeInterval(3600))
         )
-        
-        let pk = try RSAKey.private(pem: self.tokens.clientSecret.utf8)
-        let signer = JWTSigner.rs256(key: pk)
-        let jwtData = try signer.sign(payload)
+        let pk = try Insecure.RSA.PrivateKey(pem: self.tokens.clientSecret)
+        let keys = JWTKeyCollection()
+        await keys.add(rsa: pk, digestAlgorithm: .sha256)
+        let jwtData = try await keys.sign(payload)
         return jwtData
     }
 }
