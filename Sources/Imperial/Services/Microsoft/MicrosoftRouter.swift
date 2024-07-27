@@ -13,7 +13,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
 
     public required init(
         callback: String,
-        completion: @escaping (Request, String) assync throws -> Response
+        completion: @escaping (Request, String) async throws -> Response
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
