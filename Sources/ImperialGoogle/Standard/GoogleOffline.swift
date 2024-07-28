@@ -1,7 +1,7 @@
 @_exported import ImperialCore
 import Vapor
 
-public class Google: FederatedService {
+public class GoogleOffline: FederatedService {
     public var tokens: FederatedServiceTokens
     public var router: FederatedServiceRouter
     
@@ -14,7 +14,7 @@ public class Google: FederatedService {
         scope: [String] = [],
         completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
     ) throws {
-        self.router = try GoogleRouter(callback: callback, completion: completion, accessType: .online)
+        self.router = try GoogleRouter(callback: callback, completion: completion, accessType: .offline)
         self.tokens = self.router.tokens
         
         self.router.scope = scope

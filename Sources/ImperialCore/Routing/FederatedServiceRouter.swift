@@ -108,6 +108,9 @@ extension FederatedServiceRouter {
             .flatMap { buffer in
                 return request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
             }.flatMapThrowing { response in
+                if let refreshToken = try? response.content.get(String.self, at: ["refresh_token"]), !refreshToken.isEmpty {
+                    request.session.setRefreshToken(refreshToken)
+                }
                 return try response.content.get(String.self, at: ["access_token"])
             }
     }
