@@ -38,4 +38,22 @@ public class RestreamRouter: FederatedServiceRouter {
             redirectURI: callbackURL
         )
     }
+
+    public func fetchToken(from request: Request) async throws -> String {
+        let code: String
+
+        if let queryCode: String = try request.query.get(at: "code") {
+            code = queryCode
+        } else if let error: String = try request.query.get(at: "error_description") {
+            throw Abort(.badRequest, reason: error)
+        } else {
+            throw Abort(.badRequest, reason: "Missing 'code' key in URL query")
+        }
+        
+        let body = callbackBody(with: code)
+        let url = URI(string: self.accessTokenURL)
+        let buffer = try ByteBuffer(data:JSONEncoder().encode(body))
+        let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
+        return try response.content.get(RestreamResponse.self).accessToken
+    } 
 }
