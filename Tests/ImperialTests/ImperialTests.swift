@@ -1,6 +1,7 @@
-import XCTest
+import Testing
+
 @testable import ImperialCore
 
-class ImperialTests: XCTestCase {
-    func testExists() {}
+struct ImperialTests {
+    @Test func empty() {}
 }

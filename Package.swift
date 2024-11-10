@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
@@ -56,16 +56,13 @@ let package = Package(
         .target(name: "ImperialMicrosoft", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialShopify", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .testTarget(name: "ImperialTests", dependencies: ["ImperialCore", "ImperialShopify"], swiftSettings: swiftSettings),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )
 
 var swiftSettings: [SwiftSetting] {
     [
         .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("ConciseMagicFile"),
-        .enableUpcomingFeature("ForwardTrailingClosures"),
-        .enableUpcomingFeature("DisableOutwardActorInference"),
-        .enableUpcomingFeature("StrictConcurrency"),
-        .enableExperimentalFeature("StrictConcurrency=complete"),
+        .enableUpcomingFeature("FullTypedThrows"),
     ]
 }
