@@ -9,10 +9,10 @@ public class Auth0: FederatedService {
     public required init(
         routes: any RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
+        authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
+        completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable
     ) throws {
         self.router = try Auth0Router(callback: callback, completion: completion)
         self.tokens = self.router.tokens

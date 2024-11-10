@@ -5,7 +5,7 @@ public class Auth0Router: FederatedServiceRouter {
 
     public let baseURL: String
     public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
+    public let callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = [ ]
     public var requiredScopes = [ "openid" ]
     public let callbackURL: String
@@ -17,7 +17,7 @@ public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
     
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
         let auth = try Auth0Auth()
         self.tokens = auth
         self.baseURL = "https://\(auth.domain)"
@@ -45,7 +45,7 @@ public class Auth0Router: FederatedServiceRouter {
         return rtn
     }
 
-    public func callbackBody(with code: String) -> any ResponseEncodable {
+    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
         Auth0CallbackBody(clientId: self.tokens.clientID,
                           clientSecret: self.tokens.clientSecret,
                           code: code,
