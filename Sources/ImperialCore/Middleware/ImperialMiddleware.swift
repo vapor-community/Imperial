@@ -1,7 +1,7 @@
 import Vapor
 
 /// Protects routes from users without an access token.
-public class ImperialMiddleware: Middleware {
+public struct ImperialMiddleware: AsyncMiddleware {
     
     /// The path to redirect the user to if they are not authenticated.
     let redirectPath: String?
@@ -15,18 +15,17 @@ public class ImperialMiddleware: Middleware {
     
     /// Checks that the request contains an access token. If it does, let the request through. If not, redirect the user to the `redirectPath`.
     /// If the `redirectPath` is `nil`, then throw the error from getting the access token (Abort.unauthorized).
-    public func respond(to request: Request, chainingTo next: any Responder) -> EventLoopFuture<Response> {
+    public func respond(to request: Request, chainingTo next: any AsyncResponder) async throws -> Response {
         do {
             _ = try request.accessToken()
-            return next.respond(to: request)
+            return try await next.respond(to: request)
         } catch let error as Abort where error.status == .unauthorized {
-            guard let redirectPath = redirectPath else {
-                return request.eventLoop.makeFailedFuture(error)
+            guard let redirectPath else {
+                throw error
             }
-            let redirect: Response = request.redirect(to: redirectPath)
-            return request.eventLoop.makeSucceededFuture(redirect)
+            return request.redirect(to: redirectPath)
         } catch let error {
-            return request.eventLoop.makeFailedFuture(error)
+            throw error
         }
     }
 }

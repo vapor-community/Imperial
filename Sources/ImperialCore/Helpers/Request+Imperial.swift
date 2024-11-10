@@ -10,18 +10,16 @@ extension Request {
     ///   - service: The service to get the data from.
     /// - Returns: An instance of the type passed in.
     /// - Throws: Errors from trying to get the access token from the request.
-    func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService, on req: Request) throws -> EventLoopFuture<Model> {
+    func create<Model: FederatedCreatable>(_ model: Model.Type, with service: OAuthService, on req: Request) async throws -> Model {
         let url = try service[model.serviceKey].value(or: ServiceError.noServiceEndpoint(model.serviceKey))
         
         let token = try service.tokenPrefix + req
             .accessToken()
         
-        return req.client.get(URI(string: url), headers: ["Authorization": token]).flatMap { response in
-            return try! model.create(from: response).flatMapThrowing { instance in
-                try self.session.set("imperial-\(model)", to: instance)
-                return instance
-            }
-        }
+        let response = try await req.client.get(URI(string: url), headers: ["Authorization": token])
+        let instance = try await model.init(from: response)
+        try self.session.set("imperial-\(model)", to: instance)
+        return instance
     }
 	
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
