@@ -28,10 +28,10 @@ public class Service: FederatedService {
 public protocol FederatedService {
     
     /// The service's token model for getting the client ID and secret.
-    var tokens: FederatedServiceTokens { get }
+    var tokens: any FederatedServiceTokens { get }
     
     /// The service's router for handling the request for the access token.
-    var router: FederatedServiceRouter { get }
+    var router: any FederatedServiceRouter { get }
     
     /// Creates a service for getting an access token from an OAuth provider.
     ///
@@ -42,5 +42,5 @@ public protocol FederatedService {
     ///   - scope: The scopes to send to the provider to request access to.
     ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
-    init(routes: RoutesBuilder, authenticate: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, callback: String, scope: [String], completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws
+    init(routes: any RoutesBuilder, authenticate: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, callback: String, scope: [String], completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws
 }

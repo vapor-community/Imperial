@@ -20,7 +20,7 @@ extension RoutesBuilder {
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> EventLoopFuture<ResponseEncodable>
+        completion: @escaping (Request, String) throws -> EventLoopFuture<any ResponseEncodable>
     ) throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(
             routes: self,

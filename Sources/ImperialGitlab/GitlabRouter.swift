@@ -5,14 +5,14 @@ public class GitlabRouter: FederatedServiceRouter {
 
     public static var baseURL: String = "https://gitlab.com/"
     public static var callbackURL: String = "callback"
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "\(GitlabRouter.baseURL.finished(with: "/"))oauth/token"
     public let service: OAuthService = .gitlab
     
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws {
         self.tokens = try GitlabAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -37,7 +37,7 @@ public class GitlabRouter: FederatedServiceRouter {
         return url.absoluteString
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any ResponseEncodable {
         GitlabCallbackBody(clientId: tokens.clientID,
                            clientSecret: tokens.clientSecret,
                            code: code,

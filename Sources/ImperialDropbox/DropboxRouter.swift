@@ -2,8 +2,8 @@ import Vapor
 import Foundation
 
 public class DropboxRouter: FederatedServiceRouter {
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "https://api.dropboxapi.com/oauth2/token"
@@ -17,7 +17,7 @@ public class DropboxRouter: FederatedServiceRouter {
     
     public let service: OAuthService = .dropbox
     
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws {
         self.tokens = try DropboxAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -42,7 +42,7 @@ public class DropboxRouter: FederatedServiceRouter {
         return url.absoluteString
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any ResponseEncodable {
         DropboxCallbackBody(code: code,
                             redirectURI: callbackURL)
     }

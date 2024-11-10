@@ -5,8 +5,8 @@ import JWTKit
 
 public final class GoogleJWTRouter: FederatedServiceRouter {
     
-    public var tokens: FederatedServiceTokens
-    public var callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+    public var tokens: any FederatedServiceTokens
+    public var callbackCompletion: (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
     public var scope: [String] = []
     public var callbackURL: String
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
@@ -18,7 +18,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     
-    public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws {
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = callback
         self.authURL = callback
@@ -29,7 +29,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return authURL
     }
     
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any ResponseEncodable {
         return "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(code)"
     }
     

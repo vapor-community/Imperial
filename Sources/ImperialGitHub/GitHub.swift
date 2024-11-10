@@ -2,17 +2,17 @@
 import Vapor
 
 public class GitHub: FederatedService {
-    public var tokens: FederatedServiceTokens
-    public var router: FederatedServiceRouter
+    public var tokens: any FederatedServiceTokens
+    public var router: any FederatedServiceRouter
 
     @discardableResult
     public required init(
-        routes: RoutesBuilder,
+        routes: any RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+        completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)
     ) throws {
         self.router = try GitHubRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens

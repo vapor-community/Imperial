@@ -6,11 +6,11 @@ import Vapor
 public protocol FederatedServiceRouter {
     
     /// A class that gets the client ID and secret from environment variables.
-    var tokens: FederatedServiceTokens { get }
+    var tokens: any FederatedServiceTokens { get }
     
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>) { get }
+    var callbackCompletion: (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>) { get }
     
     /// The scopes to get permission for when getting the access token.
     /// Usage of this property varies by provider.
@@ -43,7 +43,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws
+    init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<any ResponseEncodable>)) throws
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///
@@ -51,7 +51,7 @@ public protocol FederatedServiceRouter {
     ///   - authURL: The URL for the route that will redirect the user to the OAuth provider.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     /// - Throws: N/A
-    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: RoutesBuilder) throws
+    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: any RoutesBuilder) throws
     
     /// Gets an access token from an OAuth provider.
     /// This method is the main body of the `callback` handler.
@@ -61,7 +61,7 @@ public protocol FederatedServiceRouter {
     func fetchToken(from request: Request) throws -> EventLoopFuture<String>
     
     /// Creates CallbackBody with authorization code
-    func callbackBody(with code: String) -> ResponseEncodable
+    func callbackBody(with code: String) -> any ResponseEncodable
     
     /// The route that the OAuth provider calls when the user has been authenticated.
     ///
@@ -77,7 +77,7 @@ extension FederatedServiceRouter {
     public var errorKey: String { "error" }
     public var callbackHeaders: HTTPHeaders { [:] }
    
-    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: RoutesBuilder) throws {
+    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, on router: any RoutesBuilder) throws {
 		router.get(callbackURL.pathComponents, use: callback)
 		router.get(authURL.pathComponents) { req -> EventLoopFuture<Response> in
             let redirect: Response = req.redirect(to: try self.authURL(req))
