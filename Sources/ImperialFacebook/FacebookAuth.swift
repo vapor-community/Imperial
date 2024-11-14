@@ -7,10 +7,14 @@ public class FacebookAuth: FederatedServiceTokens {
     public var clientSecret: String
 
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(FacebookAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(FacebookAuth.secretEnvKey)
+        guard let clientID = Environment.get(FacebookAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(FacebookAuth.idEnvKey)
+        }
+        self.clientID = clientID
 
-        self.clientID = try Environment.get(FacebookAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(FacebookAuth.secretEnvKey).value(or: secretError)
+        guard let clientSecret = Environment.get(FacebookAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(FacebookAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

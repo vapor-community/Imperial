@@ -7,10 +7,14 @@ public class DiscordAuth: FederatedServiceTokens {
     public var clientSecret: String
 
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(DiscordAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(DiscordAuth.secretEnvKey)
+        guard let clientID = Environment.get(DiscordAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(DiscordAuth.idEnvKey)
+        }
+        self.clientID = clientID
 
-        self.clientID = try Environment.get(DiscordAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(DiscordAuth.secretEnvKey).value(or: secretError)
+        guard let clientSecret = Environment.get(DiscordAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(DiscordAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

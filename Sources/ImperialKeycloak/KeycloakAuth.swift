@@ -11,14 +11,24 @@ public class KeycloakAuth: FederatedServiceTokens {
     public var authURL: String
     
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(KeycloakAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(KeycloakAuth.secretEnvKey)
-        let tokenError = ImperialError.missingEnvVar(KeycloakAuth.accessTokenEnvURL)
-        let authError = ImperialError.missingEnvVar(KeycloakAuth.authEnvURL)
-        
-        self.clientID = try Environment.get(KeycloakAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(KeycloakAuth.secretEnvKey).value(or: secretError)
-        self.accessTokenURL = try Environment.get(KeycloakAuth.accessTokenEnvURL).value(or: tokenError)
-        self.authURL = try Environment.get(KeycloakAuth.authEnvURL).value(or: authError)
+        guard let clientID = Environment.get(KeycloakAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(KeycloakAuth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(KeycloakAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(KeycloakAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
+
+        guard let accessTokenURL = Environment.get(KeycloakAuth.accessTokenEnvURL) else {
+            throw ImperialError.missingEnvVar(KeycloakAuth.accessTokenEnvURL)
+        }
+        self.accessTokenURL = accessTokenURL
+
+        guard let authURL = Environment.get(KeycloakAuth.authEnvURL) else {
+            throw ImperialError.missingEnvVar(KeycloakAuth.authEnvURL)
+        }
+        self.authURL = authURL
     }
 }

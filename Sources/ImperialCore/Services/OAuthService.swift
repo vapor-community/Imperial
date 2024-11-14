@@ -66,7 +66,10 @@ public struct OAuthService: Codable, Content {
     /// - Returns: The service that matches the name passed in.
     /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
     public static func get(service name: String) throws -> OAuthService {
-        return try self.services[name].value(or: ServiceError.noServiceFound(name))
+        guard let service = self.services[name] else {
+            throw ServiceError.noServiceFound(name)
+        }
+        return service
     }
 }
 

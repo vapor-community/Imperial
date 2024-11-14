@@ -7,10 +7,14 @@ public class GitlabAuth: FederatedServiceTokens {
     public var clientSecret: String
     
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(GitlabAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(GitlabAuth.secretEnvKey)
-        
-        self.clientID = try Environment.get(GitlabAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(GitlabAuth.secretEnvKey).value(or: secretError)
+        guard let clientID = Environment.get(GitlabAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(GitlabAuth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(GitlabAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(GitlabAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

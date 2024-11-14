@@ -7,10 +7,14 @@ public class ShopifyAuth: FederatedServiceTokens {
 	public var clientSecret: String
 	
 	public required init() throws {
-		let idError = ImperialError.missingEnvVar(ShopifyAuth.idEnvKey)
-		let secretError = ImperialError.missingEnvVar(ShopifyAuth.secretEnvKey)
-		
-		self.clientID = try Environment.get(ShopifyAuth.idEnvKey).value(or: idError)
-		self.clientSecret = try Environment.get(ShopifyAuth.secretEnvKey).value(or: secretError)
+		guard let clientID = Environment.get(ShopifyAuth.idEnvKey) else {
+			throw ImperialError.missingEnvVar(ShopifyAuth.idEnvKey)
+		}
+		self.clientID = clientID
+
+		guard let clientSecret = Environment.get(ShopifyAuth.secretEnvKey) else {
+			throw ImperialError.missingEnvVar(ShopifyAuth.secretEnvKey)
+		}
+		self.clientSecret = clientSecret
 	}
 }

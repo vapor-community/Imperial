@@ -7,10 +7,14 @@ public class DropboxAuth: FederatedServiceTokens {
     public var clientSecret: String
     
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(DropboxAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(DropboxAuth.secretEnvKey)
-        
-        self.clientID = try Environment.get(DropboxAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(DropboxAuth.secretEnvKey).value(or: secretError)
+        guard let clientID = Environment.get(DropboxAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(DropboxAuth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(DropboxAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(DropboxAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

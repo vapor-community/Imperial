@@ -7,10 +7,14 @@ public class MicrosoftAuth: FederatedServiceTokens {
     public var clientSecret: String
     
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(MicrosoftAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(MicrosoftAuth.secretEnvKey)
-        
-        self.clientID = try Environment.get(MicrosoftAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(MicrosoftAuth.secretEnvKey).value(or: secretError)
+        guard let clientID = Environment.get(MicrosoftAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(MicrosoftAuth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(MicrosoftAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(MicrosoftAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }
