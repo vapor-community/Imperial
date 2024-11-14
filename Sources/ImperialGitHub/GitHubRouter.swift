@@ -16,7 +16,7 @@ public class GitHubRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

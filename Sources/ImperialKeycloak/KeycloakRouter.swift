@@ -10,7 +10,7 @@ public class KeycloakRouter: FederatedServiceRouter {
     public let accessTokenURL: String
     public let service: OAuthService = .keycloak
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try KeycloakAuth()
         self.keycloakTokens = self.tokens as! KeycloakAuth
         self.accessTokenURL = keycloakTokens.accessTokenURL

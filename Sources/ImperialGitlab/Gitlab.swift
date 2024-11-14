@@ -12,7 +12,7 @@ public class Gitlab: FederatedService {
         authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable
+        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.router = try GitlabRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens

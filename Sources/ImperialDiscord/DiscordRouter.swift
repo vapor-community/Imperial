@@ -13,7 +13,7 @@ public class DiscordRouter: FederatedServiceRouter {
     public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try DiscordAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

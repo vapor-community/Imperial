@@ -17,7 +17,7 @@ public class DropboxRouter: FederatedServiceRouter {
     
     public let service: OAuthService = .dropbox
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try DropboxAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

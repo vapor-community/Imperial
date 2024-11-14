@@ -16,7 +16,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     
     public required init(
         callback: String,
-        completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable
+        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback

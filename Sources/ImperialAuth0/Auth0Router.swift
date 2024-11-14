@@ -17,7 +17,7 @@ public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         let auth = try Auth0Auth()
         self.tokens = auth
         self.baseURL = "https://\(auth.domain)"

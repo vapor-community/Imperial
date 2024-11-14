@@ -29,7 +29,7 @@ public class FacebookRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try FacebookAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

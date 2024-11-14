@@ -12,7 +12,7 @@ public class GitlabRouter: FederatedServiceRouter {
     public let accessTokenURL: String = "\(GitlabRouter.baseURL.finished(with: "/"))oauth/token"
     public let service: OAuthService = .gitlab
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try GitlabAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

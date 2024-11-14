@@ -9,7 +9,7 @@ public class ShopifyRouter: FederatedServiceRouter {
     public var accessTokenURL: String = ""
     public let service: OAuthService = .shopify
     
-    required public init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    required public init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try ShopifyAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

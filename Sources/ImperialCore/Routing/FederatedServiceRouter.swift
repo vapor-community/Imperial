@@ -43,7 +43,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws
+    init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///

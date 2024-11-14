@@ -18,7 +18,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     
-    public init(callback: String, completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable) throws {
+    public init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = callback
         self.authURL = callback

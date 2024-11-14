@@ -20,7 +20,7 @@ extension RoutesBuilder {
         authenticateCallback: ((Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable
+        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(
             routes: self,

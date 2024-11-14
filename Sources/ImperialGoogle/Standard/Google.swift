@@ -12,7 +12,7 @@ public class Google: FederatedService {
         authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) async throws -> any AsyncResponseEncodable
+        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.router = try GoogleRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens
