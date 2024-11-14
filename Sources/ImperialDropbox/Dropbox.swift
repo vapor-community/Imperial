@@ -7,7 +7,7 @@ public class Dropbox: FederatedService {
     
     @discardableResult
     public required init(
-        routes: any RoutesBuilder,
+        routes: some RoutesBuilder,
         authenticate: String,
         authenticateCallback: ((Request) async throws -> Void)?,
         callback: String,
