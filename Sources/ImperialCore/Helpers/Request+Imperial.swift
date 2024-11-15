@@ -29,8 +29,6 @@ extension Request {
     /// - Parameters:
     ///   - model: A type that conforms to `FederatedCreatable`.
     /// - Returns: An instance of the type passed in that has been stored in the request.
-    /// - Throws:
-    ///   - `ImperialError.typeNotInitialized`: If there is no value stored in the request for the type passed in.
     func fetch<T: FederatedCreatable>(_ model: T.Type) throws -> T {
         return try session.get("imperial-\(model)", as: T.self)
     }

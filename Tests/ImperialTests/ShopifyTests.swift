@@ -3,7 +3,7 @@ import Testing
 
 @testable import ImperialShopify
 
-@Suite("Shopify Tests")
+@Suite("ImperialShopify Tests")
 struct ShopifyTests {
 	@Test("Valid Shopify Domain") func domainCheck() throws {
 		let domain = "davidmuzi.myshopify.com"
