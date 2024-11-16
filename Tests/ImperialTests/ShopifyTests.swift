@@ -1,10 +1,25 @@
 import Foundation
 import Testing
+import XCTVapor
 
 @testable import ImperialShopify
 
 @Suite("ImperialShopify Tests")
 struct ShopifyTests {
+	@Test("Shopify Route") func shopifyRoute() async throws {
+        try await withApp { app in
+			try await app.test(.GET, "/shopify", afterResponse: { res async throws in
+				#expect(res.status == .notFound)
+			})
+
+            try app.oAuth(from: Shopify.self, authenticate: "shopify", callback: "shopify-auth-complete", redirect: "/")
+
+			try await app.test(.GET, "/shopify", afterResponse: { res async throws in
+				#expect(res.status != .notFound)
+			})
+        }
+    }
+
 	@Test("Valid Shopify Domain") func domainCheck() throws {
 		let domain = "davidmuzi.myshopify.com"
 		#expect(URL(string: domain)!.isValidShopifyDomain())

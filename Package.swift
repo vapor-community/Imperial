@@ -55,7 +55,21 @@ let package = Package(
         .target(name: "ImperialKeycloak", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialMicrosoft", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialShopify", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
-        .testTarget(name: "ImperialTests", dependencies: ["ImperialCore", "ImperialShopify"], swiftSettings: swiftSettings),
+        .testTarget(
+            name: "ImperialTests",
+            dependencies: [
+                .target(name: "ImperialCore"),
+                .target(name: "ImperialGitHub"),
+                .target(name: "ImperialGoogle"),
+                .target(name: "ImperialShopify"),
+                .target(name: "ImperialFacebook"),
+                .target(name: "ImperialKeycloak"),
+                .target(name: "ImperialDiscord"),
+                .target(name: "ImperialAuth0"),
+                .product(name: "XCTVapor", package: "vapor"),
+            ],
+            swiftSettings: swiftSettings
+        ),
     ],
     swiftLanguageModes: [.v5]
 )
