@@ -20,6 +20,6 @@ public class Microsoft: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
-        OAuthService.register(.microsoft)
+        OAuthService.services[OAuthService.microsoft.name] = .microsoft
     }
 }

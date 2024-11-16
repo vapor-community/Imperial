@@ -20,6 +20,6 @@ public class Google: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
-        OAuthService.register(.google)
+        OAuthService.services[OAuthService.google.name] = .google
     }
 }

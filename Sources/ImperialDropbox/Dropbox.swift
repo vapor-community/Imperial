@@ -20,6 +20,6 @@ public class Dropbox: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
-        OAuthService.register(.dropbox)
+        OAuthService.services[OAuthService.dropbox.name] = .dropbox
     }
 }

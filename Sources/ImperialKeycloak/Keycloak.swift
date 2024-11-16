@@ -20,6 +20,6 @@ public class Keycloak: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
-        OAuthService.register(.keycloak)
+        OAuthService.services[OAuthService.keycloak.name] = .keycloak
     }
 }

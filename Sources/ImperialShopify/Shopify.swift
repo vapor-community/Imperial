@@ -25,7 +25,7 @@ public final class Shopify: FederatedService {
             on: routes
         )
 
-        OAuthService.register(.shopify)
+        OAuthService.services[OAuthService.shopify.name] = .shopify
     }
 }
 

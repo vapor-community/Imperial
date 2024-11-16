@@ -1,16 +1,23 @@
-import class NIO.ThreadSpecificVariable
+import NIOConcurrencyHelpers
 import Vapor
 
-fileprivate var services: ThreadSpecificVariable<OAuthServiceContainer> = .init(value: .init())
-
 /// Represents a service that interacts with an OAuth provider.
-public struct OAuthService: Codable, Content {
+public struct OAuthService: Codable, Content, Sendable {
+    static private let servicesBox: NIOLockedValueBox<[String: ImperialCore.OAuthService]> = .init([:])
 
     /// The services that are available for use in the application.
     /// Services are added and fetched with the `Service.register` and `.get` static methods.
-    private static var services: OAuthServiceContainer {
-        get { ImperialCore.services.currentValue! }
-        set { ImperialCore.services.currentValue  = newValue }
+    public package(set) static var services: [String: ImperialCore.OAuthService] {
+        get {
+            self.servicesBox.withLockedValue { services in
+                services
+            }
+        }
+        set {
+            self.servicesBox.withLockedValue { services in
+                services = newValue
+            }
+        }
     }
 
 
@@ -43,45 +50,12 @@ public struct OAuthService: Codable, Content {
     }
     
     /// Syntax sugar for getting or setting one of the service's endpoints.
-    public subscript (key: String) -> String? {
+    public subscript(key: String) -> String? {
         get {
             return endpoints[key]
         }
         set {
             endpoints[key] = newValue
         }
-    }
-    
-    /// Registers a service as available for use.
-    ///
-    /// - Parameter service: The service to register.
-    public static func register(_ service: OAuthService) {
-        #warning("It would be nice if this method could be internal")
-        self.services[service.name] = service
-    }
-    
-    /// Gets a service if it is available for use.
-    ///
-    /// - Parameter name: The name of the service to fetch.
-    /// - Returns: The service that matches the name passed in.
-    /// - Throws: `ImperialError.noServiceFound` if no service is found with the name passed in.
-    public static func get(service name: String) throws -> OAuthService {
-        guard let service = self.services[name] else {
-            throw ServiceError.noServiceFound(name)
-        }
-        return service
-    }
-}
-
-private final class OAuthServiceContainer {
-    var services: [String: OAuthService]
-
-    init() {
-        self.services = [:]
-    }
-
-    subscript(service: String) -> OAuthService? {
-        get { self.services[service] }
-        set { self.services[service] = newValue }
     }
 }

@@ -20,6 +20,6 @@ public class Discord: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
-        OAuthService.register(.discord)
+        OAuthService.services[OAuthService.discord.name] = .discord
     }
 }

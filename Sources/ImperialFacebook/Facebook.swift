@@ -20,7 +20,7 @@ public class Facebook: FederatedService {
         self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
-        OAuthService.register(.facebook)
+        OAuthService.services[OAuthService.facebook.name] = .facebook
     }
 }
 
