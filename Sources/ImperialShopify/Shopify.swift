@@ -11,10 +11,10 @@ public final class Shopify: FederatedService {
     public init(
         routes: some RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) async throws -> Void)?,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
         scope: [String],
-        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
         self.shopifyRouter.scope = scope

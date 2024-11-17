@@ -9,10 +9,10 @@ public class GitHub: FederatedService {
     public required init(
         routes: some RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) async throws -> Void)?,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.router = try GitHubRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens

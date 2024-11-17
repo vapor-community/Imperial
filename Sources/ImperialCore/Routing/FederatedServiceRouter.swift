@@ -3,14 +3,13 @@ import Vapor
 
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
-public protocol FederatedServiceRouter {
-    
+public protocol FederatedServiceRouter: Sendable {
     /// A class that gets the client ID and secret from environment variables.
     var tokens: any FederatedServiceTokens { get }
     
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable { get }
+    var callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable { get }
     
     /// The scopes to get permission for when getting the access token.
     /// Usage of this property varies by provider.
@@ -43,7 +42,7 @@ public protocol FederatedServiceRouter {
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws
+    init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///
@@ -51,7 +50,7 @@ public protocol FederatedServiceRouter {
     ///   - authURL: The URL for the route that will redirect the user to the OAuth provider.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     /// - Throws: N/A
-    func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) async throws -> Void)?, on router: some RoutesBuilder) throws
+    func configureRoutes(withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder) throws
     
     /// Gets an access token from an OAuth provider.
     /// This method is the main body of the `callback` handler.
@@ -68,16 +67,15 @@ public protocol FederatedServiceRouter {
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: An errors that occur in the implementation code.
-    func callback(_ request: Request) async throws -> Response
+    @Sendable func callback(_ request: Request) async throws -> Response
 }
 
 extension FederatedServiceRouter {
-    
     public var codeKey: String { "code" }
     public var errorKey: String { "error" }
     public var callbackHeaders: HTTPHeaders { [:] }
    
-    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: ((Request) async throws -> Void)?, on router: some RoutesBuilder) throws {
+    public func configureRoutes(withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder) throws {
 		router.get(callbackURL.pathComponents, use: callback)
 		router.get(authURL.pathComponents) { req async throws -> Response in
             let redirect: Response = req.redirect(to: try self.authURL(req))

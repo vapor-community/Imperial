@@ -1,19 +1,18 @@
 import Vapor
 import Foundation
 
-public class DiscordRouter: FederatedServiceRouter {
-
+final public class DiscordRouter: FederatedServiceRouter {
     public static var baseURL: String = "https://discord.com/"
     public static var callbackURL: String = "callback"
     public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String = "\(DiscordRouter.baseURL.finished(with: "/"))api/oauth2/token"
     public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try DiscordAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion

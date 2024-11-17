@@ -17,10 +17,10 @@ extension RoutesBuilder {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) async throws -> Void)? = nil,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
         _ = try OAuthProvider(
             routes: self,
@@ -46,7 +46,7 @@ extension RoutesBuilder {
     public func oAuth<OAuthProvider>(
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
-        authenticateCallback: ((Request) async throws -> Void)? = nil,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
         redirect redirectURL: String

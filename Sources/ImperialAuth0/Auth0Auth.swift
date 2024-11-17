@@ -1,12 +1,12 @@
 import Vapor
 
-public class Auth0Auth: FederatedServiceTokens {
+final public class Auth0Auth: FederatedServiceTokens {
     public static var domain: String = "AUTH0_DOMAIN"
     public static var idEnvKey: String = "AUTH0_CLIENT_ID"
     public static var secretEnvKey: String = "AUTH0_CLIENT_SECRET"
-    public var domain: String
-    public var clientID: String
-    public var clientSecret: String
+    public let domain: String
+    public let clientID: String
+    public let clientSecret: String
     
     public required init() throws {
         guard let domain = Environment.get(Auth0Auth.domain) else {

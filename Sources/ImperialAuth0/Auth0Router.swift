@@ -1,11 +1,10 @@
 import Vapor
 import Foundation
 
-public class Auth0Router: FederatedServiceRouter {
-
+final public class Auth0Router: FederatedServiceRouter {
     public let baseURL: String
     public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = [ ]
     public var requiredScopes = [ "openid" ]
     public let callbackURL: String
@@ -17,7 +16,7 @@ public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         let auth = try Auth0Auth()
         self.tokens = auth
         self.baseURL = "https://\(auth.domain)"

@@ -1,10 +1,10 @@
 import Vapor
 
-public class MicrosoftAuth: FederatedServiceTokens {
+final public class MicrosoftAuth: FederatedServiceTokens {
     public static var idEnvKey: String = "MICROSOFT_CLIENT_ID"
     public static var secretEnvKey: String = "MICROSOFT_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
+    public let clientID: String
+    public let clientSecret: String
     
     public required init() throws {
         guard let clientID = Environment.get(MicrosoftAuth.idEnvKey) else {

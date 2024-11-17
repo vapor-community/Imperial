@@ -1,10 +1,10 @@
 import Vapor
 
-public class GoogleJWTAuth: FederatedServiceTokens {
+final public class GoogleJWTAuth: FederatedServiceTokens {
     public static var idEnvKey: String = "GOOGLEJWT_CLIENT_EMAIL"
     public static var secretEnvKey: String = "GOOGLEJWT_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
+    public let clientID: String
+    public let clientSecret: String
     
     public required init() throws {
         guard let clientID = Environment.get(GoogleJWTAuth.idEnvKey) else {

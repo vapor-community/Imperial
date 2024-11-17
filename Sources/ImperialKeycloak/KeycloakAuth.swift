@@ -1,14 +1,14 @@
 import Vapor
 
-public class KeycloakAuth: FederatedServiceTokens {
+final public class KeycloakAuth: FederatedServiceTokens {
     public static var idEnvKey: String = "KEYCLOAK_CLIENT_ID"
     public static var secretEnvKey: String = "KEYCLOAK_CLIENT_SECRET"
     public static var accessTokenEnvURL: String = "KEYCLOAK_ACCESS_TOKEN_URL"
     public static var authEnvURL: String = "KEYCLOAK_AUTH_URL"
-    public var clientID: String
-    public var clientSecret: String
-    public var accessTokenURL: String
-    public var authURL: String
+    public let clientID: String
+    public let clientSecret: String
+    public let accessTokenURL: String
+    public let authURL: String
     
     public required init() throws {
         guard let clientID = Environment.get(KeycloakAuth.idEnvKey) else {

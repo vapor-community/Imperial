@@ -6,7 +6,7 @@ import JWTKit
 public final class GoogleJWTRouter: FederatedServiceRouter {
     
     public var tokens: any FederatedServiceTokens
-    public var callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
+    public var callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = []
     public var callbackURL: String
     public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
@@ -18,7 +18,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     
-    public init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = callback
         self.authURL = callback

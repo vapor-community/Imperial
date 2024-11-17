@@ -1,10 +1,10 @@
 import Vapor
 
-public class ShopifyAuth: FederatedServiceTokens {
+final public class ShopifyAuth: FederatedServiceTokens {
 	public static var idEnvKey: String = "SHOPIFY_CLIENT_ID"
 	public static var secretEnvKey: String = "SHOPIFY_CLIENT_SECRET"
-	public var clientID: String
-	public var clientSecret: String
+	public let clientID: String
+	public let clientSecret: String
 	
 	public required init() throws {
 		guard let clientID = Environment.get(ShopifyAuth.idEnvKey) else {

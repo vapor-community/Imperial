@@ -1,12 +1,11 @@
 import Vapor
 import Foundation
 
-public class MicrosoftRouter: FederatedServiceRouter {
-        
+final public class MicrosoftRouter: FederatedServiceRouter {
     public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
     public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = []
     public let callbackURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
@@ -16,7 +15,7 @@ public class MicrosoftRouter: FederatedServiceRouter {
     
     public required init(
         callback: String,
-        completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback

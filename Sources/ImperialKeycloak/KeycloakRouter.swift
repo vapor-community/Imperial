@@ -1,16 +1,16 @@
 import Vapor
 import Foundation
 
-public class KeycloakRouter: FederatedServiceRouter {
+final public class KeycloakRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let keycloakTokens: KeycloakAuth
-    public let callbackCompletion: (Request, String) async throws -> any AsyncResponseEncodable
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public var scope: [String] = []
     public let callbackURL: String
     public let accessTokenURL: String
     public let service: OAuthService = .keycloak
     
-    public required init(callback: String, completion: @escaping (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try KeycloakAuth()
         self.keycloakTokens = self.tokens as! KeycloakAuth
         self.accessTokenURL = keycloakTokens.accessTokenURL

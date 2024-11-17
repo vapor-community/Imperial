@@ -1,10 +1,10 @@
 import Vapor
 
-public class GitHubAuth: FederatedServiceTokens {
+final public class GitHubAuth: FederatedServiceTokens {
     public static var idEnvKey: String = "GITHUB_CLIENT_ID"
     public static var secretEnvKey: String = "GITHUB_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
+    public let clientID: String
+    public let clientSecret: String
     
     public required init() throws {
         guard let clientID = Environment.get(GitHubAuth.idEnvKey) else {

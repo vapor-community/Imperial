@@ -1,10 +1,10 @@
 import Vapor
 
-public class DiscordAuth: FederatedServiceTokens {
+final public class DiscordAuth: FederatedServiceTokens {
     public static var idEnvKey: String = "DISCORD_CLIENT_ID"
     public static var secretEnvKey: String = "DISCORD_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
+    public let clientID: String
+    public let clientSecret: String
 
     public required init() throws {
         guard let clientID = Environment.get(DiscordAuth.idEnvKey) else {

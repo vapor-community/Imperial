@@ -36,13 +36,12 @@ from environment variables and stores them.
  }
  ```
  */
-public protocol FederatedServiceTokens {
-    
+public protocol FederatedServiceTokens: Sendable {
     /// The name of the environment variable that has the client ID.
-    static var idEnvKey: String { get set }
+    static var idEnvKey: String { get }
     
     /// The client ID for the OAuth provider that the service is connected to.
-    var clientID: String { get set }
+    var clientID: String { get }
     
     /// The name of the environment variable that has the client secret.
     static var secretEnvKey: String { get }
