@@ -4,13 +4,12 @@ import Vapor
 import JWTKit
 
 public final class GoogleJWTRouter: FederatedServiceRouter {
-    
-    public var tokens: any FederatedServiceTokens
-    public var callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public var scope: [String] = []
-    public var callbackURL: String
-    public var accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public var authURL: String
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    public let scope: [String]
+    public let callbackURL: String
+    public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
+    public let authURL: String
     public let service: OAuthService = .googleJWT
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
@@ -18,11 +17,12 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     
-    public init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = callback
         self.authURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
     
     public func authURL(_ request: Request) throws -> String {

@@ -13,7 +13,7 @@ public protocol FederatedServiceRouter: Sendable {
     
     /// The scopes to get permission for when getting the access token.
     /// Usage of this property varies by provider.
-    var scope: [String] { get set }
+    var scope: [String] { get }
     
     /// The key to acess the code URL query parameter
     var codeKey: String { get }
@@ -40,9 +40,14 @@ public protocol FederatedServiceRouter: Sendable {
     ///
     /// - Parameters:
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
+    ///   - scope: The scopes to get access to on authentication.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
     /// - Throws: Any errors that could occur in the implementation.
-    init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws
+    init(
+        callback: String,
+        scope: [String],
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws
     
     /// Configures the `authenticate` and `callback` routes with the droplet.
     ///

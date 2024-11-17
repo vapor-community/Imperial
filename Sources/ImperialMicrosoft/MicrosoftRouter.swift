@@ -6,7 +6,7 @@ final public class MicrosoftRouter: FederatedServiceRouter {
 
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public var scope: [String] = []
+    public let scope: [String]
     public let callbackURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
     public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
@@ -15,11 +15,13 @@ final public class MicrosoftRouter: FederatedServiceRouter {
     
     public required init(
         callback: String,
+        scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
 
     public func authURL(_ request: Request) throws -> String {

@@ -13,10 +13,9 @@ public class GoogleJWT: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.router = try GoogleJWTRouter(callback: callback, completion: completion)
+        self.router = try GoogleJWTRouter(callback: callback, scope: scope, completion: completion)
         self.tokens = self.router.tokens
         
-        self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
         
         OAuthService.services[OAuthService.googleJWT.name] = .googleJWT

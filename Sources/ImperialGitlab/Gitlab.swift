@@ -14,10 +14,9 @@ public class Gitlab: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.router = try GitlabRouter(callback: callback, completion: completion)
+        self.router = try GitlabRouter(callback: callback, scope: scope, completion: completion)
         self.tokens = self.router.tokens
 
-        self.router.scope = scope
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 
         OAuthService.services[OAuthService.gitlab.name] = .gitlab

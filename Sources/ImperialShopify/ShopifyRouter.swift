@@ -3,15 +3,16 @@ import Vapor
 final public class ShopifyRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public var scope: [String] = []
+    public let scope: [String]
     public let callbackURL: String
     public var accessTokenURL: String = ""
     public let service: OAuthService = .shopify
     
-    required public init(callback: String, completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    required public init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
         self.tokens = try ShopifyAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
     
     public func authURL(_ request: Request) throws -> String {

@@ -16,8 +16,7 @@ public final class Shopify: FederatedService {
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
-        self.shopifyRouter.scope = scope
+        self.shopifyRouter = try ShopifyRouter(callback: callback, scope: scope, completion: completion)
 
         try self.router.configureRoutes(
             withAuthURL: authenticate,
