@@ -2,7 +2,7 @@ import Vapor
 import Foundation
 
 final public class MicrosoftRouter: FederatedServiceRouter {
-    public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
+    public static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable

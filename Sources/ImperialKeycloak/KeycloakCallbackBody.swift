@@ -7,7 +7,7 @@ struct KeycloakCallbackBody: Content {
     let redirectURI: String
     let grantType: String = "authorization_code"
     
-    static var defaultContentType: HTTPMediaType = .urlEncodedForm
+    static let defaultContentType: HTTPMediaType = .urlEncodedForm
     
     enum CodingKeys: String, CodingKey {
         case code

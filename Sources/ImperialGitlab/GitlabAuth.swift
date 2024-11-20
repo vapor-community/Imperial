@@ -1,8 +1,8 @@
 import Vapor
 
 final public class GitlabAuth: FederatedServiceTokens {
-    public static var idEnvKey: String = "GITLAB_CLIENT_ID"
-    public static var secretEnvKey: String = "GITLAB_CLIENT_SECRET"
+    public static let idEnvKey: String = "GITLAB_CLIENT_ID"
+    public static let secretEnvKey: String = "GITLAB_CLIENT_SECRET"
     public let clientID: String
     public let clientSecret: String
     

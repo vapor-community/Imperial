@@ -1,9 +1,9 @@
 import Vapor
 
 final public class Auth0Auth: FederatedServiceTokens {
-    public static var domain: String = "AUTH0_DOMAIN"
-    public static var idEnvKey: String = "AUTH0_CLIENT_ID"
-    public static var secretEnvKey: String = "AUTH0_CLIENT_SECRET"
+    public static let domain: String = "AUTH0_DOMAIN"
+    public static let idEnvKey: String = "AUTH0_CLIENT_ID"
+    public static let secretEnvKey: String = "AUTH0_CLIENT_SECRET"
     public let domain: String
     public let clientID: String
     public let clientSecret: String

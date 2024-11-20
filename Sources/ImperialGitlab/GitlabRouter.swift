@@ -3,7 +3,6 @@ import Foundation
 
 final public class GitlabRouter: FederatedServiceRouter {
     public static let baseURL: String = "https://gitlab.com/"
-    public static var callbackURL: String = "callback"
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
@@ -25,7 +24,7 @@ final public class GitlabRouter: FederatedServiceRouter {
         components.path = "/oauth/authorize"
         components.queryItems = [
             clientIDItem,
-            .init(name: "redirect_uri", value: GitlabRouter.callbackURL),
+            .init(name: "redirect_uri", value: self.callbackURL),
             scopeItem,
             codeResponseTypeItem
         ]
@@ -42,6 +41,6 @@ final public class GitlabRouter: FederatedServiceRouter {
                            clientSecret: tokens.clientSecret,
                            code: code,
                            grantType: "authorization_code",
-                           redirectUri: GitlabRouter.callbackURL)
+                           redirectUri: self.callbackURL)
     }
 }

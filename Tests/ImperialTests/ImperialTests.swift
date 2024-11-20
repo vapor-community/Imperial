@@ -12,7 +12,7 @@ import XCTVapor
 
 @testable import ImperialCore
 
-@Suite("ImperialCore Tests")
+@Suite("Imperial Tests")
 struct ImperialTests {
     @Test("Auth0 Route")
     func auth0Route() async throws {

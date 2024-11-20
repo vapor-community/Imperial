@@ -1,8 +1,8 @@
 import Vapor
 
 final public class DiscordAuth: FederatedServiceTokens {
-    public static var idEnvKey: String = "DISCORD_CLIENT_ID"
-    public static var secretEnvKey: String = "DISCORD_CLIENT_SECRET"
+    public static let idEnvKey: String = "DISCORD_CLIENT_ID"
+    public static let secretEnvKey: String = "DISCORD_CLIENT_SECRET"
     public let clientID: String
     public let clientSecret: String
 

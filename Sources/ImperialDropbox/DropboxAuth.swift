@@ -1,8 +1,8 @@
 import Vapor
 
 final public class DropboxAuth: FederatedServiceTokens {
-    public static var idEnvKey: String = "DROPBOX_CLIENT_ID"
-    public static var secretEnvKey: String = "DROPBOX_CLIENT_SECRET"
+    public static let idEnvKey: String = "DROPBOX_CLIENT_ID"
+    public static let secretEnvKey: String = "DROPBOX_CLIENT_SECRET"
     public let clientID: String
     public let clientSecret: String
     
