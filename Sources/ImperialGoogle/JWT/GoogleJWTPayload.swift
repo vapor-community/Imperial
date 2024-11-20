@@ -8,7 +8,7 @@ public struct GoogleJWTPayload: JWTPayload {
     public var iat: IssuedAtClaim
     public var exp: ExpirationClaim
 
-    public func verify(using signer: JWTSigner) throws {
+    public func verify(using key: some JWTAlgorithm) throws {
         try exp.verifyNotExpired()
     }
 }
