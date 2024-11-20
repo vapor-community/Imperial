@@ -1,5 +1,5 @@
-import Vapor
 import Foundation
+import Vapor
 
 final public class MicrosoftRouter: FederatedServiceRouter {
     public static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
@@ -12,7 +12,7 @@ final public class MicrosoftRouter: FederatedServiceRouter {
     public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
     public let service: OAuthService = .microsoft
     public let errorKey = "error_description"
-    
+
     public required init(
         callback: String,
         scope: [String],
@@ -37,20 +37,21 @@ final public class MicrosoftRouter: FederatedServiceRouter {
             .init(name: "response_mode", value: "query"),
             .init(name: "prompt", value: "consent"),
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
-    
+
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
-        MicrosoftCallbackBody(code: code,
-                              clientId: tokens.clientID,
-                              clientSecret: tokens.clientSecret,
-                              redirectURI: callbackURL,
-                              scope: scope.joined(separator: " "))
+        MicrosoftCallbackBody(
+            code: code,
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            redirectURI: callbackURL,
+            scope: scope.joined(separator: " "))
     }
-    
+
 }

@@ -22,4 +22,3 @@ public class GitHub: FederatedService {
         OAuthService.services[OAuthService.github.name] = .github
     }
 }
-

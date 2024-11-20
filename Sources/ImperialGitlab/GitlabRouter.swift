@@ -1,5 +1,5 @@
-import Vapor
 import Foundation
+import Vapor
 
 final public class GitlabRouter: FederatedServiceRouter {
     public static let baseURL: String = "https://gitlab.com/"
@@ -9,14 +9,16 @@ final public class GitlabRouter: FederatedServiceRouter {
     public let callbackURL: String
     public let accessTokenURL: String = "\(GitlabRouter.baseURL.finished(with: "/"))oauth/token"
     public let service: OAuthService = .gitlab
-    
-    public required init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try GitlabAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
         self.scope = scope
     }
-    
+
     public func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
@@ -26,21 +28,22 @@ final public class GitlabRouter: FederatedServiceRouter {
             clientIDItem,
             .init(name: "redirect_uri", value: self.callbackURL),
             scopeItem,
-            codeResponseTypeItem
+            codeResponseTypeItem,
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
-    
+
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
-        GitlabCallbackBody(clientId: tokens.clientID,
-                           clientSecret: tokens.clientSecret,
-                           code: code,
-                           grantType: "authorization_code",
-                           redirectUri: self.callbackURL)
+        GitlabCallbackBody(
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            code: code,
+            grantType: "authorization_code",
+            redirectUri: self.callbackURL)
     }
 }

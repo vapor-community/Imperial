@@ -2,7 +2,7 @@ import Foundation
 import Vapor
 
 extension Request {
-    
+
     /// Creates an instance of a `FederatedCreatable` type from JSON fetched from an OAuth provider's API.
     ///
     /// - Parameters:
@@ -14,16 +14,18 @@ extension Request {
         guard let url = service[model.serviceKey] else {
             throw ServiceError.noServiceEndpoint(model.serviceKey)
         }
-        
-        let token = try service.tokenPrefix + req
+
+        let token =
+            try service.tokenPrefix
+            + req
             .accessToken()
-        
+
         let response = try await req.client.get(URI(string: url), headers: ["Authorization": token])
         let instance = try await model.init(from: response)
         try self.session.set("imperial-\(model)", to: instance)
         return instance
     }
-	
+
     /// Gets an instance of a `FederatedCreatable` type that is stored in the request.
     ///
     /// - Parameters:

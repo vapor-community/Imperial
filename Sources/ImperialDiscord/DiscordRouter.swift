@@ -1,5 +1,5 @@
-import Vapor
 import Foundation
+import Vapor
 
 final public class DiscordRouter: FederatedServiceRouter {
     public static let baseURL: String = "https://discord.com/"
@@ -11,7 +11,9 @@ final public class DiscordRouter: FederatedServiceRouter {
     public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try DiscordAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -28,7 +30,7 @@ final public class DiscordRouter: FederatedServiceRouter {
             clientIDItem,
             .init(name: "redirect_uri", value: self.callbackURL),
             .init(name: "response_type", value: "code"),
-            scopeItem
+            scopeItem,
         ]
 
         guard let url = components.url else {

@@ -27,4 +27,3 @@ public final class Shopify: FederatedService {
         OAuthService.services[OAuthService.shopify.name] = .shopify
     }
 }
-

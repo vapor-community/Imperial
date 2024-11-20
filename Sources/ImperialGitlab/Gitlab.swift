@@ -22,4 +22,3 @@ public class Gitlab: FederatedService {
         OAuthService.services[OAuthService.gitlab.name] = .gitlab
     }
 }
-

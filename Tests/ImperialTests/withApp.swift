@@ -1,7 +1,7 @@
 import Testing
 import Vapor
 
-func withApp(_ test: (Application) async throws -> ()) async throws {
+func withApp(_ test: (Application) async throws -> Void) async throws {
     let app = try await Application.make(.testing)
     try #require(isLoggingConfigured)
     do {

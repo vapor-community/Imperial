@@ -22,4 +22,3 @@ public class Facebook: FederatedService {
         OAuthService.services[OAuthService.facebook.name] = .facebook
     }
 }
-

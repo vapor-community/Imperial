@@ -1,7 +1,7 @@
 import Vapor
 
 extension RoutesBuilder {
-    
+
     /// Registers an OAuth provider's router with
     /// the parent route.
     ///
@@ -31,7 +31,7 @@ extension RoutesBuilder {
             completion: completion
         )
     }
-    
+
     /// Registers an OAuth provider's router with
     /// the parent route and a redirection callback.
     ///
@@ -51,7 +51,9 @@ extension RoutesBuilder {
         scope: [String] = [],
         redirect redirectURL: String
     ) throws where OAuthProvider: FederatedService {
-        try self.oAuth(from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope) { (request, _) in
+        try self.oAuth(
+            from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, scope: scope
+        ) { (request, _) in
             return request.redirect(to: redirectURL)
         }
     }

@@ -4,9 +4,9 @@ struct DropboxCallbackBody: Content {
     let code: String
     let redirectURI: String
     let grantType: String = "authorization_code"
-    
+
     static let defaultContentType: HTTPMediaType = .urlEncodedForm
-    
+
     enum CodingKeys: String, CodingKey {
         case code
         case redirectURI = "redirect_uri"

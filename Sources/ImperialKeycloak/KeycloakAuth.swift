@@ -9,7 +9,7 @@ final public class KeycloakAuth: FederatedServiceTokens {
     public let clientSecret: String
     public let accessTokenURL: String
     public let authURL: String
-    
+
     public required init() throws {
         guard let clientID = Environment.get(KeycloakAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(KeycloakAuth.idEnvKey)

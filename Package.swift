@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Imperial",
     platforms: [
-       .macOS(.v13)
+        .macOS(.v13)
     ],
     products: [
         .library(name: "ImperialCore", targets: ["ImperialCore"]),
@@ -18,23 +18,25 @@ let package = Package(
         .library(name: "ImperialKeycloak", targets: ["ImperialCore", "ImperialKeycloak"]),
         .library(name: "ImperialMicrosoft", targets: ["ImperialCore", "ImperialMicrosoft"]),
         .library(name: "ImperialShopify", targets: ["ImperialCore", "ImperialShopify"]),
-        .library(name: "Imperial", targets: [
-            "ImperialCore",
-            "ImperialAuth0",
-            "ImperialDiscord",
-            "ImperialDropbox",
-            "ImperialFacebook",
-            "ImperialGitHub",
-            "ImperialGitlab",
-            "ImperialGoogle",
-            "ImperialKeycloak",
-            "ImperialMicrosoft",
-            "ImperialShopify"
-        ]),
+        .library(
+            name: "Imperial",
+            targets: [
+                "ImperialCore",
+                "ImperialAuth0",
+                "ImperialDiscord",
+                "ImperialDropbox",
+                "ImperialFacebook",
+                "ImperialGitHub",
+                "ImperialGitlab",
+                "ImperialGoogle",
+                "ImperialKeycloak",
+                "ImperialMicrosoft",
+                "ImperialShopify",
+            ]),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0")
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
     ],
     targets: [
         .target(
@@ -78,6 +80,6 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] {
     [
-        .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("ExistentialAny")
     ]
 }

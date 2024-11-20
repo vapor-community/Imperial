@@ -20,16 +20,15 @@ public struct OAuthService: Codable, Content, Sendable {
         }
     }
 
-
     /// The name of the service, i.e. "google", "github", etc.
     public let name: String
-    
+
     /// The prefix for the access token when it is used in a authorization header. Defaults to `'Bearer '`.
     public let tokenPrefix: String
-    
+
     /// The endpoints for the provider's API to use for initializing `FederatedCreatable` types
     public var endpoints: [String: String]
-    
+
     /// Defines an OAuth provider that is supported by Imperial.
     ///
     /// Providers are usually defined in extensions as static properties.
@@ -48,7 +47,7 @@ public struct OAuthService: Codable, Content, Sendable {
         self.tokenPrefix = prefix ?? "Bearer "
         self.endpoints = endpoints
     }
-    
+
     /// Syntax sugar for getting or setting one of the service's endpoints.
     public subscript(key: String) -> String? {
         get {

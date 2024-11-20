@@ -7,7 +7,7 @@ final public class Auth0Auth: FederatedServiceTokens {
     public let domain: String
     public let clientID: String
     public let clientSecret: String
-    
+
     public required init() throws {
         guard let domain = Environment.get(Auth0Auth.domain) else {
             throw ImperialError.missingEnvVar(Auth0Auth.domain)

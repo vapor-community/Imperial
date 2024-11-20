@@ -63,7 +63,7 @@ extension ServiceError: CustomStringConvertible {
         }
 
         result.append(")")
-        
+
         return result
     }
 }

@@ -1,5 +1,5 @@
-import Vapor
 import Foundation
+import Vapor
 
 final public class GitHubRouter: FederatedServiceRouter {
     public static let baseURL: String = "https://github.com/"
@@ -15,35 +15,38 @@ final public class GitHubRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
         self.scope = scope
     }
-    
+
     public func authURL(_ request: Request) throws -> String {
-        
+
         var components = URLComponents()
         components.scheme = "https"
         components.host = "github.com"
         components.path = "/login/oauth/authorize"
         components.queryItems = [
             clientIDItem,
-            scopeItem
+            scopeItem,
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
-    
+
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
-        GitHubCallbackBody(clientId: tokens.clientID,
-                           clientSecret: tokens.clientSecret,
-                           code: code)
+        GitHubCallbackBody(
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            code: code)
     }
 
 }

@@ -5,7 +5,7 @@ final public class GoogleJWTAuth: FederatedServiceTokens {
     public static let secretEnvKey: String = "GOOGLEJWT_CLIENT_SECRET"
     public let clientID: String
     public let clientSecret: String
-    
+
     public required init() throws {
         guard let clientID = Environment.get(GoogleJWTAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(GoogleJWTAuth.idEnvKey)

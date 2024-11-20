@@ -1,5 +1,5 @@
-import Vapor
 import Foundation
+import Vapor
 
 final public class FacebookRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
@@ -18,17 +18,19 @@ final public class FacebookRouter: FederatedServiceRouter {
             clientIDItem,
             redirectURIItem,
             scopeItem,
-            codeResponseTypeItem
+            codeResponseTypeItem,
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
 
-    public required init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try FacebookAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
@@ -36,10 +38,11 @@ final public class FacebookRouter: FederatedServiceRouter {
     }
 
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
-        FacebookCallbackBody(code: code,
-                             clientId: tokens.clientID,
-                             clientSecret: tokens.clientSecret,
-                             redirectURI: callbackURL)
+        FacebookCallbackBody(
+            code: code,
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            redirectURI: callbackURL)
     }
 
 }

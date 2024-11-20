@@ -3,10 +3,10 @@ import Vapor
 /// Defines a type that can be created with federated login data.
 /// This type is used as a parameter in the `request.fetch` method
 public protocol FederatedCreatable: Codable {
-    
+
     /// The key for the service's endpoint to use when `request.create` is called with the implimenting type.
     static var serviceKey: String { get }
-    
+
     /// Creates an instance of the model with JSON.
     ///
     /// - Parameter response: The JSON in the response from the `dataUri`.
@@ -20,5 +20,5 @@ extension FederatedCreatable {
     init(from response: ClientResponse) async throws {
         self = try response.content.decode(Self.self)
     }
-    
+
 }

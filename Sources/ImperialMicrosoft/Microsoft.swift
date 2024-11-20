@@ -4,7 +4,7 @@ import Vapor
 public class Microsoft: FederatedService {
     public var tokens: any FederatedServiceTokens
     public var router: any FederatedServiceRouter
-    
+
     @discardableResult
     public required init(
         routes: some RoutesBuilder,
@@ -16,9 +16,9 @@ public class Microsoft: FederatedService {
     ) throws {
         self.router = try MicrosoftRouter(callback: callback, scope: scope, completion: completion)
         self.tokens = self.router.tokens
-        
+
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
-        
+
         OAuthService.services[OAuthService.microsoft.name] = .microsoft
     }
 }
