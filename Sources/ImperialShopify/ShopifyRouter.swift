@@ -5,7 +5,9 @@ final public class ShopifyRouter: FederatedServiceRouter {
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
     public let callbackURL: String
-    public var accessTokenURL: String = ""
+    // `accessTokenURL` used to be set inside `authURL` and read by `fetchToken`
+    // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
+    public let accessTokenURL: String = ""
     public let service: OAuthService = .shopify
     
     required public init(callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable) throws {
@@ -21,8 +23,10 @@ final public class ShopifyRouter: FederatedServiceRouter {
         let nonce = String(UUID().uuidString.prefix(6))
         try request.session.setNonce(nonce)
 
-        accessTokenURL = try accessTokenURLFrom(shop)
-        return try authURLFrom(shop, nonce: nonce).absoluteString
+        return "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" +
+            "scope=\(scope.joined(separator: ","))&" +
+            "redirect_uri=\(callbackURL)&" +
+            "state=\(nonce)"
     }
     
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
@@ -46,12 +50,12 @@ final public class ShopifyRouter: FederatedServiceRouter {
             let nonce = request.session.nonce()
             guard state == nonce else { throw Abort(.badRequest) }
         }
-        guard URL(string: shop)?.isValidShopifyDomain() == true else { throw Abort(.badRequest) }
+        guard URL(string: shop)?.isValidShopifyDomain == true else { throw Abort(.badRequest) }
 		guard URL(string: request.url.string)?.generateHMAC(key: tokens.clientSecret) == hmac else { throw Abort(.badRequest) }
 
         // exchange code for access token
         let body = callbackBody(with: code)
-		let url = URI(string: self.accessTokenURL)
+		let url = URI(string: "https://\(shop)/admin/oauth/access_token")
 		let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url) { $0.body = buffer }
         return try response.content.get(String.self, at: ["access_token"])
@@ -72,15 +76,4 @@ final public class ShopifyRouter: FederatedServiceRouter {
         let response = try await self.callbackCompletion(request, accessToken)
 		return try await response.encodeResponse(for: request)
 	}
-    
-    private func authURLFrom(_ shop: String, nonce: String) throws -> URL {
-        return URL(string: "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" +
-            "scope=\(scope.joined(separator: ","))&" +
-            "redirect_uri=\(callbackURL)&" +
-            "state=\(nonce)")!
-    }
-    
-    private func accessTokenURLFrom(_ shop: String) throws -> String {
-        return "https://\(shop)/admin/oauth/access_token"
-    }
 }

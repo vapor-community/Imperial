@@ -13,7 +13,7 @@ extension URL {
         return hmac.hexEncodedString()
 	}
 
-	func isValidShopifyDomain() -> Bool {
+	var isValidShopifyDomain: Bool {
 		let domain = "myshopify.com"
 		
 		guard absoluteString.suffix(domain.count) == domain else { return false }

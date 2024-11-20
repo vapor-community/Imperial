@@ -22,28 +22,28 @@ struct ShopifyTests {
 
 	@Test("Valid Shopify Domain") func domainCheck() throws {
 		let domain = "davidmuzi.myshopify.com"
-		#expect(URL(string: domain)!.isValidShopifyDomain())
+		#expect(URL(string: domain)!.isValidShopifyDomain)
 		
 		let domain2 = "d4m3.myshopify.com"
-		#expect(URL(string: domain2)!.isValidShopifyDomain())
+		#expect(URL(string: domain2)!.isValidShopifyDomain)
 		
 		let domain3 = "david-muzi.myshopify.com"
-		#expect(URL(string: domain3)!.isValidShopifyDomain())
+		#expect(URL(string: domain3)!.isValidShopifyDomain)
 		
 		let domain4 = "david.muzi.myshopify.com"
-		#expect(URL(string: domain4)!.isValidShopifyDomain())
+		#expect(URL(string: domain4)!.isValidShopifyDomain)
 		
 		let domain5 = "david#muzi.myshopify.com"
-		#expect(!URL(string: domain5)!.isValidShopifyDomain())
+		#expect(!URL(string: domain5)!.isValidShopifyDomain)
 		
 		let domain6 = "davidmuzi.myshopify.com.ca"
-		#expect(!URL(string: domain6)!.isValidShopifyDomain())
+		#expect(!URL(string: domain6)!.isValidShopifyDomain)
 		
 		let domain7 = "davidmuzi.square.com"
-		#expect(!URL(string: domain7)!.isValidShopifyDomain())
+		#expect(!URL(string: domain7)!.isValidShopifyDomain)
 		
 		let domain8 = "david*muzi.shopify.ca"
-		#expect(!URL(string: domain8)!.isValidShopifyDomain())
+		#expect(!URL(string: domain8)!.isValidShopifyDomain)
 	}
 
 	@Test("HMAC Validation") func hmacValidation() throws {
