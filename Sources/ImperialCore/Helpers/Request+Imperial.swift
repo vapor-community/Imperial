@@ -15,10 +15,7 @@ extension Request {
             throw ServiceError.noServiceEndpoint(model.serviceKey)
         }
 
-        let token =
-            try service.tokenPrefix
-            + req
-            .accessToken()
+        let token = try service.tokenPrefix + req.accessToken()
 
         let response = try await req.client.get(URI(string: url), headers: ["Authorization": token])
         let instance = try await model.init(from: response)

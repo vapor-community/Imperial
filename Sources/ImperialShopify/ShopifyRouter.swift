@@ -7,6 +7,7 @@ final public class ShopifyRouter: FederatedServiceRouter {
     public let callbackURL: String
     // `accessTokenURL` used to be set inside `authURL` and read by `fetchToken`
     // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
+    // but the property is still required by the protocol, so it's set to an empty string
     public let accessTokenURL: String = ""
     public let service: OAuthService = .shopify
 
@@ -25,8 +26,11 @@ final public class ShopifyRouter: FederatedServiceRouter {
         let nonce = String(UUID().uuidString.prefix(6))
         try request.session.setNonce(nonce)
 
-        return "https://\(shop)/admin/oauth/authorize?" + "client_id=\(tokens.clientID)&" + "scope=\(scope.joined(separator: ","))&"
-            + "redirect_uri=\(callbackURL)&" + "state=\(nonce)"
+        return "https://\(shop)/admin/oauth/authorize?"
+            + "client_id=\(tokens.clientID)&"
+            + "scope=\(scope.joined(separator: ","))&"
+            + "redirect_uri=\(callbackURL)&"
+            + "state=\(nonce)"
     }
 
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {

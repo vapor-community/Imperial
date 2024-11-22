@@ -5,26 +5,32 @@ import Vapor
 /// Usage:
 ///
 /// ```swift
-/// import HTTP
+/// import ImperialCore
+/// import Vapor
 ///
 /// public class Service: FederatedService {
-///     public var tokens: FederatedServiceTokens
-///     public var router: FederatedServiceRouter
+///     public var tokens: any FederatedServiceTokens
+///     public var router: any FederatedServiceRouter
 ///
 ///     @discardableResult
-///     public required init(authenticate: String, callback: String, scope: [String] = [], completion: @escaping (String) -> (ResponseRepresentable)) throws {
-///         self.router = try ServiceRouter(callback: callback, completion: completion)
+///     public required init(
+///         routes: some RoutesBuilder,
+///         authenticate: String,
+///         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
+///         callback: String,
+///         scope: [String] = [],
+///         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+///     ) throws {
+///         self.router = try ServiceRouter(callback: callback, scope: scope, completion: completion)
 ///         self.tokens = self.router.tokens
 ///
-///         self.router.scope = scope
-///         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
+///         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 ///
-///         Service.register(.service)
+///         OAuthService.services[OAuthService.service.name] = .service
 ///     }
 /// }
 /// ```
 public protocol FederatedService {
-
     /// The service's token model for getting the client ID and secret.
     var tokens: any FederatedServiceTokens { get }
 
@@ -41,7 +47,11 @@ public protocol FederatedService {
     ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
     init(
-        routes: some RoutesBuilder, authenticate: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?,
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable)
-        throws
+        routes: some RoutesBuilder,
+        authenticate: String,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
+        callback: String,
+        scope: [String],
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws
 }

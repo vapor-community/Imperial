@@ -22,8 +22,11 @@ final public class KeycloakRouter: FederatedServiceRouter {
     }
 
     public func authURL(_ request: Request) throws -> String {
-        return "\(keycloakTokens.authURL)/auth?" + "client_id=\(self.tokens.clientID)&" + "redirect_uri=\(self.callbackURL)&"
-            + "scope=\(scope.joined(separator: "%20"))&" + "response_type=code"
+        return "\(keycloakTokens.authURL)/auth?"
+            + "client_id=\(self.tokens.clientID)&"
+            + "redirect_uri=\(self.callbackURL)&"
+            + "scope=\(scope.joined(separator: "%20"))&"
+            + "response_type=code"
     }
 
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {

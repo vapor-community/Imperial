@@ -21,8 +21,10 @@ public class DeviantArtRouter: FederatedServiceRouter {
         } else {
             scope = ""
         }
-        return "https://www.deviantart.com/oauth2/authorize?" + "client_id=\(self.tokens.clientID)&"
-            + "redirect_uri=\(self.callbackURL)&\(scope)" + "response_type=code"
+        return "https://www.deviantart.com/oauth2/authorize?"
+            + "client_id=\(self.tokens.clientID)&"
+            + "redirect_uri=\(self.callbackURL)&\(scope)"
+            + "response_type=code"
     }
 
     public func fetchToken(from request: Request) throws -> Future<String> {
