@@ -2,12 +2,11 @@ import Foundation
 import Vapor
 
 final public class GitlabRouter: FederatedServiceRouter {
-    public static let baseURL: String = "https://gitlab.com/"
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
     public let callbackURL: String
-    public let accessTokenURL: String = "\(GitlabRouter.baseURL.finished(with: "/"))oauth/token"
+    public let accessTokenURL: String = "https://gitlab.com/oauth/token"
     public let service: OAuthService = .gitlab
 
     public required init(
@@ -44,6 +43,7 @@ final public class GitlabRouter: FederatedServiceRouter {
             clientSecret: tokens.clientSecret,
             code: code,
             grantType: "authorization_code",
-            redirectUri: self.callbackURL)
+            redirectUri: self.callbackURL
+        )
     }
 }

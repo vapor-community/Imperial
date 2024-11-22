@@ -2,12 +2,11 @@ import Foundation
 import Vapor
 
 final public class GitHubRouter: FederatedServiceRouter {
-    public static let baseURL: String = "https://github.com/"
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
     public let callbackURL: String
-    public let accessTokenURL: String = "\(GitHubRouter.baseURL.finished(with: "/"))login/oauth/access_token"
+    public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
     public let service: OAuthService = .github
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()

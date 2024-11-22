@@ -54,10 +54,13 @@ public protocol FederatedServiceRouter: Sendable {
     /// - Parameters:
     ///   - authURL: The URL for the route that will redirect the user to the OAuth provider.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
+    ///   - router: The router to configure the routes on.
     /// - Throws: N/A
     func configureRoutes(
-        withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder)
-        throws
+        withAuthURL authURL: String,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
+        on router: some RoutesBuilder
+    ) throws
 
     /// Gets an access token from an OAuth provider.
     /// This method is the main body of the `callback` handler.
