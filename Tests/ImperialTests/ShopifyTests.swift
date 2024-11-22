@@ -7,20 +7,20 @@ import XCTVapor
 @Suite("ImperialShopify Tests")
 struct ShopifyTests {
     @Test("Shopify Route") func shopifyRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Shopify.self) { app in
             try await app.test(
-                .GET, "/shopify",
-                afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Shopify.self, authenticate: "shopify", callback: "shopify-auth-complete", redirect: "/")
-
-            try await app.test(
-                .GET, "/shopify",
+                .GET, "/service",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
+
+            try await app.test(
+                .GET, "/service-auth-complete",
+                afterResponse: { res async throws in
+                    #expect(res.status != .notFound)
+                }
+            )
         }
     }
 

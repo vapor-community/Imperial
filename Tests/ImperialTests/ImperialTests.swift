@@ -16,191 +16,191 @@ import XCTVapor
 struct ImperialTests {
     @Test("Auth0 Route")
     func auth0Route() async throws {
-        try await withApp { app in
+        try await withApp(service: Auth0.self) { app in
             try await app.test(
-                .GET, "/auth0",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Auth0.self, authenticate: "auth0", callback: "auth0-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/auth0",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Discord Route")
     func discordRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Discord.self) { app in
             try await app.test(
-                .GET, "/discord",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Discord.self, authenticate: "discord", callback: "discord-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/discord",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Dropbox Route")
     func dropboxRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Dropbox.self) { app in
             try await app.test(
-                .GET, "/dropbox",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Dropbox.self, authenticate: "dropbox", callback: "dropbox-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/dropbox",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Facebook Route")
     func facebookRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Facebook.self) { app in
             try await app.test(
-                .GET, "/facebook",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Facebook.self, authenticate: "facebook", callback: "facebook-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/facebook",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("GitHub Route")
     func githubRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: GitHub.self) { app in
             try await app.test(
-                .GET, "/github",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/github",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Gitlab Route")
     func gitlabRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Gitlab.self) { app in
             try await app.test(
-                .GET, "/gitlab",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Gitlab.self, authenticate: "gitlab", callback: "gitlab-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/gitlab",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Google Route")
     func googleRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Google.self) { app in
             try await app.test(
-                .GET, "/google",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Google.self, authenticate: "google", callback: "google-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/google",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Google JWT Route")
     func googleJWTRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: GoogleJWT.self) { app in
             try await app.test(
-                .GET, "/googleJWT",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: GoogleJWT.self, authenticate: "googleJWT", callback: "googleJWT-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/googleJWT",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Keycloak Route")
     func keycloakRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Keycloak.self) { app in
             try await app.test(
-                .GET, "/keycloak",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Keycloak.self, authenticate: "keycloak", callback: "keycloak-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/keycloak",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
     @Test("Microsoft Route")
     func microsoftRoute() async throws {
-        try await withApp { app in
+        try await withApp(service: Microsoft.self) { app in
             try await app.test(
-                .GET, "/microsoft",
+                .GET, "/service",
                 afterResponse: { res async throws in
-                    #expect(res.status == .notFound)
-                })
-
-            try app.oAuth(from: Microsoft.self, authenticate: "microsoft", callback: "microsoft-auth-complete", redirect: "/")
+                    #expect(res.status == .seeOther)
+                }
+            )
 
             try await app.test(
-                .GET, "/microsoft",
+                .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
                     #expect(res.status != .notFound)
-                })
+                }
+            )
         }
     }
 
