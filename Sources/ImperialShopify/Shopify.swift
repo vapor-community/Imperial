@@ -2,10 +2,8 @@
 import Vapor
 
 public final class Shopify: FederatedService {
-    public var tokens: any FederatedServiceTokens { self.router.tokens }
-    public var router: any FederatedServiceRouter { self.shopifyRouter }
-
-    public let shopifyRouter: ShopifyRouter
+    public let tokens: any FederatedServiceTokens
+    public let router: any FederatedServiceRouter
 
     public init(
         routes: some RoutesBuilder,
@@ -15,7 +13,8 @@ public final class Shopify: FederatedService {
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.shopifyRouter = try ShopifyRouter(callback: callback, scope: scope, completion: completion)
+        self.router = try ShopifyRouter(callback: callback, scope: scope, completion: completion)
+        self.tokens = self.router.tokens
 
         try self.router.configureRoutes(
             withAuthURL: authenticate,

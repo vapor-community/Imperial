@@ -48,7 +48,8 @@ final public class ShopifyRouter: FederatedServiceRouter {
         ShopifyCallbackBody(
             code: code,
             clientId: tokens.clientID,
-            clientSecret: tokens.clientSecret)
+            clientSecret: tokens.clientSecret
+        )
     }
 
     /// Gets an access token from an OAuth provider.
