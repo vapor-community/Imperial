@@ -206,13 +206,20 @@ struct ImperialTests {
 
     @Test("ImperialError & ServiceError")
     func errors() {
+        let variable = "test"
+        let imperialError = ImperialError.missingEnvVar(variable)
         #expect(
-            ImperialError.missingEnvVar("test").description == "ImperialError(errorType: missingEnvVar, missing enviroment variable: test)")
+            imperialError.description
+                == "ImperialError(errorType: \(imperialError.errorType.base.rawValue), missing enviroment variable: \(variable))"
+        )
         #expect(ImperialError.missingEnvVar("foo") == ImperialError.missingEnvVar("bar"))
 
+        let endpoint = "test"
+        let serviceError = ServiceError.noServiceEndpoint(endpoint)
         #expect(
-            ServiceError.noServiceEndpoint("test").description
-                == "ServiceError(errorType: noServiceEndpoint, service does not have available endpoint for key: test)")
+            serviceError.description
+                == "ServiceError(errorType: \(serviceError.errorType.base.rawValue), service does not have available endpoint for key: \(endpoint))"
+        )
         #expect(ServiceError.noServiceEndpoint("foo") == ServiceError.noServiceEndpoint("bar"))
     }
 }
