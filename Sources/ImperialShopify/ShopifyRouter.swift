@@ -26,11 +26,22 @@ final public class ShopifyRouter: FederatedServiceRouter {
         let nonce = String(UUID().uuidString.prefix(6))
         try request.session.setNonce(nonce)
 
-        return "https://\(shop)/admin/oauth/authorize?"
-            + "client_id=\(tokens.clientID)&"
-            + "scope=\(scope.joined(separator: ","))&"
-            + "redirect_uri=\(callbackURL)&"
-            + "state=\(nonce)"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = shop
+        components.path = "/admin/oauth/authorize"
+        components.queryItems = [
+            clientIDItem,
+            .init(name: "scope", value: scope.joined(separator: ",")),
+            redirectURIItem,
+            .init(name: "state", value: nonce),
+        ]
+
+        guard let url = components.url else {
+            throw Abort(.internalServerError)
+        }
+
+        return url.absoluteString
     }
 
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
