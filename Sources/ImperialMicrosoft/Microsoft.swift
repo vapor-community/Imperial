@@ -1,9 +1,9 @@
 @_exported import ImperialCore
 import Vapor
 
-public class Microsoft: FederatedService {
-    public var tokens: any FederatedServiceTokens
-    public var router: any FederatedServiceRouter
+final public class Microsoft: FederatedService {
+    public let tokens: any FederatedServiceTokens
+    public let router: any FederatedServiceRouter
 
     @discardableResult
     public required init(

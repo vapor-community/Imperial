@@ -2,11 +2,10 @@
 import Vapor
 
 public final class Shopify: FederatedService {
-
     public var tokens: any FederatedServiceTokens { self.router.tokens }
     public var router: any FederatedServiceRouter { self.shopifyRouter }
 
-    public var shopifyRouter: ShopifyRouter
+    public let shopifyRouter: ShopifyRouter
 
     public init(
         routes: some RoutesBuilder,

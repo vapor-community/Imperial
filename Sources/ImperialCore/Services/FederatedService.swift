@@ -30,7 +30,7 @@ import Vapor
 ///     }
 /// }
 /// ```
-public protocol FederatedService {
+public protocol FederatedService: Sendable {
     /// The service's token model for getting the client ID and secret.
     var tokens: any FederatedServiceTokens { get }
 
