@@ -1,21 +1,21 @@
 import Vapor
 
-struct MicrosoftCallbackBody: Content {
+struct XCallbackBody: Content {
     let code: String
     let clientId: String
     let clientSecret: String
     let redirectURI: String
-    let scope: String
+    let codeVerifier: String
     let grantType: String = "authorization_code"
     
-    static var defaultContentType: MediaType = .urlEncodedForm
+    static let defaultContentType: HTTPMediaType = .urlEncodedForm
     
     enum CodingKeys: String, CodingKey {
-        case code = "code"
+        case code
         case clientId = "client_id"
         case clientSecret = "client_secret"
         case redirectURI = "redirect_uri"
+        case codeVerifier = "code_verifier"
         case grantType = "grant_type"
-        case scope = "scope"
     }
 }

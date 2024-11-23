@@ -1,13 +1,12 @@
-import Vapor
 import Foundation
+import Vapor
 
-public class FacebookRouter: FederatedServiceRouter {
-    
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    public var scope: [String] = []
+final public class FacebookRouter: FederatedServiceRouter {
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    public let scope: [String]
     public let callbackURL: String
-    public var accessTokenURL: String = "https://graph.facebook.com/v3.2/oauth/access_token"
+    public let accessTokenURL: String = "https://graph.facebook.com/v3.2/oauth/access_token"
     public let service: OAuthService = .facebook
 
     public func authURL(_ request: Request) throws -> String {
@@ -19,27 +18,31 @@ public class FacebookRouter: FederatedServiceRouter {
             clientIDItem,
             redirectURIItem,
             scopeItem,
-            codeResponseTypeItem
+            codeResponseTypeItem,
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try FacebookAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
 
-    public func callbackBody(with code: String) -> ResponseEncodable {
-        FacebookCallbackBody(code: code,
-                             clientId: tokens.clientID,
-                             clientSecret: tokens.clientSecret,
-                             redirectURI: callbackURL)
+    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+        FacebookCallbackBody(
+            code: code,
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            redirectURI: callbackURL)
     }
 
 }

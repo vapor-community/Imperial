@@ -1,16 +1,20 @@
 import Vapor
 
-public class FacebookAuth: FederatedServiceTokens {
-    public static var idEnvKey: String = "FACEBOOK_CLIENT_ID"
-    public static var secretEnvKey: String = "FACEBOOK_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
+final public class FacebookAuth: FederatedServiceTokens {
+    public static let idEnvKey: String = "FACEBOOK_CLIENT_ID"
+    public static let secretEnvKey: String = "FACEBOOK_CLIENT_SECRET"
+    public let clientID: String
+    public let clientSecret: String
 
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(FacebookAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(FacebookAuth.secretEnvKey)
+        guard let clientID = Environment.get(FacebookAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(FacebookAuth.idEnvKey)
+        }
+        self.clientID = clientID
 
-        self.clientID = try Environment.get(FacebookAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(FacebookAuth.secretEnvKey).value(or: secretError)
+        guard let clientSecret = Environment.get(FacebookAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(FacebookAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

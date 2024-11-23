@@ -1,38 +1,42 @@
 import Vapor
 
-/**
-Represents a connection to an OAuth provider to get an access token for authenticating a user.
- 
-Usage:
-
-```swift
-import HTTP
-
-public class Service: FederatedService {
-    public var tokens: FederatedServiceTokens
-    public var router: FederatedServiceRouter
-
-    @discardableResult
-    public required init(authenticate: String, callback: String, scope: [String] = [], completion: @escaping (String) -> (ResponseRepresentable)) throws {
-        self.router = try ServiceRouter(callback: callback, completion: completion)
-        self.tokens = self.router.tokens
-
-        self.router.scope = scope
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: router)
-
-        Service.register(.service)
-    }
-}
-```
- */
-public protocol FederatedService {
-    
+/// Represents a connection to an OAuth provider to get an access token for authenticating a user.
+///
+/// Usage:
+///
+/// ```swift
+/// import ImperialCore
+/// import Vapor
+///
+/// public class Service: FederatedService {
+///     public var tokens: any FederatedServiceTokens
+///     public var router: any FederatedServiceRouter
+///
+///     @discardableResult
+///     public required init(
+///         routes: some RoutesBuilder,
+///         authenticate: String,
+///         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
+///         callback: String,
+///         scope: [String] = [],
+///         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+///     ) throws {
+///         self.router = try ServiceRouter(callback: callback, scope: scope, completion: completion)
+///         self.tokens = self.router.tokens
+///
+///         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+///
+///         OAuthService.services[OAuthService.service.name] = .service
+///     }
+/// }
+/// ```
+public protocol FederatedService: Sendable {
     /// The service's token model for getting the client ID and secret.
-    var tokens: FederatedServiceTokens { get }
-    
+    var tokens: any FederatedServiceTokens { get }
+
     /// The service's router for handling the request for the access token.
-    var router: FederatedServiceRouter { get }
-    
+    var router: any FederatedServiceRouter { get }
+
     /// Creates a service for getting an access token from an OAuth provider.
     ///
     /// - Parameters:
@@ -42,5 +46,12 @@ public protocol FederatedService {
     ///   - scope: The scopes to send to the provider to request access to.
     ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
-    init(routes: RoutesBuilder, authenticate: String, authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?, callback: String, scope: [String], completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws
+    init(
+        routes: some RoutesBuilder,
+        authenticate: String,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
+        callback: String,
+        scope: [String],
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws
 }

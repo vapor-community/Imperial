@@ -1,7 +1,7 @@
 import Vapor
 
 extension Request {
-    
+
     /// Gets the access token from the current session.
     ///
     /// - Returns: The access token in the current session.
@@ -18,13 +18,13 @@ extension Request {
     /// - Throws:
     ///   - `Abort.unauthorized` if no refresh token exists.
     ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
-    public func refreshToken()throws -> String {
+    public func refreshToken() throws -> String {
         return try self.session.refreshToken()
     }
 }
 
 extension Session {
-    
+
     /// Keys used to store and retrieve items from the session
     enum Keys {
         static let token = "access_token"
@@ -41,7 +41,7 @@ extension Session {
         }
         return token
     }
-	
+
     /// Sets the access token on the session.
     ///
     /// - Parameter token: the access token to store on the session
@@ -53,7 +53,7 @@ extension Session {
     ///
     /// - Returns: The refresh token stored with the `refresh_token` key.
     /// - Throws: `Abort.unauthorized` if no refresh token exists.
-    public func refreshToken()throws -> String {
+    public func refreshToken() throws -> String {
         guard let token = self.data[Keys.refresh] else {
             if self.data[Keys.token] == nil {
                 throw Abort(.unauthorized, reason: "User currently not authenticated")
@@ -88,7 +88,7 @@ extension Session {
         }
         return try JSONDecoder().decode(T.self, from: Data(stored.utf8))
     }
-    
+
     /// Sets a key in the session to a codable object.
     ///
     /// - Parameters:

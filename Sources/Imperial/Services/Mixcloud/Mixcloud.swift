@@ -10,10 +10,10 @@ public class Mixcloud: FederatedService {
     public required init(
         router: Router,
         authenticate: String,
-        authenticateCallback: ((Request)throws -> (Future<Void>))?,
+        authenticateCallback: ((Request) throws -> (Future<Void>))?,
         callback: String,
         scope: [String] = [],
-        completion: @escaping (Request, String)throws -> (Future<ResponseEncodable>)
+        completion: @escaping (Request, String) throws -> (Future<ResponseEncodable>)
     ) throws {
         self.router = try MixcloudRouter(callback: callback, completion: completion)
         self.tokens = self.router.tokens

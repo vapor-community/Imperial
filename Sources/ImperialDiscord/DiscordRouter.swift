@@ -1,22 +1,22 @@
-import Vapor
 import Foundation
+import Vapor
 
-public class DiscordRouter: FederatedServiceRouter {
-
-    public static var baseURL: String = "https://discord.com/"
-    public static var callbackURL: String = "callback"
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    public var scope: [String] = []
+final public class DiscordRouter: FederatedServiceRouter {
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    public let scope: [String]
     public let callbackURL: String
-    public let accessTokenURL: String = "\(DiscordRouter.baseURL.finished(with: "/"))api/oauth2/token"
+    public let accessTokenURL: String = "https://discord.com/api/oauth2/token"
     public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try DiscordAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
 
     public func authURL(_ request: Request) throws -> String {
@@ -27,9 +27,9 @@ public class DiscordRouter: FederatedServiceRouter {
         components.path = "/api/oauth2/authorize"
         components.queryItems = [
             clientIDItem,
-            .init(name: "redirect_uri", value: DiscordRouter.callbackURL),
+            .init(name: "redirect_uri", value: self.callbackURL),
             .init(name: "response_type", value: "code"),
-            scopeItem
+            scopeItem,
         ]
 
         guard let url = components.url else {
@@ -39,13 +39,13 @@ public class DiscordRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public func callbackBody(with code: String) -> ResponseEncodable {
+    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
         return DiscordCallbackBody(
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
             grantType: "authorization_code",
             code: code,
-            redirectUri: DiscordRouter.callbackURL,
+            redirectUri: self.callbackURL,
             scope: scope.joined(separator: " ")
         )
     }

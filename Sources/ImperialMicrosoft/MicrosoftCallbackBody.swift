@@ -7,9 +7,9 @@ struct MicrosoftCallbackBody: Content {
     let redirectURI: String
     let scope: String
     let grantType: String = "authorization_code"
-    
-    static var defaultContentType: HTTPMediaType = .urlEncodedForm
-    
+
+    static let defaultContentType: HTTPMediaType = .urlEncodedForm
+
     enum CodingKeys: String, CodingKey {
         case code
         case clientId = "client_id"

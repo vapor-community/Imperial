@@ -1,16 +1,20 @@
 import Vapor
 
-public class GitHubAuth: FederatedServiceTokens {
-    public static var idEnvKey: String = "GITHUB_CLIENT_ID"
-    public static var secretEnvKey: String = "GITHUB_CLIENT_SECRET"
-    public var clientID: String
-    public var clientSecret: String
-    
+final public class GitHubAuth: FederatedServiceTokens {
+    public static let idEnvKey: String = "GITHUB_CLIENT_ID"
+    public static let secretEnvKey: String = "GITHUB_CLIENT_SECRET"
+    public let clientID: String
+    public let clientSecret: String
+
     public required init() throws {
-        let idError = ImperialError.missingEnvVar(GitHubAuth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(GitHubAuth.secretEnvKey)
-        
-        self.clientID = try Environment.get(GitHubAuth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(GitHubAuth.secretEnvKey).value(or: secretError)
+        guard let clientID = Environment.get(GitHubAuth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(GitHubAuth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(GitHubAuth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(GitHubAuth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }

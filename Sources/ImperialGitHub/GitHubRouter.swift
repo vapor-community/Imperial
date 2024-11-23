@@ -1,14 +1,12 @@
-import Vapor
 import Foundation
+import Vapor
 
-public class GitHubRouter: FederatedServiceRouter {
-
-    public static var baseURL: String = "https://github.com/"
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
-    public var scope: [String] = []
+final public class GitHubRouter: FederatedServiceRouter {
+    public let tokens: any FederatedServiceTokens
+    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    public let scope: [String]
     public let callbackURL: String
-    public let accessTokenURL: String = "\(GitHubRouter.baseURL.finished(with: "/"))login/oauth/access_token"
+    public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
     public let service: OAuthService = .github
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
@@ -16,34 +14,38 @@ public class GitHubRouter: FederatedServiceRouter {
         return headers
     }()
 
-    public required init(callback: String, completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)) throws {
+    public required init(
+        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+    ) throws {
         self.tokens = try GitHubAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
-    
+
     public func authURL(_ request: Request) throws -> String {
-        
+
         var components = URLComponents()
         components.scheme = "https"
         components.host = "github.com"
         components.path = "/login/oauth/authorize"
         components.queryItems = [
             clientIDItem,
-            scopeItem
+            scopeItem,
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
-    
-    public func callbackBody(with code: String) -> ResponseEncodable {
-        GitHubCallbackBody(clientId: tokens.clientID,
-                           clientSecret: tokens.clientSecret,
-                           code: code)
+
+    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+        GitHubCallbackBody(
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            code: code)
     }
 
 }
