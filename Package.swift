@@ -18,6 +18,7 @@ let package = Package(
         .library(name: "ImperialKeycloak", targets: ["ImperialCore", "ImperialKeycloak"]),
         .library(name: "ImperialMicrosoft", targets: ["ImperialCore", "ImperialMicrosoft"]),
         .library(name: "ImperialShopify", targets: ["ImperialCore", "ImperialShopify"]),
+        .library(name: "ImperialX", targets: ["ImperialCore", "ImperialX"]),
         .library(
             name: "Imperial",
             targets: [
@@ -32,11 +33,13 @@ let package = Package(
                 "ImperialKeycloak",
                 "ImperialMicrosoft",
                 "ImperialShopify",
+                "ImperialX",
             ]),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", "3.8.0"..<"5.0.0"),
     ],
     targets: [
         .target(
@@ -57,6 +60,7 @@ let package = Package(
         .target(name: "ImperialKeycloak", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialMicrosoft", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialShopify", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
+        .target(name: "ImperialX", dependencies: ["ImperialCore", .product(name: "Crypto", package: "swift-crypto")], swiftSettings: swiftSettings),
         .testTarget(
             name: "ImperialTests",
             dependencies: [
@@ -71,6 +75,7 @@ let package = Package(
                 .target(name: "ImperialKeycloak"),
                 .target(name: "ImperialMicrosoft"),
                 .target(name: "ImperialShopify"),
+                .target(name: "ImperialX"),
                 .product(name: "XCTVapor", package: "vapor"),
             ],
             swiftSettings: swiftSettings
