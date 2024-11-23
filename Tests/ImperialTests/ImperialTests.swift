@@ -25,9 +25,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // A real Auth0 domain is needed to test this route
+                    #expect(res.status == .internalServerError)
                 }
             )
         }
@@ -44,9 +45,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // Discord returns a 400 Bad Request error when the code is invalid with a JSON error message
+                    #expect(res.status == .badRequest)
                 }
             )
         }
@@ -63,9 +65,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // Dropbox returns a 400 Bad Request error when the code is invalid with a JSON error message
+                    #expect(res.status == .badRequest)
                 }
             )
         }
@@ -82,9 +85,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // The response is an JS, signaling an error with `redirect_uri`
+                    #expect(res.status == .unsupportedMediaType)
                 }
             )
         }
@@ -101,9 +105,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // The response is an HTML page likely signaling an error
+                    #expect(res.status == .unsupportedMediaType)
                 }
             )
         }
@@ -120,9 +125,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // Gitlab returns a 400 Bad Request error when the code is invalid with a JSON error message
+                    #expect(res.status == .badRequest)
                 }
             )
         }
@@ -139,9 +145,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // Google returns a 400 Bad Request error when the code is invalid with a JSON error message
+                    #expect(res.status == .badRequest)
                 }
             )
         }
@@ -160,7 +167,8 @@ struct ImperialTests {
             try await app.test(
                 .GET, "/service-auth-complete",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // We don't have a valid key to sign the JWT
+                    #expect(res.status == .internalServerError)
                 }
             )
         }
@@ -177,9 +185,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // The post request fails
+                    #expect(res.status == .internalServerError)
                 }
             )
         }
@@ -196,9 +205,10 @@ struct ImperialTests {
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?code=123",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // Microsoft returns a 400 Bad Request, signaling an error with `redirect_uri`
+                    #expect(res.status == .badRequest)
                 }
             )
         }

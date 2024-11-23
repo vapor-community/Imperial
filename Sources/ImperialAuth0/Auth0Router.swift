@@ -52,6 +52,7 @@ final public class Auth0Router: FederatedServiceRouter {
             clientId: self.tokens.clientID,
             clientSecret: self.tokens.clientSecret,
             code: code,
-            redirectURI: self.callbackURL)
+            redirectURI: self.callbackURL
+        )
     }
 }

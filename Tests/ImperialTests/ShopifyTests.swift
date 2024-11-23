@@ -9,16 +9,22 @@ struct ShopifyTests {
     @Test("Shopify Route") func shopifyRoute() async throws {
         try await withApp(service: Shopify.self) { app in
             try await app.test(
-                .GET, "/service",
+                .GET, "/service?shop=some-shop.myshopify.com",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "/service-auth-complete",
+                .GET, "/service-auth-complete?"
+                    + "code=0907a61c0c8d55e99db179b68161bc00&"
+                    + "hmac=700e2dadb827fcc8609e9d5ce208b2e9cdaab9df07390d2cbca10d7c328fc4bf&"
+                    + "shop=some-shop.myshopify.com&"
+                    + "state=0.6784241404160823&"
+                    + "timestamp=1337178173",
                 afterResponse: { res async throws in
-                    #expect(res.status != .notFound)
+                    // The session should have the `nonce` property set
+                    #expect(res.status == .badRequest)
                 }
             )
         }
@@ -51,9 +57,12 @@ struct ShopifyTests {
     }
 
     @Test("HMAC Validation") func hmacValidation() throws {
-        let url = URL(
-            string:
-                "https://domain.com/?code=0907a61c0c8d55e99db179b68161bc00&hmac=700e2dadb827fcc8609e9d5ce208b2e9cdaab9df07390d2cbca10d7c328fc4bf&shop=some-shop.myshopify.com&state=0.6784241404160823&timestamp=1337178173"
+        let url = URL(string: "https://domain.com/?"
+            + "code=0907a61c0c8d55e99db179b68161bc00&"
+            + "hmac=700e2dadb827fcc8609e9d5ce208b2e9cdaab9df07390d2cbca10d7c328fc4bf&"
+            + "shop=some-shop.myshopify.com&"
+            + "state=0.6784241404160823&"
+            + "timestamp=1337178173"
         )!
 
         let hmac = url.generateHMAC(key: "hush")

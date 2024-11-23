@@ -20,7 +20,6 @@ final public class DiscordRouter: FederatedServiceRouter {
     }
 
     public func authURL(_ request: Request) throws -> String {
-
         var components = URLComponents()
         components.scheme = "https"
         components.host = "discord.com"

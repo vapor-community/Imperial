@@ -47,7 +47,8 @@ final public class GoogleRouter: FederatedServiceRouter {
             code: code,
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
-            redirectURI: callbackURL)
+            redirectURI: callbackURL
+        )
     }
 
 }

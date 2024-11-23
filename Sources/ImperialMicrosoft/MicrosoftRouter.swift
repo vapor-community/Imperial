@@ -51,7 +51,8 @@ final public class MicrosoftRouter: FederatedServiceRouter {
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
             redirectURI: callbackURL,
-            scope: scope.joined(separator: " "))
+            scope: scope.joined(separator: " ")
+        )
     }
 
 }

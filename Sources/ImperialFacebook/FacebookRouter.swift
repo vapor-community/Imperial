@@ -42,7 +42,8 @@ final public class FacebookRouter: FederatedServiceRouter {
             code: code,
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
-            redirectURI: callbackURL)
+            redirectURI: callbackURL
+        )
     }
 
 }

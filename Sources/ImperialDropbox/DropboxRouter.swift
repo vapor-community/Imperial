@@ -48,7 +48,8 @@ final public class DropboxRouter: FederatedServiceRouter {
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
         DropboxCallbackBody(
             code: code,
-            redirectURI: callbackURL)
+            redirectURI: callbackURL
+        )
     }
 
 }

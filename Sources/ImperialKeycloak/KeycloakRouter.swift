@@ -34,6 +34,7 @@ final public class KeycloakRouter: FederatedServiceRouter {
             code: code,
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
-            redirectURI: callbackURL)
+            redirectURI: callbackURL
+        )
     }
 }
