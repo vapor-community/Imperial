@@ -1,5 +1,5 @@
 extension OAuthService {
-    public static let dropbox = OAuthService(
+    static let dropbox = OAuthService(
         name: "dropbox",
         endpoints: [:]
     )

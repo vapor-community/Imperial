@@ -1,5 +1,5 @@
 extension OAuthService {
-    public static let facebook = OAuthService.init(
+    static let facebook = OAuthService.init(
         name: "facebook",
         endpoints: [:]
     )

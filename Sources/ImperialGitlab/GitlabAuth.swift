@@ -1,12 +1,12 @@
 import Vapor
 
-final public class GitlabAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "GITLAB_CLIENT_ID"
-    public static let secretEnvKey: String = "GITLAB_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct GitlabAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "GITLAB_CLIENT_ID"
+    static let secretEnvKey: String = "GITLAB_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(GitlabAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(GitlabAuth.idEnvKey)
         }

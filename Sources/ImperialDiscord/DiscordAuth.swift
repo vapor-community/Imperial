@@ -1,12 +1,12 @@
 import Vapor
 
-final public class DiscordAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "DISCORD_CLIENT_ID"
-    public static let secretEnvKey: String = "DISCORD_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct DiscordAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "DISCORD_CLIENT_ID"
+    static let secretEnvKey: String = "DISCORD_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(DiscordAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(DiscordAuth.idEnvKey)
         }

@@ -1,12 +1,12 @@
 import Vapor
 
-final public class GoogleJWTAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "GOOGLEJWT_CLIENT_EMAIL"
-    public static let secretEnvKey: String = "GOOGLEJWT_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct GoogleJWTAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "GOOGLEJWT_CLIENT_EMAIL"
+    static let secretEnvKey: String = "GOOGLEJWT_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(GoogleJWTAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(GoogleJWTAuth.idEnvKey)
         }

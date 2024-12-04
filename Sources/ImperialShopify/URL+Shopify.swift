@@ -2,7 +2,6 @@ import Crypto
 import Foundation
 
 extension URL {
-
     func generateHMAC(key: String) -> String {
         let components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
         let params = components.queryItems!.filter { $0.name != "hmac" }

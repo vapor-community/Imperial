@@ -1,5 +1,5 @@
 extension OAuthService {
-    public static let deviantArt = OAuthService.init(
+    static let deviantArt = OAuthService.init(
         name: "deviantart",
         endpoints: [:]
     )

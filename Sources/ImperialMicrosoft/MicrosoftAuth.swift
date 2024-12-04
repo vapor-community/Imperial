@@ -1,12 +1,12 @@
 import Vapor
 
-final public class MicrosoftAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "MICROSOFT_CLIENT_ID"
-    public static let secretEnvKey: String = "MICROSOFT_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct MicrosoftAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "MICROSOFT_CLIENT_ID"
+    static let secretEnvKey: String = "MICROSOFT_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(MicrosoftAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(MicrosoftAuth.idEnvKey)
         }

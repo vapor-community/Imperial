@@ -1,12 +1,12 @@
 import Vapor
 
-final public class MixcloudAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "MIXCLOUD_CLIENT_ID"
-    public static let secretEnvKey: String = "MIXCLOUD_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct MixcloudAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "MIXCLOUD_CLIENT_ID"
+    static let secretEnvKey: String = "MIXCLOUD_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(MixcloudAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(MixcloudAuth.idEnvKey)
         }

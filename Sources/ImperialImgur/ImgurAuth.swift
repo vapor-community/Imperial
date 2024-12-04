@@ -1,12 +1,12 @@
 import Vapor
 
-final public class ImgurAuth: FederatedServiceTokens {
-    public static let idEnvKey: String = "IMGUR_CLIENT_ID"
-    public static let secretEnvKey: String = "IMGUR_CLIENT_SECRET"
-    public let clientID: String
-    public let clientSecret: String
+struct ImgurAuth: FederatedServiceTokens {
+    static let idEnvKey: String = "IMGUR_CLIENT_ID"
+    static let secretEnvKey: String = "IMGUR_CLIENT_SECRET"
+    let clientID: String
+    let clientSecret: String
 
-    public required init() throws {
+    init() throws {
         guard let clientID = Environment.get(ImgurAuth.idEnvKey) else {
             throw ImperialError.missingEnvVar(ImgurAuth.idEnvKey)
         }
