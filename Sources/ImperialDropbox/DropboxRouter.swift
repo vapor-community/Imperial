@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-final public class DropboxRouter: FederatedServiceRouter {
+public struct DropboxRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
@@ -15,7 +15,7 @@ final public class DropboxRouter: FederatedServiceRouter {
         return headers
     }
 
-    public required init(
+    public init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try DropboxAuth()

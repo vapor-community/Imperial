@@ -1,12 +1,12 @@
 @_exported import ImperialCore
 import Vapor
 
-final public class Auth0: FederatedService {
+public struct Auth0: FederatedService {
     public let tokens: any FederatedServiceTokens
     public let router: any FederatedServiceRouter
 
     @discardableResult
-    public required init(
+    public init(
         routes: some RoutesBuilder,
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,

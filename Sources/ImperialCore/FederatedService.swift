@@ -8,12 +8,12 @@ import Vapor
 /// import ImperialCore
 /// import Vapor
 ///
-/// public class Service: FederatedService {
+/// public struct Service: FederatedService {
 ///     public var tokens: any FederatedServiceTokens
 ///     public var router: any FederatedServiceRouter
 ///
 ///     @discardableResult
-///     public required init(
+///     public init(
 ///         routes: some RoutesBuilder,
 ///         authenticate: String,
 ///         authenticateCallback: (@Sendable (Request) async throws -> Void)?,

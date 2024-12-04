@@ -1,7 +1,7 @@
 @_exported import ImperialCore
 import Vapor
 
-public final class Shopify: FederatedService {
+public struct Shopify: FederatedService {
     public let tokens: any FederatedServiceTokens
     public let router: any FederatedServiceRouter
 

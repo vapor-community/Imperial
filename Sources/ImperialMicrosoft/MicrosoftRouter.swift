@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-final public class MicrosoftRouter: FederatedServiceRouter {
+public struct MicrosoftRouter: FederatedServiceRouter {
     public static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
     public let tokens: any FederatedServiceTokens
@@ -12,7 +12,7 @@ final public class MicrosoftRouter: FederatedServiceRouter {
     public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
     public let errorKey = "error_description"
 
-    public required init(
+    public init(
         callback: String,
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

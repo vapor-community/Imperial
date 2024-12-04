@@ -3,7 +3,7 @@ import Foundation
 import JWTKit
 import Vapor
 
-public final class GoogleJWTRouter: FederatedServiceRouter {
+public struct GoogleJWTRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]

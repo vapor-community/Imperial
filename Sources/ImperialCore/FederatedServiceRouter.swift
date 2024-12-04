@@ -4,7 +4,7 @@ import Vapor
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
 public protocol FederatedServiceRouter: Sendable {
-    /// A class that gets the client ID and secret from environment variables.
+    /// An object that gets the client ID and secret from environment variables.
     var tokens: any FederatedServiceTokens { get }
 
     /// The callback that is fired after the access token is fetched from the OAuth provider.

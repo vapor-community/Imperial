@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-final public class DiscordRouter: FederatedServiceRouter {
+public struct DiscordRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
@@ -9,7 +9,7 @@ final public class DiscordRouter: FederatedServiceRouter {
     public let accessTokenURL: String = "https://discord.com/api/oauth2/token"
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public required init(
+    public init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try DiscordAuth()

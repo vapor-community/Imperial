@@ -1,6 +1,6 @@
 import Vapor
 
-final public class ShopifyRouter: FederatedServiceRouter {
+public struct ShopifyRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
@@ -10,7 +10,7 @@ final public class ShopifyRouter: FederatedServiceRouter {
     // but the property is still required by the protocol, so it's set to an empty string
     public let accessTokenURL: String = ""
 
-    required public init(
+    public init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try ShopifyAuth()

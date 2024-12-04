@@ -1,14 +1,14 @@
 import Foundation
 import Vapor
 
-final public class MixcloudRouter: FederatedServiceRouter {
+public struct MixcloudRouter: FederatedServiceRouter {
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.mixcloud.com/oauth/access_token"
 
-    public required init(
+    public init(
         callback: String,
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

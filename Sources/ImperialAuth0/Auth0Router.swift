@@ -1,7 +1,7 @@
 import Foundation
 import Vapor
 
-final public class Auth0Router: FederatedServiceRouter {
+public struct Auth0Router: FederatedServiceRouter {
     public let baseURL: String
     public let tokens: any FederatedServiceTokens
     public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
@@ -15,7 +15,7 @@ final public class Auth0Router: FederatedServiceRouter {
         return self.baseURL.finished(with: "/") + path
     }
 
-    public required init(
+    public init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         let auth = try Auth0Auth()
