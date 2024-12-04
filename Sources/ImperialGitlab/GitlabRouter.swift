@@ -7,7 +7,6 @@ final public class GitlabRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://gitlab.com/oauth/token"
-    public let service: OAuthService = .gitlab
 
     public required init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

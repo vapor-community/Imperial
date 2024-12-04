@@ -1,11 +1,11 @@
 import Vapor
 
-final public class GoogleJWT: FederatedService {
+public struct GoogleJWT: FederatedService {
     public let tokens: any FederatedServiceTokens
     public let router: any FederatedServiceRouter
 
     @discardableResult
-    public required init(
+    public init(
         routes: some RoutesBuilder,
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
@@ -17,7 +17,5 @@ final public class GoogleJWT: FederatedService {
         self.tokens = self.router.tokens
 
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
-
-        OAuthService.services[OAuthService.googleJWT.name] = .googleJWT
     }
 }

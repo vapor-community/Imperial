@@ -7,7 +7,6 @@ final public class DiscordRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://discord.com/api/oauth2/token"
-    public let service: OAuthService = .discord
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
     public required init(

@@ -7,7 +7,6 @@ final public class FacebookRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://graph.facebook.com/v3.2/oauth/access_token"
-    public let service: OAuthService = .facebook
 
     public func authURL(_ request: Request) throws -> String {
         var components = URLComponents()

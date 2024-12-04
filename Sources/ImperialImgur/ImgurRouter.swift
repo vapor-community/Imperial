@@ -7,7 +7,6 @@ final public class ImgurRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://api.imgur.com/oauth2/token"
-    public let service: OAuthService = .imgur
 
     public required init(
         callback: String,

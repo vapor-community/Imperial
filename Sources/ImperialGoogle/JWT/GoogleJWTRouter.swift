@@ -10,7 +10,6 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     public let authURL: String
-    public let service: OAuthService = .googleJWT
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .urlEncodedForm
@@ -59,7 +58,7 @@ public final class GoogleJWTRouter: FederatedServiceRouter {
                 exp: ExpirationClaim(value: Date().addingTimeInterval(3600))
             )
 
-            let pk = try Insecure.RSA.PrivateKey(pem: self.tokens.clientSecret.utf8)
+            let pk = try Insecure.RSA.PrivateKey(pem: self.tokens.clientSecret)
             let keys = JWTKeyCollection()
             await keys.add(rsa: pk, digestAlgorithm: .sha256)
             return try await keys.sign(payload)

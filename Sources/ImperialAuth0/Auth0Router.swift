@@ -9,7 +9,6 @@ final public class Auth0Router: FederatedServiceRouter {
     public let requiredScopes = ["openid"]
     public let callbackURL: String
     public let accessTokenURL: String
-    public let service: OAuthService = .auth0
     public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
     private func providerUrl(path: String) -> String {

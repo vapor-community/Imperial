@@ -7,7 +7,6 @@ final public class GitHubRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://github.com/login/oauth/access_token"
-    public let service: OAuthService = .github
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .json

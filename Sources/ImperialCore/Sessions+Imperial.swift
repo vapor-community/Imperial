@@ -1,30 +1,22 @@
 import Vapor
 
 extension Request {
-
     /// Gets the access token from the current session.
-    ///
-    /// - Returns: The access token in the current session.
-    /// - Throws:
-    ///   - `Abort.unauthorized` if no access token exists.
-    ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
-    public func accessToken() throws -> String {
-        return try session.accessToken()
+    public var accessToken: String {
+        get throws {
+            try session.accessToken
+        }
     }
 
     /// Gets the refresh token from the current session.
-    ///
-    /// - Returns: The refresh token in the current session.
-    /// - Throws:
-    ///   - `Abort.unauthorized` if no refresh token exists.
-    ///   - `SessionsError.notConfigured` if session middlware is not configured yet.
-    public func refreshToken() throws -> String {
-        return try self.session.refreshToken()
+    public var refreshToken: String {
+        get throws {
+            try session.refreshToken
+        }
     }
 }
 
 extension Session {
-
     /// Keys used to store and retrieve items from the session
     enum Keys {
         static let token = "access_token"
@@ -32,14 +24,13 @@ extension Session {
     }
 
     /// Gets the access token from the session.
-    ///
-    /// - Returns: The access token stored with the `access_token` key.
-    /// - Throws: `Abort.unauthorized` if no access token exists.
-    public func accessToken() throws -> String {
-        guard let token = try? get(Keys.token, as: String.self) else {
-            throw Abort(.unauthorized, reason: "User currently not authenticated")
+    public var accessToken: String {
+        get throws {
+            guard let token = try? get(Keys.token, as: String.self) else {
+                throw Abort(.unauthorized, reason: "User currently not authenticated")
+            }
+            return token
         }
-        return token
     }
 
     /// Sets the access token on the session.
@@ -50,21 +41,17 @@ extension Session {
     }
 
     /// Gets the refresh token from the session.
-    ///
-    /// - Returns: The refresh token stored with the `refresh_token` key.
-    /// - Throws: `Abort.unauthorized` if no refresh token exists.
-    public func refreshToken() throws -> String {
-        guard let token = self.data[Keys.refresh] else {
-            if self.data[Keys.token] == nil {
-                throw Abort(.unauthorized, reason: "User currently not authenticated")
-            } else {
-                let oauthData = self.data["access_token_service"]?.data(using: .utf8) ?? Data()
-                let oauth = try? JSONSerialization.jsonObject(with: oauthData, options: [])
-                let oauthName = (oauth as? NSDictionary)?["name"] ?? "???"
-                throw Abort(.methodNotAllowed, reason: "OAuth provider '\(oauthName)' uses no refresh tokens")
+    public var refreshToken: String {
+        get throws {
+            guard let token = self.data[Keys.refresh] else {
+                if self.data[Keys.token] == nil {
+                    throw Abort(.unauthorized, reason: "User currently not authenticated")
+                } else {
+                    throw Abort(.methodNotAllowed)
+                }
             }
+            return token
         }
-        return token
     }
 
     /// Sets the refresh token on the session.

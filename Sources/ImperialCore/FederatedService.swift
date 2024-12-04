@@ -25,8 +25,6 @@ import Vapor
 ///         self.tokens = self.router.tokens
 ///
 ///         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
-///
-///         OAuthService.services[OAuthService.service.name] = .service
 ///     }
 /// }
 /// ```
@@ -46,7 +44,7 @@ public protocol FederatedService: Sendable {
     ///   - scope: The scopes to send to the provider to request access to.
     ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
-    init(
+    @discardableResult init(
         routes: some RoutesBuilder,
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,

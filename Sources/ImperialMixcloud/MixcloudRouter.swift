@@ -7,7 +7,6 @@ final public class MixcloudRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.mixcloud.com/oauth/access_token"
-    public let service: OAuthService = .mixcloud
 
     public required init(
         callback: String,

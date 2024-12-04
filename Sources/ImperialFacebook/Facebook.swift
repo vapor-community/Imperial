@@ -18,7 +18,5 @@ final public class Facebook: FederatedService {
         self.tokens = self.router.tokens
 
         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
-
-        OAuthService.services[OAuthService.facebook.name] = .facebook
     }
 }

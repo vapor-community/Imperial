@@ -21,9 +21,6 @@ public protocol FederatedServiceRouter: Sendable {
     /// The key to acess the error URL query parameter
     var errorKey: String { get }
 
-    /// The OAuthService associated with the router
-    var service: OAuthService { get }
-
     /// The URL (or URI) for that route that the provider will fire when the user authenticates with the OAuth provider.
     var callbackURL: String { get }
 
@@ -121,7 +118,6 @@ extension FederatedServiceRouter {
         let accessToken = try await self.fetchToken(from: request)
         let session = request.session
         try session.setAccessToken(accessToken)
-        try session.set("access_token_service", to: self.service)
         let response = try await self.callbackCompletion(request, accessToken)
         return try await response.encodeResponse(for: request)
     }

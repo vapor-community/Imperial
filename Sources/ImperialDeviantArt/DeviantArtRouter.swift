@@ -7,7 +7,6 @@ final public class DeviantArtRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.deviantart.com/oauth2/token"
-    public let service: OAuthService = .deviantArt
 
     public required init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

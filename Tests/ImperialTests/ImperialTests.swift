@@ -15,7 +15,7 @@ import XCTVapor
 
 @testable import ImperialCore
 
-@Suite("Imperial Tests")
+@Suite("Imperial Tests", .serialized)
 struct ImperialTests {
     @Test("Auth0 Route")
     func auth0Route() async throws {
@@ -277,8 +277,8 @@ struct ImperialTests {
         }
     }
 
-    @Test("ImperialError & ServiceError")
-    func errors() {
+    @Test("ImperialError")
+    func imperialError() {
         let variable = "test"
         let imperialError = ImperialError.missingEnvVar(variable)
         #expect(
@@ -286,13 +286,5 @@ struct ImperialTests {
                 == "ImperialError(errorType: \(imperialError.errorType.base.rawValue), missing enviroment variable: \(variable))"
         )
         #expect(ImperialError.missingEnvVar("foo") == ImperialError.missingEnvVar("bar"))
-
-        let endpoint = "test"
-        let serviceError = ServiceError.noServiceEndpoint(endpoint)
-        #expect(
-            serviceError.description
-                == "ServiceError(errorType: \(serviceError.errorType.base.rawValue), service does not have available endpoint for key: \(endpoint))"
-        )
-        #expect(ServiceError.noServiceEndpoint("foo") == ServiceError.noServiceEndpoint("bar"))
     }
 }

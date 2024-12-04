@@ -7,7 +7,6 @@ final public class GoogleRouter: FederatedServiceRouter {
     public let scope: [String]
     public let callbackURL: String
     public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public let service: OAuthService = .google
     public let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .urlEncodedForm

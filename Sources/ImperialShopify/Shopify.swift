@@ -21,7 +21,5 @@ public final class Shopify: FederatedService {
             authenticateCallback: authenticateCallback,
             on: routes
         )
-
-        OAuthService.services[OAuthService.shopify.name] = .shopify
     }
 }

@@ -9,7 +9,6 @@ final public class ShopifyRouter: FederatedServiceRouter {
     // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
     // but the property is still required by the protocol, so it's set to an empty string
     public let accessTokenURL: String = ""
-    public let service: OAuthService = .shopify
 
     required public init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

@@ -10,7 +10,6 @@ final public class MicrosoftRouter: FederatedServiceRouter {
     public let callbackURL: String
     public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
     public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
-    public let service: OAuthService = .microsoft
     public let errorKey = "error_description"
 
     public required init(
