@@ -46,7 +46,7 @@ final public class DeviantArtRouter: FederatedServiceRouter {
 
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
-        
+
         let refresh = try response.content.get(String.self, at: ["refresh_token"])
         request.session.setRefreshToken(refresh)
 

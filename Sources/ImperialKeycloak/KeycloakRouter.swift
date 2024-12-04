@@ -8,7 +8,7 @@ final public class KeycloakRouter: FederatedServiceRouter {
     public let callbackURL: String
     public let accessTokenURL: String
     public let service: OAuthService = .keycloak
-    let authURL: String // This is an additional property of `tokens` that is not in the protocol
+    let authURL: String  // This is an additional property of `tokens` that is not in the protocol
 
     public required init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
