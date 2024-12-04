@@ -39,7 +39,7 @@ final public class DiscordRouter: FederatedServiceRouter {
     }
 
     public func callbackBody(with code: String) -> any AsyncResponseEncodable {
-        return DiscordCallbackBody(
+        DiscordCallbackBody(
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
             grantType: "authorization_code",
@@ -48,5 +48,4 @@ final public class DiscordRouter: FederatedServiceRouter {
             scope: scope.joined(separator: " ")
         )
     }
-
 }

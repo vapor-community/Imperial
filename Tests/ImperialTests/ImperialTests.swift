@@ -1,12 +1,15 @@
 import ImperialAuth0
+import ImperialDeviantArt
 import ImperialDiscord
 import ImperialDropbox
 import ImperialFacebook
 import ImperialGitHub
 import ImperialGitlab
 import ImperialGoogle
+import ImperialImgur
 import ImperialKeycloak
 import ImperialMicrosoft
+import ImperialMixcloud
 import Testing
 import XCTVapor
 
@@ -29,6 +32,26 @@ struct ImperialTests {
                 afterResponse: { res async throws in
                     // A real Auth0 domain is needed to test this route
                     #expect(res.status == .internalServerError)
+                }
+            )
+        }
+    }
+
+    @Test("DeviantArt Route")
+    func deviantArtRoute() async throws {
+        try await withApp(service: DeviantArt.self) { app in
+            try await app.test(
+                .GET, "/service",
+                afterResponse: { res async throws in
+                    #expect(res.status == .seeOther)
+                }
+            )
+
+            try await app.test(
+                .GET, "/service-auth-complete?code=123",
+                afterResponse: { res async throws in
+                    // TODO: test this route
+                    #expect(res.status != .notFound)
                 }
             )
         }
@@ -174,6 +197,26 @@ struct ImperialTests {
         }
     }
 
+    @Test("Imgur Route")
+    func imgurRoute() async throws {
+        try await withApp(service: Imgur.self) { app in
+            try await app.test(
+                .GET, "/service",
+                afterResponse: { res async throws in
+                    #expect(res.status == .seeOther)
+                }
+            )
+
+            try await app.test(
+                .GET, "/service-auth-complete?code=123",
+                afterResponse: { res async throws in
+                    // TODO: test this route
+                    #expect(res.status != .notFound)
+                }
+            )
+        }
+    }
+
     @Test("Keycloak Route")
     func keycloakRoute() async throws {
         try await withApp(service: Keycloak.self) { app in
@@ -209,6 +252,26 @@ struct ImperialTests {
                 afterResponse: { res async throws in
                     // Microsoft returns a 400 Bad Request, signaling an error with `redirect_uri`
                     #expect(res.status == .badRequest)
+                }
+            )
+        }
+    }
+
+    @Test("Mixcloud Route")
+    func mixcloudRoute() async throws {
+        try await withApp(service: Mixcloud.self) { app in
+            try await app.test(
+                .GET, "/service",
+                afterResponse: { res async throws in
+                    #expect(res.status == .seeOther)
+                }
+            )
+
+            try await app.test(
+                .GET, "/service-auth-complete?code=123",
+                afterResponse: { res async throws in
+                    // TODO: test this route
+                    #expect(res.status != .notFound)
                 }
             )
         }
