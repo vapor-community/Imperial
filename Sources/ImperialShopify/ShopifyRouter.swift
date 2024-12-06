@@ -1,16 +1,16 @@
 import Vapor
 
-public struct ShopifyRouter: FederatedServiceRouter {
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
+struct ShopifyRouter: FederatedServiceRouter {
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
     // `accessTokenURL` used to be set inside `authURL` and read by `fetchToken`
     // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
     // but the property is still required by the protocol, so it's set to an empty string
-    public let accessTokenURL: String = ""
+    let accessTokenURL: String = ""
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try ShopifyAuth()
@@ -19,7 +19,7 @@ public struct ShopifyRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
 
         let nonce = String(UUID().uuidString.prefix(6))
@@ -43,7 +43,7 @@ public struct ShopifyRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         ShopifyCallbackBody(
             code: code,
             clientId: tokens.clientID,
@@ -55,7 +55,7 @@ public struct ShopifyRouter: FederatedServiceRouter {
     /// This method is the main body of the `callback` handler.
     ///
     /// - Parameters: request: The request for the route this method is called in.
-    public func fetchToken(from request: Request) async throws -> String {
+    func fetchToken(from request: Request) async throws -> String {
         // Extract the parameters to verify
         guard let code = request.query[String.self, at: "code"],
             let shop = request.query[String.self, at: "shop"],
@@ -64,7 +64,7 @@ public struct ShopifyRouter: FederatedServiceRouter {
 
         // Verify the request
         if let state = request.query[String.self, at: "state"] {
-            let nonce = request.session.nonce()
+            let nonce = request.session.nonce
             guard state == nonce else { throw Abort(.badRequest) }
         }
         guard URL(string: shop)?.isValidShopifyDomain == true else { throw Abort(.badRequest) }
@@ -83,7 +83,7 @@ public struct ShopifyRouter: FederatedServiceRouter {
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: Any errors that occur in the implementation code.
-    public func callback(_ request: Request) async throws -> Response {
+    func callback(_ request: Request) async throws -> Response {
         let accessToken = try await self.fetchToken(from: request)
         let session = request.session
         guard let domain = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }

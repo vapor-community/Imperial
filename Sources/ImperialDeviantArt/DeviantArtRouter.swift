@@ -1,14 +1,14 @@
 import Foundation
 import Vapor
 
-public struct DeviantArtRouter: FederatedServiceRouter {
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
-    public let accessTokenURL: String = "https://www.deviantart.com/oauth2/token"
+struct DeviantArtRouter: FederatedServiceRouter {
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    let accessTokenURL: String = "https://www.deviantart.com/oauth2/token"
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try DeviantArtAuth()
@@ -17,7 +17,7 @@ public struct DeviantArtRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         let scope: String
         if self.scope.count > 0 {
             scope = "scope=" + self.scope.joined(separator: " ") + "&"
@@ -30,7 +30,7 @@ public struct DeviantArtRouter: FederatedServiceRouter {
             + "response_type=code"
     }
 
-    public func fetchToken(from request: Request) async throws -> String {
+    func fetchToken(from request: Request) async throws -> String {
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
@@ -52,7 +52,7 @@ public struct DeviantArtRouter: FederatedServiceRouter {
         return try response.content.get(String.self, at: ["access_token"])
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         DeviantArtCallbackBody(
             code: code,
             clientId: self.tokens.clientID,

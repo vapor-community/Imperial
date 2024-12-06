@@ -1,15 +1,15 @@
 import Foundation
 import Vapor
 
-public struct DiscordRouter: FederatedServiceRouter {
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
-    public let accessTokenURL: String = "https://discord.com/api/oauth2/token"
-    public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
+struct DiscordRouter: FederatedServiceRouter {
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    let accessTokenURL: String = "https://discord.com/api/oauth2/token"
+    let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try DiscordAuth()
@@ -18,7 +18,7 @@ public struct DiscordRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "discord.com"
@@ -37,7 +37,7 @@ public struct DiscordRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         DiscordCallbackBody(
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,

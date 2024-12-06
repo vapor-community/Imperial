@@ -23,7 +23,7 @@
 ///      }
 ///  }
 ///  ```
-public protocol FederatedServiceTokens: Sendable {
+package protocol FederatedServiceTokens: Sendable {
     /// The name of the environment variable that has the client ID.
     static var idEnvKey: String { get }
 

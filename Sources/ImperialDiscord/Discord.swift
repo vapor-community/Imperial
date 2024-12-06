@@ -2,9 +2,6 @@
 import Vapor
 
 public struct Discord: FederatedService {
-    public let tokens: any FederatedServiceTokens
-    public let router: any FederatedServiceRouter
-
     @discardableResult
     public init(
         routes: some RoutesBuilder,
@@ -14,9 +11,7 @@ public struct Discord: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.router = try DiscordRouter(callback: callback, scope: scope, completion: completion)
-        self.tokens = self.router.tokens
-
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        try DiscordRouter(callback: callback, scope: scope, completion: completion)
+            .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }

@@ -3,7 +3,7 @@ import Vapor
 
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
-public protocol FederatedServiceRouter: Sendable {
+package protocol FederatedServiceRouter: Sendable {
     /// An object that gets the client ID and secret from environment variables.
     var tokens: any FederatedServiceTokens { get }
 
@@ -78,11 +78,11 @@ public protocol FederatedServiceRouter: Sendable {
 }
 
 extension FederatedServiceRouter {
-    public var codeKey: String { "code" }
-    public var errorKey: String { "error" }
-    public var callbackHeaders: HTTPHeaders { [:] }
+    package var codeKey: String { "code" }
+    package var errorKey: String { "error" }
+    package var callbackHeaders: HTTPHeaders { [:] }
 
-    public func configureRoutes(
+    package func configureRoutes(
         withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder
     ) throws {
         router.get(callbackURL.pathComponents, use: callback)
@@ -96,7 +96,7 @@ extension FederatedServiceRouter {
         }
     }
 
-    public func fetchToken(from request: Request) async throws -> String {
+    package func fetchToken(from request: Request) async throws -> String {
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
@@ -114,7 +114,7 @@ extension FederatedServiceRouter {
         return try response.content.get(String.self, at: ["access_token"])
     }
 
-    public func callback(_ request: Request) async throws -> Response {
+    package func callback(_ request: Request) async throws -> Response {
         let accessToken = try await self.fetchToken(from: request)
         let session = request.session
         try session.setAccessToken(accessToken)
@@ -125,19 +125,19 @@ extension FederatedServiceRouter {
 
 /// Convenience URLQueryItems
 extension FederatedServiceRouter {
-    public var clientIDItem: URLQueryItem {
+    package var clientIDItem: URLQueryItem {
         .init(name: "client_id", value: tokens.clientID)
     }
 
-    public var redirectURIItem: URLQueryItem {
+    package var redirectURIItem: URLQueryItem {
         .init(name: "redirect_uri", value: callbackURL)
     }
 
-    public var scopeItem: URLQueryItem {
+    package var scopeItem: URLQueryItem {
         .init(name: "scope", value: scope.joined(separator: " "))
     }
 
-    public var codeResponseTypeItem: URLQueryItem {
+    package var codeResponseTypeItem: URLQueryItem {
         .init(name: "response_type", value: "code")
     }
 }

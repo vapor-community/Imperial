@@ -1,19 +1,19 @@
 import Foundation
 import Vapor
 
-public struct GoogleRouter: FederatedServiceRouter {
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
-    public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public let callbackHeaders: HTTPHeaders = {
+struct GoogleRouter: FederatedServiceRouter {
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
+    let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .urlEncodedForm
         return headers
     }()
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try GoogleAuth()
@@ -22,7 +22,7 @@ public struct GoogleRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "accounts.google.com"
@@ -41,7 +41,7 @@ public struct GoogleRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         GoogleCallbackBody(
             code: code,
             clientId: tokens.clientID,

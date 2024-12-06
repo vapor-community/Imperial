@@ -68,7 +68,7 @@ extension Session {
     ///   - type: The type to convert the stored JSON to.
     /// - Returns: The JSON from the session, decoded to the type passed in.
     /// - Throws: Errors when no object is stored in the session with the given key, or decoding fails.
-    public func get<T>(_ key: String, as type: T.Type) throws -> T where T: Codable {
+    package func get<T>(_ key: String, as type: T.Type) throws -> T where T: Codable {
         guard let stored = data[key] else {
             if _isOptional(T.self) { return Optional<Void>.none as! T }
             throw Abort(.internalServerError, reason: "No element found in session with key '\(key)'")
@@ -82,7 +82,7 @@ extension Session {
     ///   - key: The key to store the object at, as you would in a dictionary.
     ///   - data: The object to store.
     /// - Throws: Errors that occur when encoding the object.
-    public func set<T>(_ key: String, to data: T) throws where T: Codable {
+    package func set<T>(_ key: String, to data: T) throws where T: Codable {
         let val = try String(data: JSONEncoder().encode(data), encoding: .utf8)
         self.data[key] = val
     }

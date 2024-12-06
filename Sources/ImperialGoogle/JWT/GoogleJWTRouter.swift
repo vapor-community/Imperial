@@ -3,20 +3,20 @@ import Foundation
 import JWTKit
 import Vapor
 
-public struct GoogleJWTRouter: FederatedServiceRouter {
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
-    public let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
-    public let authURL: String
-    public let callbackHeaders: HTTPHeaders = {
+struct GoogleJWTRouter: FederatedServiceRouter {
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
+    let authURL: String
+    let callbackHeaders: HTTPHeaders = {
         var headers = HTTPHeaders()
         headers.contentType = .urlEncodedForm
         return headers
     }()
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try GoogleJWTAuth()
@@ -26,15 +26,15 @@ public struct GoogleJWTRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         return authURL
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         return "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(code)"
     }
 
-    public func fetchToken(from request: Request) async throws -> String {
+    func fetchToken(from request: Request) async throws -> String {
         let token = try await self.jwt
 
         let body = callbackBody(with: token)
@@ -44,7 +44,7 @@ public struct GoogleJWTRouter: FederatedServiceRouter {
         return try response.content.get(GoogleJWTResponse.self).accessToken
     }
 
-    public func authenticate(_ request: Request) async throws -> Response {
+    func authenticate(_ request: Request) async throws -> Response {
         request.redirect(to: self.callbackURL)
     }
 

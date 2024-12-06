@@ -2,9 +2,6 @@
 import Vapor
 
 public struct Mixcloud: FederatedService {
-    public let tokens: any FederatedServiceTokens
-    public let router: any FederatedServiceRouter
-
     @discardableResult
     public init(
         routes: some RoutesBuilder,
@@ -14,9 +11,7 @@ public struct Mixcloud: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.router = try MixcloudRouter(callback: callback, scope: scope, completion: completion)
-        self.tokens = self.router.tokens
-
-        try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        try MixcloudRouter(callback: callback, scope: scope, completion: completion)
+            .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }

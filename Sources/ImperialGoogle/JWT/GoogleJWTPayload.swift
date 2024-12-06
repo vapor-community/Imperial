@@ -1,14 +1,14 @@
 import JWTKit
 import Vapor
 
-public struct GoogleJWTPayload: JWTPayload {
-    public var iss: IssuerClaim
-    public var scope: String
-    public var aud: AudienceClaim
-    public var iat: IssuedAtClaim
-    public var exp: ExpirationClaim
+struct GoogleJWTPayload: JWTPayload {
+    var iss: IssuerClaim
+    var scope: String
+    var aud: AudienceClaim
+    var iat: IssuedAtClaim
+    var exp: ExpirationClaim
 
-    public func verify(using key: some JWTAlgorithm) throws {
+    func verify(using key: some JWTAlgorithm) throws {
         try exp.verifyNotExpired()
     }
 }

@@ -1,18 +1,18 @@
 import Foundation
 import Vapor
 
-public struct MicrosoftRouter: FederatedServiceRouter {
-    public static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
+struct MicrosoftRouter: FederatedServiceRouter {
+    static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let callbackURL: String
-    public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
-    public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
-    public let errorKey = "error_description"
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
+    var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
+    let errorKey = "error_description"
 
-    public init(
+    init(
         callback: String,
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
@@ -23,7 +23,7 @@ public struct MicrosoftRouter: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "login.microsoftonline.com"
@@ -44,7 +44,7 @@ public struct MicrosoftRouter: FederatedServiceRouter {
         return url.absoluteString
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         MicrosoftCallbackBody(
             code: code,
             clientId: tokens.clientID,
@@ -53,5 +53,4 @@ public struct MicrosoftRouter: FederatedServiceRouter {
             scope: scope.joined(separator: " ")
         )
     }
-
 }

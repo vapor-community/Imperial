@@ -1,21 +1,21 @@
 import Foundation
 import Vapor
 
-public struct Auth0Router: FederatedServiceRouter {
-    public let baseURL: String
-    public let tokens: any FederatedServiceTokens
-    public let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    public let scope: [String]
-    public let requiredScopes = ["openid"]
-    public let callbackURL: String
-    public let accessTokenURL: String
-    public let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
+struct Auth0Router: FederatedServiceRouter {
+    let baseURL: String
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let requiredScopes = ["openid"]
+    let callbackURL: String
+    let accessTokenURL: String
+    let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
     private func providerUrl(path: String) -> String {
         return self.baseURL.finished(with: "/") + path
     }
 
-    public init(
+    init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         let auth = try Auth0Auth()
@@ -27,7 +27,7 @@ public struct Auth0Router: FederatedServiceRouter {
         self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         let path = "authorize"
 
         var params = [
@@ -46,7 +46,7 @@ public struct Auth0Router: FederatedServiceRouter {
         return rtn
     }
 
-    public func callbackBody(with code: String) -> any AsyncResponseEncodable {
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
         Auth0CallbackBody(
             clientId: self.tokens.clientID,
             clientSecret: self.tokens.clientSecret,

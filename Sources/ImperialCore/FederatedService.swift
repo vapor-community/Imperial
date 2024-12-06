@@ -9,9 +9,6 @@ import Vapor
 /// import Vapor
 ///
 /// public struct Service: FederatedService {
-///     public var tokens: any FederatedServiceTokens
-///     public var router: any FederatedServiceRouter
-///
 ///     @discardableResult
 ///     public init(
 ///         routes: some RoutesBuilder,
@@ -21,20 +18,12 @@ import Vapor
 ///         scope: [String] = [],
 ///         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
 ///     ) throws {
-///         self.router = try ServiceRouter(callback: callback, scope: scope, completion: completion)
-///         self.tokens = self.router.tokens
-///
-///         try self.router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+///         try ServiceRouter(callback: callback, scope: scope, completion: completion)
+///             .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
 ///     }
 /// }
 /// ```
 public protocol FederatedService: Sendable {
-    /// The service's token model for getting the client ID and secret.
-    var tokens: any FederatedServiceTokens { get }
-
-    /// The service's router for handling the request for the access token.
-    var router: any FederatedServiceRouter { get }
-
     /// Creates a service for getting an access token from an OAuth provider.
     ///
     /// - Parameters:
