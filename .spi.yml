@@ -1,0 +1,18 @@
+version: 1
+builder:
+  configs:
+    - documentation_targets: 
+      - ImperialCore
+      - ImperialAuth0
+      - ImperialDeviantArt
+      - ImperialDiscord
+      - ImperialDropbox
+      - ImperialFacebook
+      - ImperialGitHub
+      - ImperialGitlab
+      - ImperialGoogle
+      - ImperialImgur
+      - ImperialKeycloak
+      - ImperialMicrosoft
+      - ImperialMixcloud
+      - ImperialShopify

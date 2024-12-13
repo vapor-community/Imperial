@@ -1,29 +1,29 @@
-import Vapor
 import Foundation
+import Vapor
 
-public class MicrosoftRouter: FederatedServiceRouter {
-        
-    public static var tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
+struct MicrosoftRouter: FederatedServiceRouter {
+    static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
 
-    public let tokens: FederatedServiceTokens
-    public let callbackCompletion: (Request, String)throws -> (EventLoopFuture<ResponseEncodable>)
-    public var scope: [String] = []
-    public let callbackURL: String
-    public var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
-    public var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
-    public let service: OAuthService = .microsoft
-    public let errorKey = "error_description"
-    
-    public required init(
+    let tokens: any FederatedServiceTokens
+    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
+    let scope: [String]
+    let callbackURL: String
+    var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
+    var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
+    let errorKey = "error_description"
+
+    init(
         callback: String,
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+        scope: [String],
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try MicrosoftAuth()
         self.callbackURL = callback
         self.callbackCompletion = completion
+        self.scope = scope
     }
 
-    public func authURL(_ request: Request) throws -> String {
+    func authURL(_ request: Request) throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "login.microsoftonline.com"
@@ -36,20 +36,21 @@ public class MicrosoftRouter: FederatedServiceRouter {
             .init(name: "response_mode", value: "query"),
             .init(name: "prompt", value: "consent"),
         ]
-        
+
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        
+
         return url.absoluteString
     }
-    
-    public func callbackBody(with code: String) -> ResponseEncodable {
-        MicrosoftCallbackBody(code: code,
-                              clientId: tokens.clientID,
-                              clientSecret: tokens.clientSecret,
-                              redirectURI: callbackURL,
-                              scope: scope.joined(separator: " "))
+
+    func callbackBody(with code: String) -> any AsyncResponseEncodable {
+        MicrosoftCallbackBody(
+            code: code,
+            clientId: tokens.clientID,
+            clientSecret: tokens.clientSecret,
+            redirectURI: callbackURL,
+            scope: scope.joined(separator: " ")
+        )
     }
-    
 }

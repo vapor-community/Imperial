@@ -1,31 +1,21 @@
 @_exported import ImperialCore
 import Vapor
 
-public final class Shopify: FederatedService {
-
-    public var tokens: FederatedServiceTokens { self.router.tokens }
-    public var router: FederatedServiceRouter { self.shopifyRouter }
-
-    public var shopifyRouter: ShopifyRouter
-
+public struct Shopify: FederatedService {
+    @discardableResult
     public init(
-        routes: RoutesBuilder,
+        routes: some RoutesBuilder,
         authenticate: String,
-        authenticateCallback: ((Request) throws -> (EventLoopFuture<Void>))?,
+        authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
         scope: [String],
-        completion: @escaping (Request, String) throws -> (EventLoopFuture<ResponseEncodable>)
+        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.shopifyRouter = try ShopifyRouter(callback: callback, completion: completion)
-        self.shopifyRouter.scope = scope
-
-        try self.router.configureRoutes(
-            withAuthURL: authenticate,
-            authenticateCallback: authenticateCallback,
-            on: routes
-        )
-
-        OAuthService.register(.shopify)
+        try ShopifyRouter(callback: callback, scope: scope, completion: completion)
+            .configureRoutes(
+                withAuthURL: authenticate,
+                authenticateCallback: authenticateCallback,
+                on: routes
+            )
     }
 }
-

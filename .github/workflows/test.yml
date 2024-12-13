@@ -1,49 +1,15 @@
 name: test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  
+  pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
+  push: { branches: [ main ] }
+
 jobs:
-  macos:
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: [latest, latest-stable]
-    runs-on: macos-latest
-    steps:
-      - name: Select latest available Xcode
-        uses: maxim-lobanov/setup-xcode@v1.1
-        with: { 'xcode-version': '${{ matrix.xcode }}' }
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run tests with Thread Sanitizer
-        run: swift test --enable-test-discovery --sanitize=thread
-  linux:
-    strategy:
-      fail-fast: false
-      matrix:
-        swiftver:
-          - swift:5.2
-          - swift:5.3
-        swiftos:
-          - xenial
-          - bionic
-          - focal
-          - centos7
-          - centos8
-          - amazonlinux2
-    container: ${{ format('{0}-{1}', matrix.swiftver, matrix.swiftos) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: SPM is incompatible with CentOS 7
-        if: ${{ matrix.swiftos == 'centos7' }}
-        run: |
-          yum install -y make libcurl-devel
-          git clone https://github.com/git/git -bv2.28.0 --depth 1 && cd git
-          make prefix=/usr -j all install NO_OPENSSL=1 NO_EXPAT=1 NO_TCLTK=1 NO_GETTEXT=1 NO_PERL=1
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run tests with Thread Sanitizer
-        run: swift test --enable-test-discovery --sanitize=thread
+  unit-tests:
+    uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
+    with:
+      with_linting: true
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

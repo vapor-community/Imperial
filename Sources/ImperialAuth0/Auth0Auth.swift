@@ -1,20 +1,27 @@
 import Vapor
 
-public class Auth0Auth: FederatedServiceTokens {
-    public static var domain: String = "AUTH0_DOMAIN"
-    public static var idEnvKey: String = "AUTH0_CLIENT_ID"
-    public static var secretEnvKey: String = "AUTH0_CLIENT_SECRET"
-    public var domain: String
-    public var clientID: String
-    public var clientSecret: String
-    
-    public required init() throws {
-        let domainError = ImperialError.missingEnvVar(Auth0Auth.domain)
-        let idError = ImperialError.missingEnvVar(Auth0Auth.idEnvKey)
-        let secretError = ImperialError.missingEnvVar(Auth0Auth.secretEnvKey)
-        
-        self.domain = try Environment.get(Auth0Auth.domain).value(or: domainError)
-        self.clientID = try Environment.get(Auth0Auth.idEnvKey).value(or: idError)
-        self.clientSecret = try Environment.get(Auth0Auth.secretEnvKey).value(or: secretError)
+struct Auth0Auth: FederatedServiceTokens {
+    static let domain: String = "AUTH0_DOMAIN"
+    static let idEnvKey: String = "AUTH0_CLIENT_ID"
+    static let secretEnvKey: String = "AUTH0_CLIENT_SECRET"
+    let domain: String
+    let clientID: String
+    let clientSecret: String
+
+    init() throws {
+        guard let domain = Environment.get(Auth0Auth.domain) else {
+            throw ImperialError.missingEnvVar(Auth0Auth.domain)
+        }
+        self.domain = domain
+
+        guard let clientID = Environment.get(Auth0Auth.idEnvKey) else {
+            throw ImperialError.missingEnvVar(Auth0Auth.idEnvKey)
+        }
+        self.clientID = clientID
+
+        guard let clientSecret = Environment.get(Auth0Auth.secretEnvKey) else {
+            throw ImperialError.missingEnvVar(Auth0Auth.secretEnvKey)
+        }
+        self.clientSecret = clientSecret
     }
 }
