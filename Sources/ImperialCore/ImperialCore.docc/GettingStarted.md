@@ -1,44 +1,10 @@
-<div align="center">
-    <img src="https://avatars.githubusercontent.com/u/26165732?s=200&v=4" width="100" height="100" alt="avatar" />
-    <h1>Imperial</h1>
-    <a href="https://swiftpackageindex.com/vapor-community/Imperial/documentation">
-        <img src="https://design.vapor.codes/images/readthedocs.svg" alt="Documentation">
-    </a>
-    <a href="https://discord.gg/vapor"><img src="https://design.vapor.codes/images/discordchat.svg" alt="Team Chat"></a>
-    <a href="LICENSE"><img src="https://design.vapor.codes/images/mitlicense.svg" alt="MIT License"></a>
-    <a href="https://github.com/vapor-community/Imperial/actions/workflows/test.yml">
-        <img src="https://img.shields.io/github/actions/workflow/status/vapor-community/Imperial/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc" alt="Continuous Integration">
-    </a>
-    <a href="https://codecov.io/github/vapor-community/Imperial">
-        <img src="https://img.shields.io/codecov/c/github/vapor-community/Imperial?style=plastic&logo=codecov&label=codecov">
-    </a>
-    <a href="https://swift.org">
-        <img src="https://design.vapor.codes/images/swift60up.svg" alt="Swift 6.0+">
-    </a>
-</div>
-<br>
+# Getting Started with Imperial
 
-🔐 Federated Authentication with OAuth providers for Vapor.
-
-### Installation
-
-Use the SPM string to easily include the dependendency in your `Package.swift` file
-
-```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", from: "2.0.0-beta.1")
-```
-
-and then add the desired provider to your target's dependencies:
-
-```swift
-.product(name: "ImperialGitHub", package: "imperial")
-```
+Federated Authentication with OAuth providers for Vapor.
 
 ## Overview
 
 Imperial is a Federated Login service, allowing you to easily integrate your Vapor applications with OAuth providers to handle your apps authentication.
-
-## Getting Started
 
 ### Sessions Middleware
 
@@ -63,7 +29,7 @@ try routes.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-c
 
 This registers a route to `/github`. When you visit that route, Imperial will trigger the OAuth flow using the `GitHub` service. The callback path is the one registered with the OAuth provider when you create your application. The completion handler is fired when the callback route is called by the OAuth provider. The access token is passed in and a response is returned.
 
-If you just want to redirect, without doing anything else in the callback, you can use the helper ``RoutesBuilder/oAuth(from:authenticate:authenticateCallback:callback:scope:redirect:)`` method that takes in a redirect string:
+If you just want to redirect, without doing anything else in the callback, you can use the helper `oAuth(from:authenticate:authenticateCallback:callback:scope:redirect:)` method that takes in a redirect string:
 
 ```swift
 try router.oAuth(from: GitHub.self, authenticate: "github", callback: "gh-auth-complete", redirect: "/")
