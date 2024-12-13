@@ -1,8 +1,12 @@
-# Federated Login with Keycloak
+# ``ImperialKeycloak``
 
-## Keycloak Setup
+Federated Authentication with Keycloak for Vapor.
 
-> The implementation may vary depending on your configuration
+## Overview
+
+### Keycloak Setup
+
+> Note: The implementation may vary depending on your configuration
 
 It's your first time with Keycloak? Check the [Started Guide][1].
 
@@ -11,9 +15,9 @@ It's your first time with Keycloak? Check the [Started Guide][1].
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
-## Imperial Integration
+### Imperial Integration
 
-You can use GitHub with the `ImperialGitHub` package. This expects four environment variables:
+You can use Keycloak with the `ImperialKeycloak` package. This expects four environment variables:
 
 * `KEYCLOAK_CLIENT_ID`
 * `KEYCLOAK_CLIENT_SECRET`

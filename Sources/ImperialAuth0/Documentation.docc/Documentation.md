@@ -1,21 +1,27 @@
-# Federated Login with Auth0
+# ``ImperialAuth0``
 
-## Auth0 Setup
+Federated Authentication with Auth0 for Vapor.
 
-We need to start by creating a regular web application so Auth0 can identify us.  Go to the Applications menu from the side-bar on your Auth0 Dashboard.
+## Overview
 
-Select '+ Create Application'.  Provide a name for your app and select 'Regular Web Applications'.  Then select 'Create'.
+### Auth0 Setup
 
-![Create Application Screenshot](Applications-Marked.png)
+We need to start by creating a regular web application so Auth0 can identify us.
+Go to the Applications menu from the side-bar on your Auth0 Dashboard.
 
-Go to the 'Settings' tab for your application to find your Domain, Client ID, and Client Secret.
+Select `+ Create Application`.
+Provide a name for your app and select `Regular Web Applications`.
+Then select `Create`.
 
-![Setting-1](SamplePortal-Settings-1.png)
+![Create Application Screenshot](Applications-Marked)
+
+Go to the `Settings` tab for your application to find your Domain, Client ID, and Client Secret.
+
+![Setting-1](SamplePortal-Settings-1)
 
 You'll want to configure this is a "Regular Web Application" using "POST" for the Token Endpoint Authentication Method.
 
-![Settings-2](SamplePortal-Settings-2.png)
-
+![Settings-2](SamplePortal-Settings-2)
 
 Be sure to configure the proper settings for:
  - Allowed Callback URLs
@@ -34,14 +40,13 @@ If testing on your local system, you can start with the following settings:
  - Allowed Logout URLs:
     - http://localhost:8080/, https://localhost/, https://127.0.0.1/
 
-![Settings-3](SamplePortal-Settings-3.png)
+![Settings-3](SamplePortal-Settings-3)
 
-![Settings-4](SamplePortal-Settings-4.png)
-
+![Settings-4](SamplePortal-Settings-4)
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
-## Imperial Integration
+### Imperial Integration
 
 You can use Auth0 with the `ImperialAuth0` package. This expects three environment variables:
 

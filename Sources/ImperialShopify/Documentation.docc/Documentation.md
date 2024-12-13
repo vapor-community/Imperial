@@ -1,22 +1,26 @@
-# Federated Login with Shopify
+# ``ImperialShopify``
 
-## Shopify Setup
+Federated Authentication with Shopify for Vapor.
+
+## Overview
+
+### Shopify Setup
 
 Create a Shopify Partner account by [registering here](https://www.shopify.ca/partners).
 
 Create a new app by following [this guide](https://help.shopify.com/en/api/getting-started/authentication/public-authentication)
 
-![](configure-app-creds.png)
+![](configure-app-creds)
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
 The `callback` argument has to be the same path that you entered as a *Whitelisted redirection URL* on the app in the Partner Dashboard:
 
-![](callback-uri.png)
+![](callback-uri)
 
-## Imperial Integration
+### Imperial Integration
 
-You can use GitHub with the `ImperialGitHub` package. This expects two environment variables:
+You can use Shopify with the `ImperialShopify` package. This expects two environment variables:
 
 * `SHOPIFY_CLIENT_ID`
 * `SHOPIFY_CLIENT_SECRET`

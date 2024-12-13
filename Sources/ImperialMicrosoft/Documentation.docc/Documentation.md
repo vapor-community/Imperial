@@ -1,12 +1,16 @@
-# Federated Login with Microsoft
+# ``ImperialMicrosoft``
 
-## Microsoft Setup
+Federated Authentication with Microsoft for Vapor.
+
+## Overview
+
+### Microsoft Setup
 
 We need to start by registering an app in [Azure Active Directory admin center][1] as described in [this tutorial][2], creating a client ID and secret so Microsoft can identify us. Make sure to save the Client ID and Client secret.
 
 This provides you with an OAuth Client ID and secret you can provide to Imperial.
 
-## Imperial Integration
+### Imperial Integration
 
 You can use Microsoft with the `ImperialMicrosoft` package. This expects two environment variables:
 
