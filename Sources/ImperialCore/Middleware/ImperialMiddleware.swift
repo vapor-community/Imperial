@@ -5,16 +5,19 @@ public struct ImperialMiddleware: AsyncMiddleware {
     /// The path to redirect the user to if they are not authenticated.
     let redirectPath: String?
 
-    /// Creates an instance of `ImperialMiddleware` with the option of a redirect path.
+    /// Creates an instance of ``ImperialMiddleware`` with the option of a redirect path.
     ///
     /// - Parameter redirect: The path to redirect a user to if they do not have an access token.
     public init(redirect: String? = nil) {
         self.redirectPath = redirect
     }
 
-    /// Checks that the request contains an access token. If it does, let the request through.
+    /// Checks that the request contains an access token.
+    ///
+    /// If it does, let the request through.
     /// If not, redirect the user to the `redirectPath`.
-    /// If the `redirectPath` is `nil`, then throw the error from getting the access token (Abort.unauthorized).
+    ///
+    /// - Throws: If the `redirectPath` is `nil`, then throw the error from getting the access token (`Abort.unauthorized`).
     public func respond(to request: Request, chainingTo next: any AsyncResponder) async throws -> Response {
         do {
             _ = try request.accessToken

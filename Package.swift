@@ -38,7 +38,8 @@ let package = Package(
                 "ImperialMicrosoft",
                 "ImperialMixcloud",
                 "ImperialShopify",
-            ]),
+            ]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),

@@ -18,4 +18,22 @@
 </div>
 <br>
 
+🔐 Federated Authentication with OAuth providers for Vapor.
+
+### Installation
+
+Use the SPM string to easily include the dependendency in your `Package.swift` file
+
+```swift
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "2.0.0-beta.1")
+```
+
+and then add the desired provider to your target's dependencies:
+
+```swift
+.product(name: "ImperialGoogle", package: "imperial")
+```
+
+## Overview
+
 Imperial is a Federated Login service, allowing you to easily integrate your Vapor applications with OAuth providers to handle your apps authentication.
