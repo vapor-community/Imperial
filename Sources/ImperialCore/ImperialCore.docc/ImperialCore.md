@@ -13,3 +13,5 @@ The ImperialCore framework provides a set of tools shared by all Imperial provid
 ### Essentials
 
 - <doc:GettingStarted>
+- ``ImperialCore/Vapor/RoutesBuilder/oAuth(from:authenticate:authenticateCallback:callback:scope:completion:)``
+- ``ImperialCore/Vapor/RoutesBuilder/oAuth(from:authenticate:authenticateCallback:callback:scope:redirect:)``
