@@ -2,7 +2,7 @@ import Vapor
 
 /// Represents a connection to an OAuth provider to get an access token for authenticating a user.
 ///
-/// Usage:
+/// Here is an example of the implementation of a federated service:
 ///
 /// ```swift
 /// import ImperialCore
@@ -27,6 +27,7 @@ public protocol FederatedService: Sendable {
     /// Creates a service for getting an access token from an OAuth provider.
     ///
     /// - Parameters:
+    ///   - routes: The routes builder to configure the routes for the service.
     ///   - authenticate: The path for the route that will redirect the user to the OAuth provider for authentication.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     ///   - callback: The path (or URI) for the route that the provider will call when the user authenticates.
