@@ -9,7 +9,7 @@ struct ShopifyTests {
     @Test("Shopify Route") func shopifyRoute() async throws {
         try await withApp(service: Shopify.self) { app in
             try await app.test(
-                .GET, "/service?shop=some-shop.myshopify.com",
+                .GET, "\(apiAuthURL)?shop=some-shop.myshopify.com",
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
@@ -17,7 +17,7 @@ struct ShopifyTests {
 
             try await app.test(
                 .GET,
-                "/service-auth-complete?"
+                "\(apiCallbackURL)?"
                     + "code=0907a61c0c8d55e99db179b68161bc00&"
                     + "hmac=700e2dadb827fcc8609e9d5ce208b2e9cdaab9df07390d2cbca10d7c328fc4bf&"
                     + "shop=some-shop.myshopify.com&"
