@@ -11,7 +11,7 @@ import ImperialKeycloak
 import ImperialMicrosoft
 import ImperialMixcloud
 import Testing
-import XCTVapor
+import VaporTesting
 
 @testable import ImperialCore
 

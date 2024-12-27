@@ -42,8 +42,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.1.1"),
     ],
     targets: [
         .target(
@@ -84,7 +84,7 @@ let package = Package(
                 .target(name: "ImperialMicrosoft"),
                 .target(name: "ImperialMixcloud"),
                 .target(name: "ImperialShopify"),
-                .product(name: "XCTVapor", package: "vapor"),
+                .product(name: "VaporTesting", package: "vapor"),
             ],
             swiftSettings: swiftSettings
         ),
