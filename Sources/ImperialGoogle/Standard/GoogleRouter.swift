@@ -49,5 +49,4 @@ struct GoogleRouter: FederatedServiceRouter {
             redirectURI: callbackURL
         )
     }
-
 }
