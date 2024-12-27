@@ -85,7 +85,7 @@ extension FederatedServiceRouter {
     package func configureRoutes(
         withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder
     ) throws {
-        router.get(callbackURL.pathComponents, use: callback)
+        router.get(callbackURL.pathSegments, use: callback)
         router.get(authURL.pathComponents) { req async throws -> Response in
             let redirect: Response = req.redirect(to: try self.authURL(req))
             guard let authenticateCallback else {

@@ -4,9 +4,6 @@ import Vapor
 
 let authURL = "service"
 let callbackURL = "service-auth-complete"
-let apiGroup = "api"
-let apiAuthURL = "/\(apiGroup)/\(authURL)"
-let apiCallbackURL = "/\(apiGroup)/\(callbackURL)"
 
 func withApp<OAuthProvider>(
     service: OAuthProvider.Type,
@@ -16,9 +13,7 @@ func withApp<OAuthProvider>(
     try #require(isLoggingConfigured)
     do {
         app.middleware.use(app.sessions.middleware)
-        // Test for https://github.com/vapor-community/Imperial/issues/43
-        let grouped = app.grouped(PathComponent(stringLiteral: apiGroup))
-        try grouped.oAuth(from: service.self, authenticate: authURL, callback: callbackURL, redirect: "/")
+        try app.oAuth(from: service.self, authenticate: authURL, callback: callbackURL, redirect: "/")
         try await test(app)
     } catch {
         try await app.asyncShutdown()
