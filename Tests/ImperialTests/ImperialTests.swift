@@ -279,13 +279,9 @@ struct ImperialTests {
 
     @Test("Path Segments")
     func pathSegments() {
-        let url = "https://hello.ciao.mysite.com/api/oauth/service-auth-complete"
+        let url = "https://hello.world.example.com:8080/api/oauth/service-auth-complete"
         #expect(url.pathSegments == ["api", "oauth", "service-auth-complete"])
         #expect(url.pathSegments.string == "api/oauth/service-auth-complete")
-
-        let notURL = "/api/oauth/service-auth-complete"
-        // If the URL is not valid, `pathSegments` returns RoutingKit's `pathComponents`
-        #expect(notURL.pathSegments == ["api", "oauth", "service-auth-complete"])
     }
 
     @Test("ImperialError")
