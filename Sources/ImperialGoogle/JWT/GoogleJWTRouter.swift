@@ -53,7 +53,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
             let payload = GoogleJWTPayload(
                 iss: IssuerClaim(value: self.tokens.clientID),
                 scope: self.scope.joined(separator: " "),
-                aud: AudienceClaim(value: "https://www.googleapis.com/oauth2/v4/token"),
+                aud: AudienceClaim(value: self.accessTokenURL),
                 iat: IssuedAtClaim(value: Date()),
                 exp: ExpirationClaim(value: Date().addingTimeInterval(3600))
             )

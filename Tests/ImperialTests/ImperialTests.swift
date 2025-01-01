@@ -11,7 +11,7 @@ import ImperialKeycloak
 import ImperialMicrosoft
 import ImperialMixcloud
 import Testing
-import XCTVapor
+import VaporTesting
 
 @testable import ImperialCore
 
@@ -21,14 +21,14 @@ struct ImperialTests {
     func auth0Route() async throws {
         try await withApp(service: Auth0.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // A real Auth0 domain is needed to test this route
                     #expect(res.status == .internalServerError)
@@ -41,14 +41,14 @@ struct ImperialTests {
     func deviantArtRoute() async throws {
         try await withApp(service: DeviantArt.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // TODO: test this route
                     #expect(res.status != .notFound)
@@ -61,14 +61,14 @@ struct ImperialTests {
     func discordRoute() async throws {
         try await withApp(service: Discord.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // Discord returns a 400 Bad Request error when the code is invalid with a JSON error message
                     #expect(res.status == .badRequest)
@@ -81,14 +81,14 @@ struct ImperialTests {
     func dropboxRoute() async throws {
         try await withApp(service: Dropbox.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // Dropbox returns a 400 Bad Request error when the code is invalid with a JSON error message
                     #expect(res.status == .badRequest)
@@ -101,14 +101,14 @@ struct ImperialTests {
     func facebookRoute() async throws {
         try await withApp(service: Facebook.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // The response is an JS, signaling an error with `redirect_uri`
                     #expect(res.status == .unsupportedMediaType)
@@ -121,14 +121,14 @@ struct ImperialTests {
     func githubRoute() async throws {
         try await withApp(service: GitHub.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // The response is an HTML page likely signaling an error
                     #expect(res.status == .unsupportedMediaType)
@@ -141,14 +141,14 @@ struct ImperialTests {
     func gitlabRoute() async throws {
         try await withApp(service: Gitlab.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // Gitlab returns a 400 Bad Request error when the code is invalid with a JSON error message
                     #expect(res.status == .badRequest)
@@ -161,14 +161,14 @@ struct ImperialTests {
     func googleRoute() async throws {
         try await withApp(service: Google.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // Google returns a 400 Bad Request error when the code is invalid with a JSON error message
                     #expect(res.status == .badRequest)
@@ -181,14 +181,14 @@ struct ImperialTests {
     func googleJWTRoute() async throws {
         try await withApp(service: GoogleJWT.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, apiCallbackURL,
+                .GET, callbackURL,
                 afterResponse: { res async throws in
                     // We don't have a valid key to sign the JWT
                     #expect(res.status == .internalServerError)
@@ -201,14 +201,14 @@ struct ImperialTests {
     func imgurRoute() async throws {
         try await withApp(service: Imgur.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // TODO: test this route
                     #expect(res.status != .notFound)
@@ -221,14 +221,14 @@ struct ImperialTests {
     func keycloakRoute() async throws {
         try await withApp(service: Keycloak.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // The post request fails
                     #expect(res.status == .internalServerError)
@@ -241,14 +241,14 @@ struct ImperialTests {
     func microsoftRoute() async throws {
         try await withApp(service: Microsoft.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // Microsoft returns a 400 Bad Request, signaling an error with `redirect_uri`
                     #expect(res.status == .badRequest)
@@ -261,20 +261,27 @@ struct ImperialTests {
     func mixcloudRoute() async throws {
         try await withApp(service: Mixcloud.self) { app in
             try await app.test(
-                .GET, apiAuthURL,
+                .GET, authURL,
                 afterResponse: { res async throws in
                     #expect(res.status == .seeOther)
                 }
             )
 
             try await app.test(
-                .GET, "\(apiCallbackURL)?code=123",
+                .GET, "\(callbackURL)?code=123",
                 afterResponse: { res async throws in
                     // TODO: test this route
                     #expect(res.status != .notFound)
                 }
             )
         }
+    }
+
+    @Test("Path Segments")
+    func pathSegments() {
+        let url = "https://hello.world.example.com:8080/api/oauth/service-auth-complete"
+        #expect(url.pathSegments == ["api", "oauth", "service-auth-complete"])
+        #expect(url.pathSegments.string == "api/oauth/service-auth-complete")
     }
 
     @Test("ImperialError")
