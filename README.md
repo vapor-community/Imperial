@@ -25,7 +25,7 @@
 Use the SPM string to easily include the dependendency in your `Package.swift` file
 
 ```swift
-.package(url: "https://github.com/vapor-community/Imperial.git", from: "2.0.0-beta.1")
+.package(url: "https://github.com/vapor-community/Imperial.git", from: "2.0.0-beta.2")
 ```
 
 and then add the desired provider to your target's dependencies:
