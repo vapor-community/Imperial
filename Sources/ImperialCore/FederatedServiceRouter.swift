@@ -121,23 +121,8 @@ extension FederatedServiceRouter {
         let response = try await self.callbackCompletion(request, accessToken)
         return try await response.encodeResponse(for: request)
     }
-}
-
-/// Convenience URLQueryItems
-extension FederatedServiceRouter {
-    package var clientIDItem: URLQueryItem {
-        .init(name: "client_id", value: tokens.clientID)
-    }
-
-    package var redirectURIItem: URLQueryItem {
-        .init(name: "redirect_uri", value: callbackURL)
-    }
-
-    package var scopeItem: URLQueryItem {
-        .init(name: "scope", value: scope.joined(separator: " "))
-    }
-
-    package var codeResponseTypeItem: URLQueryItem {
-        .init(name: "response_type", value: "code")
+    
+    package func refreshToken(_ responseBody: ByteBuffer?) -> String? {
+        return nil
     }
 }
