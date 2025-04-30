@@ -15,7 +15,6 @@ import Vapor
 ///         authenticate: String,
 ///         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
 ///         callback: String,
-///         scope: [String] = [],
 ///         queryItems: [URLQueryItem],
 ///         completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
 ///     ) throws {
