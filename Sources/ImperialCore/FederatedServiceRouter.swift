@@ -55,12 +55,12 @@ package protocol FederatedServiceRouter: Sendable {
         on router: some RoutesBuilder
     ) throws
 
-    /// Gets an access token from an OAuth provider.
+    /// Gets an access token and response body from an OAuth provider.
     /// This method is the main body of the `callback` handler.
     ///
     /// - Parameters: request: The request for the route
     ///   this method is called in.
-    func fetchToken(from request: Request) async throws -> String
+    func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?)
 
     /// Creates CallbackBody with authorization code
     func callbackBody(with code: String) -> any AsyncResponseEncodable
