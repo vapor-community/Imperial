@@ -8,10 +8,10 @@ public struct Keycloak: FederatedService {
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
-        scope: [String] = [],
-        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        queryItems: [URLQueryItem] = [],
+        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        try KeycloakRouter(callback: callback, scope: scope, completion: completion)
+        try KeycloakRouter(callback: callback, queryItems: queryItems, completion: completion)
             .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }
