@@ -1,25 +1,31 @@
 import Vapor
 
 struct ShopifyRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     // `accessTokenURL` used to be set inside `authURL` and read by `fetchToken`
     // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
     // but the property is still required by the protocol, so it's set to an empty string
     let accessTokenURL: String = ""
+    /// Local properties
+    let queryItems: [URLQueryItem]
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.tokens = try ShopifyAuth()
+        let tokens = try ShopifyAuth()
+        self.tokens = tokens
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.queryItems = queryItems + [
+            .init(clientID: tokens.clientID),
+            .init(redirectURIItem: callback),
+        ]
     }
 
-    func authURL(_ request: Request) throws -> String {
+    func authURLComponents(_ request: Request) throws -> URLComponents {
         guard let shop = request.query[String.self, at: "shop"] else { throw Abort(.badRequest) }
 
         let nonce = String(UUID().uuidString.prefix(6))
@@ -29,18 +35,7 @@ struct ShopifyRouter: FederatedServiceRouter {
         components.scheme = "https"
         components.host = shop
         components.path = "/admin/oauth/authorize"
-        components.queryItems = [
-            clientIDItem,
-            .init(name: "scope", value: scope.joined(separator: ",")),
-            redirectURIItem,
-            .init(name: "state", value: nonce),
-        ]
-
-        guard let url = components.url else {
-            throw Abort(.internalServerError)
-        }
-
-        return url.absoluteString
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
