@@ -46,4 +46,11 @@ struct GoogleRouter: FederatedServiceRouter {
             redirectURI: callbackURL
         )
     }
+    
+    func refreshToken(_ buffer: ByteBuffer?) -> String? {
+        guard let dict = Google.dictionary(buffer) else {
+            return nil
+        }
+        return dict["refresh_token"] as? String
+    }
 }
