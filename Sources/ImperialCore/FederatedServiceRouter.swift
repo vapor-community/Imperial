@@ -88,7 +88,17 @@ extension FederatedServiceRouter {
     ) throws {
         router.get(callbackURL.pathSegments, use: callback)
         router.get(authURL.pathSegments) { req async throws -> Response in
-            let redirect: Response = req.redirect(to: try self.authURL(req))
+            /// add state query item to url
+            var authURLComponents = try authURLComponents(req)
+            let state = req.session.setState(count: 6)
+            if let queryItems = authURLComponents.queryItems {
+                authURLComponents.queryItems = queryItems + [.init(name: "state", value: state)]
+            }
+            // convert components to URL
+            guard let authURL = authURLComponents.url else {
+                throw Abort(.internalServerError)
+            }
+            let redirect: Response = req.redirect(to: authURL.absoluteString)
             guard let authenticateCallback else {
                 return redirect
             }
