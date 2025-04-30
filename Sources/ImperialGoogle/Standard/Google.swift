@@ -8,10 +8,25 @@ public struct Google: FederatedService {
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
-        scope: [String] = [],
-        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        queryItems: [URLQueryItem] = [],
+        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        try GoogleRouter(callback: callback, scope: scope, completion: completion)
+        try GoogleRouter(callback: callback, queryItems: queryItems, completion: completion)
             .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+    }
+}
+
+extension Google {
+    /// Convert completion handler ByteBuffer into a dicitonary
+    /// - Parameters:
+    ///  - from: ByteBuffer returned in completion handler.
+    public static func dictionary(_ buffer: ByteBuffer?) -> [String: Any]? {
+        guard let string = string(from: buffer),
+              let data = string.data(using: .utf8),
+              let dictionary = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else {
+            return nil
+        }
+        return dictionary
     }
 }

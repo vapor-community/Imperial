@@ -2,9 +2,9 @@ import Foundation
 import Vapor
 
 struct GoogleRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     let callbackHeaders: HTTPHeaders = {
@@ -12,33 +12,30 @@ struct GoogleRouter: FederatedServiceRouter {
         headers.contentType = .urlEncodedForm
         return headers
     }()
+    /// Local properties
+    let queryItems: [URLQueryItem]
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.tokens = try GoogleAuth()
+        let tokens = try GoogleAuth()
+        self.tokens = tokens
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.queryItems = queryItems + [
+            .codeResponseTypeItem,
+            .init(clientID: tokens.clientID),
+            .init(redirectURIItem: callback),
+        ]
     }
 
-    func authURL(_ request: Request) throws -> String {
+    func authURLComponents(_ request: Request) throws -> URLComponents {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "accounts.google.com"
         components.path = "/o/oauth2/auth"
-        components.queryItems = [
-            clientIDItem,
-            redirectURIItem,
-            scopeItem,
-            codeResponseTypeItem,
-        ]
-
-        guard let url = components.url else {
-            throw Abort(.internalServerError)
-        }
-
-        return url.absoluteString
+        components.queryItems = self.queryItems
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
