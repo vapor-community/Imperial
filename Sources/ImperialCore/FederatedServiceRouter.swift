@@ -70,7 +70,12 @@ package protocol FederatedServiceRouter: Sendable {
     /// - Parameter request: The request from the OAuth provider.
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: An errors that occur in the implementation code.
-    @Sendable func callback(_ request: Request) async throws -> Response    
+    @Sendable func callback(_ request: Request) async throws -> Response
+    
+    /// Retrieve refresh token from provider's response body.
+    /// - Parameter buffer: ByteBuffer returned by completion handler.
+    /// - Returns: An optional string.
+    func refreshToken(_ buffer: ByteBuffer?) -> String?
 }
 
 extension FederatedServiceRouter {
@@ -135,7 +140,14 @@ extension FederatedServiceRouter {
         let (accessToken, responseBody) = try await self.fetchTokenAndResponseBody(from: request)
         let session = request.session
         try session.setAccessToken(accessToken)
+        if let refreshToken = refreshToken(responseBody) {
+            session.setRefreshToken(refreshToken)
+        }
         let response = try await self.callbackCompletion(request, accessToken, responseBody)
         return try await response.encodeResponse(for: request)
-    }    
+    }
+    
+    package func refreshToken(_ responseBody: ByteBuffer?) -> String? {
+        return nil
+    }
 }
