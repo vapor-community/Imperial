@@ -39,7 +39,7 @@ public protocol FederatedService: Sendable {
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
-        scope: [String],
-        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        queryItems: [URLQueryItem],
+        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws
 }
