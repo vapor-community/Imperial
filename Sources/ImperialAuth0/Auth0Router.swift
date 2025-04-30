@@ -2,17 +2,30 @@ import Foundation
 import Vapor
 
 struct Auth0Router: FederatedServiceRouter {
-    let baseURL: String
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
-    let requiredScopes = ["openid"]
+    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String
     let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
+    /// Local properties
+    let baseDomain: String
+    let queryItems: [URLQueryItem]
 
-    private func providerUrl(path: String) -> String {
-        return self.baseURL.finished(with: "/") + path
+    private static func providerURL(domain: String, path: String = "/oauth/token", queryItems: [URLQueryItem] = []) throws -> String {
+        guard let url = providerComponents(domain: domain, path: path, queryItems: queryItems).url?.absoluteString else {
+            throw Abort(.internalServerError)
+        }
+        return url
+    }
+    
+    private static func providerComponents(domain: String, path: String, queryItems: [URLQueryItem] = []) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = domain
+        components.path = path
+        components.queryItems = queryItems
+        return components
     }
 
     init(
