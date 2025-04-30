@@ -9,11 +9,7 @@ package protocol FederatedServiceRouter: Sendable {
 
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable { get }
-
-    /// The scopes to get permission for when getting the access token.
-    /// Usage of this property varies by provider.
-    var scope: [String] { get }
+    var callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable { get }
 
     /// The key to acess the code URL query parameter
     var codeKey: String { get }
@@ -30,20 +26,20 @@ package protocol FederatedServiceRouter: Sendable {
     /// The URL on the app that will redirect to the `authURL` to get the access token from the OAuth provider.
     var accessTokenURL: String { get }
 
-    /// The URL of the page that the user will be redirected to to get the access token.
-    func authURL(_ request: Request) throws -> String
-
+    /// The URL components of the page that the user will be redirected to to get the access token.
+    func authURLComponents(_ request: Request) throws -> URLComponents
+    
     /// Creates an instence of the type implementing the protocol.
     ///
     /// - Parameters:
     ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
-    ///   - scope: The scopes to get access to on authentication.
-    ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token is passed into it.
+    ///   - queryItems: Additional query items sent to the provider.
+    ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token and response body are passed into it.
     /// - Throws: Any errors that could occur in the implementation.
     init(
         callback: String,
-        scope: [String],
-        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        queryItems: [URLQueryItem],
+        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws
 
     /// Configures the `authenticate` and `callback` routes with the droplet.
