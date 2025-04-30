@@ -71,6 +71,11 @@ package protocol FederatedServiceRouter: Sendable {
     /// - Returns: A response that should redirect the user back to the app.
     /// - Throws: An errors that occur in the implementation code.
     @Sendable func callback(_ request: Request) async throws -> Response
+    
+    /// Retrieve refresh token from provider's response body.
+    /// - Parameter buffer: ByteBuffer returned by completion handler.
+    /// - Returns: An optional string.
+    func refreshToken(_ buffer: ByteBuffer?) -> String?
 }
 
 extension FederatedServiceRouter {
@@ -92,7 +97,8 @@ extension FederatedServiceRouter {
         }
     }
 
-    package func fetchToken(from request: Request) async throws -> String {
+    package func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?) {
+        try verifyState(request)
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
@@ -107,14 +113,26 @@ extension FederatedServiceRouter {
 
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
-        return try response.content.get(String.self, at: ["access_token"])
+        let token = try response.content.get(String.self, at: ["access_token"])
+        return (token, response.body)
+    }
+    
+    package func verifyState(_ request: Request) throws {
+        guard let requestState = request.query[String.self, at: "state"],
+              let sessionState = request.session.state,
+              requestState == sessionState else {
+            throw Abort(.badRequest)
+        }
     }
 
     package func callback(_ request: Request) async throws -> Response {
-        let accessToken = try await self.fetchToken(from: request)
+        let (accessToken, responseBody) = try await self.fetchTokenAndResponseBody(from: request)
         let session = request.session
         try session.setAccessToken(accessToken)
-        let response = try await self.callbackCompletion(request, accessToken)
+        if let refreshToken = refreshToken(responseBody) {
+            session.setRefreshToken(refreshToken)
+        }
+        let response = try await self.callbackCompletion(request, accessToken, responseBody)
         return try await response.encodeResponse(for: request)
     }
     
