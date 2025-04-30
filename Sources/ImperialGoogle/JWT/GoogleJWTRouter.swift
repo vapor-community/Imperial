@@ -4,9 +4,9 @@ import JWTKit
 import Vapor
 
 struct GoogleJWTRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable // never called
     let callbackURL: String
     let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     let authURL: String
@@ -15,19 +15,25 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         headers.contentType = .urlEncodedForm
         return headers
     }()
+    /// Local properties
+    let scope: [String]
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = callback
         self.authURL = callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.scope = queryItems.scope()
+        // queryItems are never used
     }
 
-    func authURL(_ request: Request) throws -> String {
-        return authURL
+    func authURLComponents(_ request: Request) throws -> URLComponents {
+        guard let components = URLComponents(string: self.authURL) else {
+            throw Abort(.internalServerError)
+        }
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {

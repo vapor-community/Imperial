@@ -2,20 +2,28 @@ import Foundation
 import Vapor
 
 struct KeycloakRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String
     let authURL: String  // This is an additional property of `tokens` that is not in the protocol
+    let isStateChecked = false
+    /// Local properties
+    let queryItems: [URLQueryItem]
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.tokens = try KeycloakAuth()
+        let tokens = try KeycloakAuth()
+        self.tokens = tokens
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.queryItems = queryItems + [
+            .codeResponseTypeItem,
+            .init(clientID: tokens.clientID),
+            .init(redirectURIItem: callback),
+        ]
 
         // We need to access additional properties of `tokens` that are not in the protocol
         let keycloakTokens = self.tokens as! KeycloakAuth
@@ -23,12 +31,13 @@ struct KeycloakRouter: FederatedServiceRouter {
         self.accessTokenURL = keycloakTokens.accessTokenURL
     }
 
-    func authURL(_ request: Request) throws -> String {
-        return "\(self.authURL)/auth?"
-            + "client_id=\(self.tokens.clientID)&"
-            + "redirect_uri=\(self.callbackURL)&"
-            + "scope=\(scope.joined(separator: "%20"))&"
-            + "response_type=code"
+    func authURLComponents(_ request: Request) throws -> URLComponents {
+        guard var components = URLComponents(string: self.authURL) else {
+            throw Abort(.internalServerError)
+        }
+        components.path = "/auth"
+        components.queryItems = self.queryItems
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
