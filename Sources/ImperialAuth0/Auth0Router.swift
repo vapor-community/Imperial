@@ -29,34 +29,33 @@ struct Auth0Router: FederatedServiceRouter {
     }
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws {
-        let auth = try Auth0Auth()
-        self.tokens = auth
-        self.baseURL = "https://\(auth.domain)"
-        self.accessTokenURL = baseURL.finished(with: "/") + "oauth/token"
+        let tokens = try Auth0Auth()
+        self.tokens = tokens
+        self.baseDomain = tokens.domain
+        self.accessTokenURL = try Self.providerURL(domain: tokens.domain)
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = scope
+        /// scope query item must contain `openid`
+        var queryItems = queryItems
+        if !queryItems.scope().contains("openid") {
+            queryItems.append(.init(name: "scope", value: "openid"))
+        }
+        self.queryItems = queryItems + [
+            .codeResponseTypeItem,
+            .init(clientID: tokens.clientID),
+            .init(redirectURIItem: callback),
+        ]
     }
 
-    func authURL(_ request: Request) throws -> String {
-        let path = "authorize"
-
-        var params = [
-            "response_type=code",
-            "client_id=\(self.tokens.clientID)",
-            "redirect_uri=\(self.callbackURL)",
-        ]
-
-        let allScopes = self.scope + self.requiredScopes
-        let scopeString = allScopes.joined(separator: " ").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
-        if let scopes = scopeString {
-            params += ["scope=\(scopes)"]
-        }
-
-        let rtn = self.providerUrl(path: path + "?" + params.joined(separator: "&"))
-        return rtn
+    func authURLComponents(_ request: Request) throws -> URLComponents {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = baseDomain
+        components.path = "/authorize"
+        components.queryItems = self.queryItems
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
