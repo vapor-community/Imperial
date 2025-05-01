@@ -37,11 +37,6 @@ struct Auth0Router: FederatedServiceRouter {
         self.accessTokenURL = try Self.providerURL(domain: tokens.domain)
         self.callbackURL = callback
         self.callbackCompletion = completion
-        /// scope query item must contain `openid`
-        var queryItems = queryItems
-        if !queryItems.scope().contains("openid") {
-            queryItems.append(.init(name: "scope", value: "openid"))
-        }
         self.queryItems = queryItems + [
             .codeResponseTypeItem,
             .init(clientID: tokens.clientID),

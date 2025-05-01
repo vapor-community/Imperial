@@ -12,7 +12,7 @@ struct MicrosoftRouter: FederatedServiceRouter {
     let isStateChecked = false
     /// Local properties
     var tenantID: String { Environment.get(MicrosoftRouter.tenantIDEnvKey) ?? "common" }
-    let scope: [String]
+    let scope: String
     let queryItems: [URLQueryItem]
 
     init(callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
@@ -21,7 +21,7 @@ struct MicrosoftRouter: FederatedServiceRouter {
         self.tokens = tokens
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = queryItems.scope()
+        self.scope = queryItems.scope ?? ""
         self.queryItems = queryItems + [
             .codeResponseTypeItem,
             .init(clientID: tokens.clientID),
@@ -46,7 +46,7 @@ struct MicrosoftRouter: FederatedServiceRouter {
             clientId: tokens.clientID,
             clientSecret: tokens.clientSecret,
             redirectURI: callbackURL,
-            scope: scope.joined(separator: " ")
+            scope: scope
         )
     }
 }

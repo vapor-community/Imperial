@@ -9,7 +9,7 @@ struct DiscordRouter: FederatedServiceRouter {
     let accessTokenURL: String = "https://discord.com/api/oauth2/token"
     let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
     /// Local properties
-    let scope: [String]
+    let scope: String
     let queryItems: [URLQueryItem]
 
     init(
@@ -19,7 +19,7 @@ struct DiscordRouter: FederatedServiceRouter {
         self.tokens = tokens
         self.callbackURL = callback
         self.callbackCompletion = completion
-        self.scope = queryItems.scope()
+        self.scope = queryItems.scope ?? ""
         self.queryItems = queryItems + [
             .codeResponseTypeItem,
             .init(clientID: tokens.clientID),
@@ -43,7 +43,7 @@ struct DiscordRouter: FederatedServiceRouter {
             grantType: "authorization_code",
             code: code,
             redirectUri: self.callbackURL,
-            scope: scope.joined(separator: " ")
+            scope: scope
         )
     }
 }

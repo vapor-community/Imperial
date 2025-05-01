@@ -16,7 +16,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         return headers
     }()
     /// Local properties
-    let scope: [String]
+    let scope: String
 
     init(
         callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
@@ -25,7 +25,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         self.callbackURL = callback
         self.authURL = callback
         self.callbackCompletion = completion
-        self.scope = queryItems.scope()
+        self.scope = queryItems.scope ?? ""
         // queryItems are never used
     }
 
@@ -58,7 +58,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         get async throws {
             let payload = GoogleJWTPayload(
                 iss: IssuerClaim(value: self.tokens.clientID),
-                scope: self.scope.joined(separator: " "),
+                scope: self.scope,
                 aud: AudienceClaim(value: self.accessTokenURL),
                 iat: IssuedAtClaim(value: Date()),
                 exp: ExpirationClaim(value: Date().addingTimeInterval(3600))

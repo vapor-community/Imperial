@@ -24,13 +24,18 @@ import Vapor
 /// }
 /// ```
 public protocol FederatedService: Sendable {
-    /// Creates a scope query item.
-    /// - Parameters:
-    ///  - scope: An array of strings. Values may be unique to each provider.
-    static func scope(_ scope: [String]) -> URLQueryItem
-    
-    /// Separator used to combine scope values in provider URL.
+    /// Required scopes for the provider.
+    /// - Returns: Array of strings that must be included in the provider's URL request.
+    static var requiredScopes: [String] { get }
+
+    /// Separator used to combine scope values. Each provider can roll their own.
+    /// - Returns: String value. Default is a single space.
     static var scopeSeparator: String { get }
+    
+    /// Convert completion handler ByteBuffer into a string.
+    /// - Parameter buffer: ByteBuffer returned in completion handler.
+    /// - Returns: An optional string.
+    static func string(from buffer: ByteBuffer?) -> String?
 
     /// Creates a service for getting an access token from an OAuth provider.
     ///
@@ -50,17 +55,10 @@ public protocol FederatedService: Sendable {
         queryItems: [URLQueryItem],
         completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws
-    
-    /// Convert completion handler ByteBuffer into a string.
-    /// - Parameter buffer: ByteBuffer returned in completion handler.
-    /// - Returns: An optional string.
-    static func string(from buffer: ByteBuffer?) -> String?
 }
 
 extension FederatedService {
-    public static func scope(_ scope: [String]) -> URLQueryItem {
-        .init(scope: scope, separator: Self.scopeSeparator)
-    }
+    public static var requiredScopes: [String] { [] }
     
     public static var scopeSeparator: String { " " }
     

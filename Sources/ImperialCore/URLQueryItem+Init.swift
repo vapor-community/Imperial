@@ -14,8 +14,8 @@ extension URLQueryItem {
         self.init(name: "redirect_uri", value: callbackURL)
     }
     
-    package init(scope: [String], separator: String) {
-        self.init(name: "scope", value: scope.joined(separator: separator))
+    package init(scope: String) {
+        self.init(name: "scope", value: scope)
     }
     
     package init(state: String) {
