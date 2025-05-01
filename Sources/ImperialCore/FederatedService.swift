@@ -27,7 +27,7 @@ public protocol FederatedService: Sendable {
     /// Creates a scope query item.
     /// - Parameters:
     ///  - scope: An array of strings. Values may be unique to each provider.
-    static func scopeQueryItem(_ scope: [String]) -> URLQueryItem
+    static func scope(_ scope: [String]) -> URLQueryItem
     
     /// Separator used to combine scope values in provider URL.
     static var scopeSeparator: String { get }
@@ -58,13 +58,8 @@ public protocol FederatedService: Sendable {
 }
 
 extension FederatedService {
-    public static func scopeQueryItem(_ scope: [String]) -> URLQueryItem {
-        .init(
-            name: "scope",
-            value: scope
-                .map { $0.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? $0 }
-                .joined(separator: Self.scopeSeparator)
-        )
+    public static func scope(_ scope: [String]) -> URLQueryItem {
+        .init(scope: scope, separator: Self.scopeSeparator)
     }
     
     public static var scopeSeparator: String { " " }

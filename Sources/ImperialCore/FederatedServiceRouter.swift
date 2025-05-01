@@ -92,7 +92,7 @@ extension FederatedServiceRouter {
             var authURLComponents = try authURLComponents(req)
             let state = req.session.setState(count: 6)
             if let queryItems = authURLComponents.queryItems {
-                authURLComponents.queryItems = queryItems + [.init(name: "state", value: state)]
+                authURLComponents.queryItems = queryItems + [.init(state: state)]
             }
             // convert components to URL
             guard let authURL = authURLComponents.url else {

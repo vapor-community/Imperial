@@ -2,12 +2,12 @@
 import Vapor
 
 public struct Auth0: FederatedService {
-    public static func scopeQueryItem(_ scope: [String]) -> URLQueryItem {
+    public static func scope(_ scope: [String]) -> URLQueryItem {
         var scope = scope
         if !scope.contains("openid") {
             scope += ["openid"]
         }
-        return .init(name: "scope", value: scope.joined(separator: Self.scopeSeparator))
+        return .init(scope: scope, separator: Self.scopeSeparator)
     }
     
     @discardableResult

@@ -45,7 +45,7 @@ extension RoutesBuilder {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
-        let queryItems = [provider.scopeQueryItem(scope)]
+        let queryItems = [provider.scope(scope)]
         try self.oAuth(
             from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, queryItems: queryItems, completion: completion
         )
