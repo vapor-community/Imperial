@@ -14,9 +14,8 @@ import Vapor
 ///         routes: some RoutesBuilder,
 ///         authenticate: String,
 ///         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
-///         callback: String,
-///         scope: [String] = [],
-///         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+///         options: some FederatedServiceOptions,
+///         completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
 ///     ) throws {
 ///         try ServiceRouter(callback: callback, scope: scope, completion: completion)
 ///             .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
@@ -24,6 +23,12 @@ import Vapor
 /// }
 /// ```
 public protocol FederatedService: Sendable {
+    typealias AccessToken = String
+    typealias ResponseBody = String
+    
+    /// Type for creating options for each provider.
+    associatedtype OptionsType: FederatedServiceOptions
+
     /// Creates a service for getting an access token from an OAuth provider.
     ///
     /// - Parameters:
@@ -31,15 +36,14 @@ public protocol FederatedService: Sendable {
     ///   - authenticate: The path for the route that will redirect the user to the OAuth provider for authentication.
     ///   - authenticateCallback: Execute custom code within the authenticate closure before redirection.
     ///   - callback: The path (or URI) for the route that the provider will call when the user authenticates.
-    ///   - scope: The scopes to send to the provider to request access to.
-    ///   - completion: The completion handler that will fire at the end of the callback route. The access token is passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
+    ///   - options: Options to supply the provider when making a request.
+    ///   - completion: The completion handler that will fire at the end of the callback route. The access token and optional response body are passed into the callback and the response that is returned will be returned from the callback route. This will usually be a redirect back to the app.
     /// - Throws: Any errors that occur in the implementation.
     @discardableResult init(
         routes: some RoutesBuilder,
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
-        callback: String,
-        scope: [String],
-        completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions,
+        completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws
 }

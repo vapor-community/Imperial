@@ -21,6 +21,7 @@ extension Session {
     enum Keys {
         static let token = "access_token"
         static let refresh = "refresh_token"
+        static let state = "state"
     }
 
     /// Gets the access token from the session.
@@ -59,6 +60,23 @@ extension Session {
     /// - Parameter token: the refresh token to store on the session
     public func setRefreshToken(_ token: String) {
         self.data[Keys.refresh] = token
+    }
+    
+    /// Sets and returns random state value in the session.
+    ///
+    /// - Parameters:
+    ///   - count: Number of characters in returned string
+    public func setState(count: Int = 32) -> String {
+        let state = String(UUID().uuidString.prefix(count))
+        self.data[Keys.state] = state
+        return state
+    }
+    
+    /// Retrieves and removes state value from the session.
+    public var state: String? {
+        let state = self.data[Keys.state]
+        self.data[Keys.state] = nil
+        return state
     }
 
     /// Gets an object stored in a session with JSON as a given type.

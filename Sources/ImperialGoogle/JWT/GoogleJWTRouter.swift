@@ -4,9 +4,9 @@ import JWTKit
 import Vapor
 
 struct GoogleJWTRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable // never called
     let callbackURL: String
     let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     let authURL: String
@@ -15,19 +15,25 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         headers.contentType = .urlEncodedForm
         return headers
     }()
+    /// Local properties
+    let scope: String
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: GoogleJWT.Options.self)
         self.tokens = try GoogleJWTAuth()
-        self.callbackURL = callback
-        self.authURL = callback
+        self.callbackURL = options.callback
+        self.authURL = options.callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.scope = options.scope.joined(separator: " ")
     }
 
-    func authURL(_ request: Request) throws -> String {
-        return authURL
+    func authURLComponents(_ request: Request) throws -> URLComponents {
+        guard let components = URLComponents(string: self.authURL) else {
+            throw Abort(.internalServerError)
+        }
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
@@ -36,7 +42,6 @@ struct GoogleJWTRouter: FederatedServiceRouter {
 
     func fetchToken(from request: Request) async throws -> String {
         let token = try await self.jwt
-
         let body = callbackBody(with: token)
         let url = URI(string: self.accessTokenURL)
         let buffer = try await body.encodeResponse(for: request).body.buffer
@@ -52,7 +57,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         get async throws {
             let payload = GoogleJWTPayload(
                 iss: IssuerClaim(value: self.tokens.clientID),
-                scope: self.scope.joined(separator: " "),
+                scope: self.scope,
                 aud: AudienceClaim(value: self.accessTokenURL),
                 iat: IssuedAtClaim(value: Date()),
                 exp: ExpirationClaim(value: Date().addingTimeInterval(3600))

@@ -2,38 +2,32 @@ import Foundation
 import Vapor
 
 struct GitlabRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://gitlab.com/oauth/token"
+    /// Local properties
+    let queryItems: [URLQueryItem]
 
     init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
-        self.tokens = try GitlabAuth()
-        self.callbackURL = callback
+        try Self.guard(options, is: Gitlab.Options.self)
+        let tokens = try GitlabAuth()
+        self.tokens = tokens
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.scope = scope
+        self.queryItems = options.queryItems
     }
 
-    func authURL(_ request: Request) throws -> String {
+    func authURLComponents(_ request: Request) throws -> URLComponents {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "www.gitlab.com"
         components.path = "/oauth/authorize"
-        components.queryItems = [
-            clientIDItem,
-            .init(name: "redirect_uri", value: self.callbackURL),
-            scopeItem,
-            codeResponseTypeItem,
-        ]
-
-        guard let url = components.url else {
-            throw Abort(.internalServerError)
-        }
-
-        return url.absoluteString
+        components.queryItems = self.queryItems
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {

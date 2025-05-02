@@ -2,38 +2,32 @@ import Foundation
 import Vapor
 
 struct FacebookRouter: FederatedServiceRouter {
+    /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String) async throws -> any AsyncResponseEncodable
-    let scope: [String]
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://graph.facebook.com/v3.2/oauth/access_token"
+    /// Local properties
+    let queryItems: [URLQueryItem]
 
-    func authURL(_ request: Request) throws -> String {
+    init(
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
+    ) throws {
+        try Self.guard(options, is: Facebook.Options.self)
+        let tokens = try FacebookAuth()
+        self.tokens = tokens
+        self.callbackURL = options.callback
+        self.callbackCompletion = completion
+        self.queryItems = options.queryItems
+    }
+
+    func authURLComponents(_ request: Request) throws -> URLComponents {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "www.facebook.com"
         components.path = "/v3.2/dialog/oauth"
-        components.queryItems = [
-            clientIDItem,
-            redirectURIItem,
-            scopeItem,
-            codeResponseTypeItem,
-        ]
-
-        guard let url = components.url else {
-            throw Abort(.internalServerError)
-        }
-
-        return url.absoluteString
-    }
-
-    init(
-        callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
-    ) throws {
-        self.tokens = try FacebookAuth()
-        self.callbackURL = callback
-        self.callbackCompletion = completion
-        self.scope = scope
+        components.queryItems = self.queryItems
+        return components
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {
