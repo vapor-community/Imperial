@@ -31,6 +31,7 @@ struct Auth0Router: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Auth0.Options.self)
         let tokens = try Auth0Auth()
         self.tokens = tokens
         self.baseDomain = tokens.domain

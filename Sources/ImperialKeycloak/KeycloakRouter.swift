@@ -15,6 +15,7 @@ struct KeycloakRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Keycloak.Options.self)
         let tokens = try KeycloakAuth()
         self.tokens = tokens
         self.callbackURL = options.callback

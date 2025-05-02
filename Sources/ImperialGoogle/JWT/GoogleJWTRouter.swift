@@ -21,6 +21,7 @@ struct GoogleJWTRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: GoogleJWT.Options.self)
         self.tokens = try GoogleJWTAuth()
         self.callbackURL = options.callback
         self.authURL = options.callback
@@ -41,7 +42,6 @@ struct GoogleJWTRouter: FederatedServiceRouter {
 
     func fetchToken(from request: Request) async throws -> String {
         let token = try await self.jwt
-
         let body = callbackBody(with: token)
         let url = URI(string: self.accessTokenURL)
         let buffer = try await body.encodeResponse(for: request).body.buffer

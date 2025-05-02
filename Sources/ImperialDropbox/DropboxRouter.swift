@@ -20,6 +20,7 @@ struct DropboxRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Dropbox.Options.self)
         let tokens = try DropboxAuth()
         self.tokens = tokens
         self.callbackURL = options.callback

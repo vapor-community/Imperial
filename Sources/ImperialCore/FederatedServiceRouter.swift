@@ -84,6 +84,12 @@ extension FederatedServiceRouter {
     package var codeKey: String { "code" }
     package var errorKey: String { "error" }
     package var callbackHeaders: HTTPHeaders { [:] }
+    
+    package static func `guard`<T>(_ options: any FederatedServiceOptions, is required: T.Type) throws {
+        guard let _ = options as? T else {
+            throw Abort(.internalServerError, reason: "Invalid FederatedServiceOptions type for \(String(describing: self))")
+        }
+    }
 
     package func configureRoutes(
         withAuthURL authURL: String, authenticateCallback: (@Sendable (Request) async throws -> Void)?, on router: some RoutesBuilder

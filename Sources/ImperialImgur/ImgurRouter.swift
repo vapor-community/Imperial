@@ -14,6 +14,7 @@ struct ImgurRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Imgur.Options.self)
         let tokens = try ImgurAuth()
         self.tokens = tokens
         self.callbackURL = options.callback

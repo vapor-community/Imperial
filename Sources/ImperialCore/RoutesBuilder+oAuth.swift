@@ -20,7 +20,6 @@ extension RoutesBuilder {
         options: some FederatedServiceOptions,
         completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
-        // guarantee query items include required scopes
         try OAuthProvider(
             routes: self,
             authenticate: authUrl,

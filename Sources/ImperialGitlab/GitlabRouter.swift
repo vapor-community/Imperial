@@ -13,6 +13,7 @@ struct GitlabRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Gitlab.Options.self)
         let tokens = try GitlabAuth()
         self.tokens = tokens
         self.callbackURL = options.callback

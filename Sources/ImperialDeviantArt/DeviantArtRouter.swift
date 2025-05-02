@@ -13,6 +13,7 @@ struct DeviantArtRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: DeviantArt.Options.self)
         self.tokens = try DeviantArtAuth()
         self.callbackURL = options.callback
         self.callbackCompletion = completion

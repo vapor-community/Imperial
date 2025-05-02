@@ -13,6 +13,7 @@ struct FacebookRouter: FederatedServiceRouter {
     init(
         options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
+        try Self.guard(options, is: Facebook.Options.self)
         let tokens = try FacebookAuth()
         self.tokens = tokens
         self.callbackURL = options.callback
