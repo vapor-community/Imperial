@@ -5,7 +5,7 @@ struct MicrosoftRouter: FederatedServiceRouter {
     static let tenantIDEnvKey: String = "MICROSOFT_TENANT_ID"
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     var accessTokenURL: String { "https://login.microsoftonline.com/\(self.tenantID)/oauth2/v2.0/token" }
     let errorKey = "error_description"
@@ -15,20 +15,15 @@ struct MicrosoftRouter: FederatedServiceRouter {
     let scope: String
     let queryItems: [URLQueryItem]
 
-    init(callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+    init(
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try MicrosoftAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.scope = queryItems.scope ?? ""
-        self.queryItems = queryItems + [
-            .codeResponseTypeItem,
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-            .init(name: "response_mode", value: "query"),
-            .init(name: "prompt", value: "consent"),
-        ]
+        self.scope = options.scope.joined(separator: " ")
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {

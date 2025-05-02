@@ -4,7 +4,7 @@ import Vapor
 struct KeycloakRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String
     let authURL: String  // This is an additional property of `tokens` that is not in the protocol
@@ -13,17 +13,13 @@ struct KeycloakRouter: FederatedServiceRouter {
     let queryItems: [URLQueryItem]
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try KeycloakAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .codeResponseTypeItem,
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-        ]
+        self.queryItems = options.queryItems
 
         // We need to access additional properties of `tokens` that are not in the protocol
         let keycloakTokens = self.tokens as! KeycloakAuth

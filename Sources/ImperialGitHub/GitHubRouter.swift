@@ -4,7 +4,7 @@ import Vapor
 struct GitHubRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://github.com/login/oauth/access_token"
     let callbackHeaders: HTTPHeaders = {
@@ -16,15 +16,13 @@ struct GitHubRouter: FederatedServiceRouter {
     let queryItems: [URLQueryItem]
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try GitHubAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .init(clientID: tokens.clientID),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {

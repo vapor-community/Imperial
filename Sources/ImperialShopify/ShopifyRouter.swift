@@ -3,7 +3,7 @@ import Vapor
 struct ShopifyRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     // `accessTokenURL` used to be set inside `authURL` and read by `fetchToken`
     // now `fetchToken` creates the `accessTokenURL` itself from the shop domain in the request
@@ -13,16 +13,13 @@ struct ShopifyRouter: FederatedServiceRouter {
     let queryItems: [URLQueryItem]
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try ShopifyAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {
@@ -46,9 +43,7 @@ struct ShopifyRouter: FederatedServiceRouter {
     /// This method is the main body of the `callback` handler.
     ///
     /// - Parameters: request: The request for the route this method is called in.
-    func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?) {
-        // state is added to authURLComponents and save in session by FederatedServiceProvider extension
-        // call verify here to compare request state to session state
+    func fetchTokenAndResponseBody(from request: Request) async throws -> (AccessToken, ResponseBody?) {
         try verifyState(request)
         // Extract the parameters to verify
         guard let code = request.query[String.self, at: "code"],
@@ -64,8 +59,9 @@ struct ShopifyRouter: FederatedServiceRouter {
         let url = URI(string: "https://\(shop)/admin/oauth/access_token")
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url) { $0.body = buffer }
+        let responseBody: String? = response.body != nil ? .init(buffer: response.body!) : nil
         let token = try response.content.get(String.self, at: ["access_token"])
-        return (token, response.body)
+        return (token, responseBody)
     }
 
     /// The route that the OAuth provider calls when the user has benn authenticated.

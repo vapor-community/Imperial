@@ -6,7 +6,7 @@ import Vapor
 struct GoogleJWTRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable // never called
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable // never called
     let callbackURL: String
     let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     let authURL: String
@@ -19,14 +19,13 @@ struct GoogleJWTRouter: FederatedServiceRouter {
     let scope: String
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         self.tokens = try GoogleJWTAuth()
-        self.callbackURL = callback
-        self.authURL = callback
+        self.callbackURL = options.callback
+        self.authURL = options.callback
         self.callbackCompletion = completion
-        self.scope = queryItems.scope ?? ""
-        // queryItems are never used
+        self.scope = options.scope.joined(separator: " ")
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {

@@ -4,7 +4,7 @@ import Vapor
 struct MixcloudRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://www.mixcloud.com/oauth/access_token"
     let isStateChecked = false
@@ -12,18 +12,13 @@ struct MixcloudRouter: FederatedServiceRouter {
     let queryItems: [URLQueryItem]
 
     init(
-        callback: String,
-        queryItems: [URLQueryItem],
-        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try MixcloudAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {

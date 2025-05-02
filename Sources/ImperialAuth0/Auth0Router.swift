@@ -4,7 +4,7 @@ import Vapor
 struct Auth0Router: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String
     let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
@@ -29,19 +29,15 @@ struct Auth0Router: FederatedServiceRouter {
     }
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try Auth0Auth()
         self.tokens = tokens
         self.baseDomain = tokens.domain
         self.accessTokenURL = try Self.providerURL(domain: tokens.domain)
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .codeResponseTypeItem,
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {

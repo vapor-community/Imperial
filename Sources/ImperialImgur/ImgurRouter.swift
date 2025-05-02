@@ -4,23 +4,21 @@ import Vapor
 struct ImgurRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://api.imgur.com/oauth2/token"
     let isStateChecked = false
     /// Local properties
     let queryItems: [URLQueryItem]
 
-    init(callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+    init(
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try ImgurAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .codeResponseTypeItem,
-            .init(clientID: tokens.clientID),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {
@@ -32,7 +30,7 @@ struct ImgurRouter: FederatedServiceRouter {
         return components
     }
 
-    func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?) {
+    func fetchTokenAndResponseBody(from request: Request) async throws -> (AccessToken, ResponseBody?) {
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
@@ -47,12 +45,13 @@ struct ImgurRouter: FederatedServiceRouter {
 
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
-
+        let responseBody: String? = response.body != nil ? .init(buffer: response.body!) : nil
+        
         let refresh = try response.content.get(String.self, at: ["refresh_token"])
         request.session.setRefreshToken(refresh)
 
         let token = try response.content.get(String.self, at: ["access_token"])
-        return (token, response.body)
+        return (token, responseBody)
     }
 
     func callbackBody(with code: String) -> any AsyncResponseEncodable {

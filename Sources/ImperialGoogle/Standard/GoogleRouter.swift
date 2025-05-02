@@ -4,7 +4,7 @@ import Vapor
 struct GoogleRouter: FederatedServiceRouter {
     /// FederatedServiceRouter properties
     let tokens: any FederatedServiceTokens
-    let callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable
+    let callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable
     let callbackURL: String
     let accessTokenURL: String = "https://www.googleapis.com/oauth2/v4/token"
     let callbackHeaders: HTTPHeaders = {
@@ -16,17 +16,13 @@ struct GoogleRouter: FederatedServiceRouter {
     let queryItems: [URLQueryItem]
 
     init(
-        callback: String, queryItems: [URLQueryItem], completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions, completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws {
         let tokens = try GoogleAuth()
         self.tokens = tokens
-        self.callbackURL = callback
+        self.callbackURL = options.callback
         self.callbackCompletion = completion
-        self.queryItems = queryItems + [
-            .codeResponseTypeItem,
-            .init(clientID: tokens.clientID),
-            .init(redirectURIItem: callback),
-        ]
+        self.queryItems = options.queryItems
     }
 
     func authURLComponents(_ request: Request) throws -> URLComponents {
@@ -47,8 +43,8 @@ struct GoogleRouter: FederatedServiceRouter {
         )
     }
     
-    func refreshToken(_ buffer: ByteBuffer?) -> String? {
-        guard let dict = Google.dictionary(buffer) else {
+    func refreshToken(_ body: ResponseBody?) -> String? {
+        guard let dict = Google.dictionary(body) else {
             return nil
         }
         return dict["refresh_token"] as? String
