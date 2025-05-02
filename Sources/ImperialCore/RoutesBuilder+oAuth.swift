@@ -1,6 +1,9 @@
 import Vapor
 
 extension RoutesBuilder {
+    public typealias AccessToken = FederatedService.AccessToken
+    public typealias ResponseBody = FederatedService.ResponseBody
+    
     /// Registers an OAuth provider's router with the parent route and all provider options.
     ///
     /// - Parameters:
@@ -14,18 +17,15 @@ extension RoutesBuilder {
         from provider: OAuthProvider.Type,
         authenticate authUrl: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)? = nil,
-        callback: String,
-        queryItems: [URLQueryItem] = [],
-        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions,
+        completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
         // guarantee query items include required scopes
-        let queryItems = queryItems.withScopes(provider.requiredScopes, separator: provider.scopeSeparator)
         try OAuthProvider(
             routes: self,
             authenticate: authUrl,
             authenticateCallback: authenticateCallback,
-            callback: callback,
-            queryItems: queryItems,
+            options: options,
             completion: completion
         )
     }
@@ -45,11 +45,11 @@ extension RoutesBuilder {
         authenticateCallback: (@Sendable (Request) async throws -> Void)? = nil,
         callback: String,
         scope: [String] = [],
-        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws where OAuthProvider: FederatedService {
-        let queryItems = [URLQueryItem(scope: scope.joined(separator: provider.scopeSeparator))]
+        let options = try provider.OptionsType(callback: callback, scope: scope)
         try self.oAuth(
-            from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, callback: callback, queryItems: queryItems, completion: completion
+            from: OAuthProvider.self, authenticate: authUrl, authenticateCallback: authenticateCallback, options: options, completion: completion
         )
     }
 

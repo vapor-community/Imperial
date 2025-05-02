@@ -4,12 +4,15 @@ import Vapor
 /// Defines a type that implements the routing to get an access token from an OAuth provider.
 /// See implementations in the `Services/(Google|GitHub)/$0Router.swift` files
 package protocol FederatedServiceRouter: Sendable {
+    typealias AccessToken = FederatedService.AccessToken
+    typealias ResponseBody = FederatedService.ResponseBody
+    
     /// An object that gets the client ID and secret from environment variables.
     var tokens: any FederatedServiceTokens { get }
 
     /// The callback that is fired after the access token is fetched from the OAuth provider.
     /// The response that is returned from this callback is also returned from the callback route.
-    var callbackCompletion: @Sendable (Request, String, ByteBuffer?) async throws -> any AsyncResponseEncodable { get }
+    var callbackCompletion: @Sendable (Request, AccessToken, ResponseBody?) async throws -> any AsyncResponseEncodable { get }
 
     /// The key to acess the code URL query parameter
     var codeKey: String { get }
@@ -32,14 +35,12 @@ package protocol FederatedServiceRouter: Sendable {
     /// Creates an instence of the type implementing the protocol.
     ///
     /// - Parameters:
-    ///   - callback: The callback URL that the OAuth provider will redirect to after authenticating the user.
-    ///   - queryItems: Additional query items sent to the provider.
+    ///   - options: Options to supply the provider when making a request.
     ///   - completion: The completion handler that will be fired at the end of the `callback` route. The access token and response body are passed into it.
     /// - Throws: Any errors that could occur in the implementation.
     init(
-        callback: String,
-        queryItems: [URLQueryItem],
-        completion: @escaping @Sendable (Request, String, ByteBuffer?) async throws -> some AsyncResponseEncodable
+        options: some FederatedServiceOptions,
+        completion: @escaping @Sendable (Request, AccessToken, ResponseBody?) async throws -> some AsyncResponseEncodable
     ) throws
 
     /// Configures the `authenticate` and `callback` routes with the droplet.
@@ -60,7 +61,8 @@ package protocol FederatedServiceRouter: Sendable {
     ///
     /// - Parameters: request: The request for the route
     ///   this method is called in.
-    func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?)
+    /// - Returns: A tuple with the access token and provider's response body.
+    func fetchTokenAndResponseBody(from request: Request) async throws -> (AccessToken, ResponseBody?)
 
     /// Creates CallbackBody with authorization code
     func callbackBody(with code: String) -> any AsyncResponseEncodable
@@ -73,9 +75,9 @@ package protocol FederatedServiceRouter: Sendable {
     @Sendable func callback(_ request: Request) async throws -> Response
     
     /// Retrieve refresh token from provider's response body.
-    /// - Parameter buffer: ByteBuffer returned by completion handler.
+    /// - Parameter body: The body of the provider's response.
     /// - Returns: An optional string.
-    func refreshToken(_ buffer: ByteBuffer?) -> String?
+    func refreshToken(_ body: ResponseBody?) -> String?
 }
 
 extension FederatedServiceRouter {
@@ -90,7 +92,7 @@ extension FederatedServiceRouter {
         router.get(authURL.pathSegments) { req async throws -> Response in
             /// add state query item to url
             var authURLComponents = try authURLComponents(req)
-            let state = req.session.setState(count: 6)
+            let state = req.session.setState(count: 30)
             if let queryItems = authURLComponents.queryItems {
                 authURLComponents.queryItems = queryItems + [.init(state: state)]
             }
@@ -107,7 +109,7 @@ extension FederatedServiceRouter {
         }
     }
 
-    package func fetchTokenAndResponseBody(from request: Request) async throws -> (String, ByteBuffer?) {
+    package func fetchTokenAndResponseBody(from request: Request) async throws -> (AccessToken, ResponseBody?) {
         try verifyState(request)
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
@@ -123,10 +125,12 @@ extension FederatedServiceRouter {
 
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
+        let responseBody: String? = response.body != nil ? .init(buffer: response.body!) : nil
         let token = try response.content.get(String.self, at: ["access_token"])
-        return (token, response.body)
+        return (token, responseBody)
     }
     
+    /// Compare state value returned by provider in url parameter to the one saved in the session.
     package func verifyState(_ request: Request) throws {
         guard let requestState = request.query[String.self, at: "state"],
               let sessionState = request.session.state,
@@ -146,7 +150,8 @@ extension FederatedServiceRouter {
         return try await response.encodeResponse(for: request)
     }
     
-    package func refreshToken(_ responseBody: ByteBuffer?) -> String? {
+    /// Default implementation. Provider can implement depending on its response body.
+    package func refreshToken(_ responseBody: ResponseBody?) -> String? {
         return nil
     }
 }
