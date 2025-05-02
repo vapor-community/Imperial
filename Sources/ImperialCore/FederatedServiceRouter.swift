@@ -110,7 +110,6 @@ extension FederatedServiceRouter {
     }
 
     package func fetchTokenAndResponseBody(from request: Request) async throws -> (AccessToken, ResponseBody?) {
-        try verifyState(request)
         let code: String
         if let queryCode: String = try request.query.get(at: codeKey) {
             code = queryCode
@@ -140,6 +139,7 @@ extension FederatedServiceRouter {
     }
 
     package func callback(_ request: Request) async throws -> Response {
+        try verifyState(request)
         let (accessToken, responseBody) = try await self.fetchTokenAndResponseBody(from: request)
         let session = request.session
         try session.setAccessToken(accessToken)
