@@ -92,7 +92,7 @@ extension FederatedServiceRouter {
         router.get(authURL.pathSegments) { req async throws -> Response in
             /// add state query item to url
             var authURLComponents = try authURLComponents(req)
-            let state = req.session.setState(count: 30)
+            let state = req.session.setState()
             if let queryItems = authURLComponents.queryItems {
                 authURLComponents.queryItems = queryItems + [.init(state: state)]
             }

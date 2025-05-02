@@ -67,7 +67,7 @@ extension Session {
     /// - Parameters:
     ///   - count: Number of characters in returned string
     public func setState(count: Int = 32) -> String {
-        let state = [UInt8].random(count: count).base64
+        let state = String(UUID().uuidString.prefix(count))
         self.data[Keys.state] = state
         return state
     }
