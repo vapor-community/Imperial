@@ -89,6 +89,9 @@ let package = Package(
                 .target(name: "ImperialShopify"),
                 .product(name: "VaporTesting", package: "vapor"),
             ],
+            resources: [
+                .copy("../../.env.testing")
+            ],
             swiftSettings: swiftSettings
         ),
     ]
