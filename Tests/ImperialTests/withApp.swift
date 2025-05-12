@@ -1,3 +1,4 @@
+#if canImport(Testing)
 import ImperialCore
 import Testing
 import Vapor
@@ -30,3 +31,4 @@ let isLoggingConfigured: Bool = {
     }
     return true
 }()
+#endif  // canImport(Testing)

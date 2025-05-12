@@ -1,5 +1,6 @@
 import Crypto
 import Foundation
+import Vapor
 
 extension URL {
     func generateHMAC(key: String) -> String {

@@ -11,5 +11,8 @@ jobs:
     uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
     with:
       with_linting: true
+      with_musl: true
+      with_android: true
+      ios_scheme_name: Imperial
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
