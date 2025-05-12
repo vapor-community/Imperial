@@ -13,6 +13,7 @@ jobs:
       with_linting: true
       with_musl: true
       with_android: true
+      android_copy_files: .env.testing
       ios_scheme_name: Imperial-Package
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
