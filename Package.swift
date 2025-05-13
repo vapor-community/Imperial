@@ -4,7 +4,10 @@ import PackageDescription
 let package = Package(
     name: "Imperial",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v13),
+        .iOS(.v16),
+        .tvOS(.v16),
+        .watchOS(.v9),
     ],
     products: [
         .library(name: "ImperialCore", targets: ["ImperialCore"]),
@@ -42,8 +45,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.1.1"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.114.1"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.1.2"),
     ],
     targets: [
         .target(
@@ -85,6 +88,9 @@ let package = Package(
                 .target(name: "ImperialMixcloud"),
                 .target(name: "ImperialShopify"),
                 .product(name: "VaporTesting", package: "vapor"),
+            ],
+            resources: [
+                .copy("../../.env.testing")
             ],
             swiftSettings: swiftSettings
         ),

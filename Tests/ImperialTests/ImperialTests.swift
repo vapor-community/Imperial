@@ -1,3 +1,4 @@
+#if canImport(Testing)
 import ImperialAuth0
 import ImperialDeviantArt
 import ImperialDiscord
@@ -295,3 +296,4 @@ struct ImperialTests {
         #expect(ImperialError.missingEnvVar("foo") == ImperialError.missingEnvVar("bar"))
     }
 }
+#endif  // canImport(Testing)
