@@ -23,6 +23,10 @@ struct KeycloakRouter: FederatedServiceRouter {
         self.accessTokenURL = keycloakTokens.accessTokenURL
     }
 
+    var callbackHeaders: HTTPHeaders {
+        .init([("Content-Type", "application/x-www-form-urlencoded")])
+    }
+
     func authURL(_ request: Request) throws -> String {
         return "\(self.authURL)/auth?"
             + "client_id=\(self.tokens.clientID)&"
