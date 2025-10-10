@@ -12,7 +12,7 @@ Federated Authentication with LinkedIn for Vapor.
 4. Set scopes `openid`, `profile` and `email`
 
 
-### Linkedin API
+### LinkedIn API
 
 [Developer documentation](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2?context=linkedin%2Fconsumer%2Fcontext)
 
