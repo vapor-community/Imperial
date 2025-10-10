@@ -26,7 +26,7 @@ Imperial expects two environment variables:
 
 ### Integration example
 
-```
+```swift
 Import Vapor 
 
 struct LinkedInUserInfo: Content {
