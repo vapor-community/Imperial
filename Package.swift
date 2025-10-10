@@ -90,6 +90,7 @@ let package = Package(
                 .target(name: "ImperialMicrosoft"),
                 .target(name: "ImperialMixcloud"),
                 .target(name: "ImperialShopify"),
+                .target(name: "ImperialLinkedIn"),
                 .product(name: "VaporTesting", package: "vapor"),
             ],
             resources: [
