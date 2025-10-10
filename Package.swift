@@ -24,6 +24,7 @@ let package = Package(
         .library(name: "ImperialMicrosoft", targets: ["ImperialCore", "ImperialMicrosoft"]),
         .library(name: "ImperialMixcloud", targets: ["ImperialCore", "ImperialMixcloud"]),
         .library(name: "ImperialShopify", targets: ["ImperialCore", "ImperialShopify"]),
+        .library(name: "ImperialLinkedIn", targets: ["ImperialCore", "ImperialLinkedIn"]),
         .library(
             name: "Imperial",
             targets: [
@@ -41,12 +42,13 @@ let package = Package(
                 "ImperialMicrosoft",
                 "ImperialMixcloud",
                 "ImperialShopify",
+                "ImperialLinkedIn",
             ]
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.114.1"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.1.2"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.117.0"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.2.0"),
     ],
     targets: [
         .target(
@@ -70,6 +72,7 @@ let package = Package(
         .target(name: "ImperialMicrosoft", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialMixcloud", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .target(name: "ImperialShopify", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
+        .target(name: "ImperialLinkedIn", dependencies: ["ImperialCore"], swiftSettings: swiftSettings),
         .testTarget(
             name: "ImperialTests",
             dependencies: [
