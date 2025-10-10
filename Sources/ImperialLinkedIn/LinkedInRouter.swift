@@ -37,8 +37,6 @@ struct LinkedInRouter: FederatedServiceRouter {
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-        print("====")
-        print(url.absoluteString)
 
         return url.absoluteString
     }
