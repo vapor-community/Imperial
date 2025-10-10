@@ -4,7 +4,7 @@ Federated Authentication with LinkedIn for Vapor.
 
 ## Overview
 
-### Linkedin setup
+### LinkedIn setup
 
 1. Register your app on the LinkedIn developer portal
 2. Add the product "Sign in with LinkedIn"
