@@ -219,25 +219,25 @@ struct ImperialTests {
         }
     }
 
-   @Test("LinkedIn Route")
-   func linkedInRoute() async throws {
-       try await withApp(service: LinkedIn.self) { app in
-           try await app.test(
-               .GET, authURL,
-               afterResponse: { res async throws in
-                   #expect(res.status == .seeOther)
-               }
-           )
+    @Test("LinkedIn Route")
+    func linkedInRoute() async throws {
+        try await withApp(service: LinkedIn.self) { app in
+            try await app.test(
+                .GET, authURL,
+                afterResponse: { res async throws in
+                    #expect(res.status == .seeOther)
+                }
+            )
 
-           try await app.test(
-               .GET, "\(callbackURL)?code=123",
-               afterResponse: { res async throws in
-                   // TODO: test this route
-                   #expect(res.status != .notFound)
-               }
-           )
-       }
-   }
+            try await app.test(
+                .GET, "\(callbackURL)?code=123",
+                afterResponse: { res async throws in
+                    // TODO: test this route
+                    #expect(res.status != .notFound)
+                }
+            )
+        }
+    }
 
     @Test("Keycloak Route")
     func keycloakRoute() async throws {

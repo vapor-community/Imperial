@@ -8,7 +8,7 @@ public struct LinkedIn: FederatedService {
         authenticate: String,
         authenticateCallback: (@Sendable (Request) async throws -> Void)?,
         callback: String,
-        scope: [String] = ["openid","profile","email"],
+        scope: [String] = ["openid", "profile", "email"],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
         try LinkedInRouter(callback: callback, scope: scope, completion: completion)

@@ -31,14 +31,14 @@ struct LinkedInRouter: FederatedServiceRouter {
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "client_id", value: tokens.clientID),
             URLQueryItem(name: "redirect_uri", value: callbackURL),
-            URLQueryItem(name: "scope", value: scope.joined(separator: " "))
+            URLQueryItem(name: "scope", value: scope.joined(separator: " ")),
         ]
 
         guard let url = components.url else {
             throw Abort(.internalServerError)
         }
-       print("====")
-       print(url.absoluteString)
+        print("====")
+        print(url.absoluteString)
 
         return url.absoluteString
     }
