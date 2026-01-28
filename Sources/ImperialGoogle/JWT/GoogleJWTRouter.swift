@@ -41,7 +41,10 @@ struct GoogleJWTRouter: FederatedServiceRouter {
         let url = URI(string: self.accessTokenURL)
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
-        return try response.content.get(GoogleJWTResponse.self).accessToken
+        let jwt = try response.content.get(GoogleJWTResponse.self)
+        request.session.setRefreshToken(jwt.refreshToken)
+
+        return jwt.accessToken
     }
 
     func authenticate(_ request: Request) async throws -> Response {

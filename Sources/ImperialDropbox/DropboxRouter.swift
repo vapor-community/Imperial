@@ -33,6 +33,7 @@ struct DropboxRouter: FederatedServiceRouter {
             clientIDItem,
             redirectURIItem,
             scopeItem,
+            tokenAccessTypeItem,
             codeResponseTypeItem,
         ]
 

@@ -11,11 +11,12 @@ public struct Shopify: FederatedService {
         scope: [String],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        try ShopifyRouter(callback: callback, scope: scope, completion: completion)
-            .configureRoutes(
-                withAuthURL: authenticate,
-                authenticateCallback: authenticateCallback,
-                on: routes
-            )
+        // Shopify does not use refresh tokens
+        let router = try ShopifyRouter(callback: callback, scope: scope, completion: completion)
+        try router.configureRoutes(
+            withAuthURL: authenticate,
+            authenticateCallback: authenticateCallback,
+            on: routes
+        )
     }
 }

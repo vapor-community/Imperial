@@ -2,6 +2,8 @@
 import Vapor
 
 public struct Microsoft: FederatedService {
+    public let router: (any FederatedServiceRouter)?
+
     @discardableResult
     public init(
         routes: some RoutesBuilder,
@@ -11,7 +13,7 @@ public struct Microsoft: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        try MicrosoftRouter(callback: callback, scope: scope, completion: completion)
-            .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        router = try MicrosoftRouter(callback: callback, scope: scope, completion: completion)
+        try router?.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }

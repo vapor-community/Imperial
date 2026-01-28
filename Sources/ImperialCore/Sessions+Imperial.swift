@@ -61,6 +61,13 @@ extension Session {
         self.data[Keys.refresh] = token
     }
 
+    /// Sets the refresh token on the session.
+    ///
+    /// - Parameter token: the refresh token to store on the session. If nil, deletes the token
+    public func setRefreshToken(_ token: String?) {
+        self.data[Keys.refresh] = token
+    }
+
     /// Gets an object stored in a session with JSON as a given type.
     ///
     /// - Parameters:

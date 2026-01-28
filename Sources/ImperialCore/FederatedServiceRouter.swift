@@ -70,6 +70,16 @@ public protocol FederatedServiceRouter: Sendable {
     /// Creates CallbackBody with authorization code
     func callbackBody(with code: String) -> any AsyncResponseEncodable
 
+    /// Creates RefreshBody with refresh token
+    func refreshBody(with refreshToken: String) -> any Content
+
+    /// Refresh the access token if possible
+    func refreshAccessToken(
+        _ request: Request,
+        refreshToken: String,
+        completion: @escaping @Sendable (Request, String) async throws -> Void
+    ) async throws
+
     /// The route that the OAuth provider calls when the user has been authenticated.
     ///
     /// - Parameter request: The request from the OAuth provider.
@@ -112,7 +122,43 @@ extension FederatedServiceRouter {
 
         let buffer = try await body.encodeResponse(for: request).body.buffer
         let response = try await request.client.post(url, headers: self.callbackHeaders) { $0.body = buffer }
+
+        // Most, though not all oAuth services generate a refresh token
+        let refreshToken = try? response.content.get(String.self, at: ["refresh_token"])
+        request.session.setRefreshToken(refreshToken)
+
         return try response.content.get(String.self, at: ["access_token"])
+    }
+
+    public func refreshAccessToken(
+        _ request: Request,
+        refreshToken: String,
+        completion: @escaping @Sendable (Request, String) async throws -> Void
+    ) async throws {
+        let body = refreshBody(with: refreshToken)
+        let url = URI(string: accessTokenURL)  // (sic!) Refresh tokens use accessTokenURL as well
+
+        let response = try await request.client.post(url) { post in try post.content.encode(body) }
+
+        // For most services, refresh tokens are perpetual, but for some, e.g. Box, refresh tokens
+        // are single use and a new one is returned when refreshing
+        if let refreshToken = try? response.content.get(String.self, at: ["refresh_token"]) {
+            request.session.setRefreshToken(refreshToken)
+        }
+
+        let accessToken = try response.content.get(String.self, at: ["access_token"])
+        try request.session.setAccessToken(accessToken)
+        try await completion(request, accessToken)
+    }
+
+    public func refreshAccessToken(
+        _ request: Request,
+        completion: @escaping @Sendable (Request, String) async throws -> Void
+    ) async throws {
+        guard let refreshToken = try? request.refreshToken else {
+            throw Abort(.internalServerError, reason: "No refresh token found in session")
+        }
+        try await refreshAccessToken(request, refreshToken: refreshToken, completion: completion)
     }
 
     public func callback(_ request: Request) async throws -> Response {
@@ -121,6 +167,12 @@ extension FederatedServiceRouter {
         try session.setAccessToken(accessToken)
         let response = try await self.callbackCompletion(request, accessToken)
         return try await response.encodeResponse(for: request)
+    }
+
+    public func refreshBody(with refreshToken: String) -> any Content {
+        FederatedServiceRefreshBody(
+            refreshToken: refreshToken,
+            clientId: tokens.clientID, clientSecret: tokens.clientSecret)
     }
 }
 
@@ -141,5 +193,9 @@ extension FederatedServiceRouter {
 
     public var codeResponseTypeItem: URLQueryItem {
         .init(name: "response_type", value: "code")
+    }
+
+    package var tokenAccessTypeItem: URLQueryItem {
+        .init(name: "token_access_type", value: "offline")
     }
 }

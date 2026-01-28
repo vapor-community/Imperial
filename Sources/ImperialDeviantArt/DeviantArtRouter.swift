@@ -7,6 +7,7 @@ struct DeviantArtRouter: FederatedServiceRouter {
     let scope: [String]
     let callbackURL: String
     let accessTokenURL: String = "https://www.deviantart.com/oauth2/token"
+    let callbackHeaders = HTTPHeaders([("Content-Type", "application/x-www-form-urlencoded")])
 
     init(
         callback: String, scope: [String], completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable

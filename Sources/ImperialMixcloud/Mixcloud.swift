@@ -11,7 +11,8 @@ public struct Mixcloud: FederatedService {
         scope: [String] = [],
         completion: @escaping @Sendable (Request, String) async throws -> some AsyncResponseEncodable
     ) throws {
-        try MixcloudRouter(callback: callback, scope: scope, completion: completion)
-            .configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
+        // Mixcloud does not seem to use refresh tokens
+        let router = try MixcloudRouter(callback: callback, scope: scope, completion: completion)
+        try router.configureRoutes(withAuthURL: authenticate, authenticateCallback: authenticateCallback, on: routes)
     }
 }
