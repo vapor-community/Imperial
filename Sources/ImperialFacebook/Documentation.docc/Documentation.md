@@ -36,7 +36,7 @@ You can use Facebook with the `ImperialFacebook` package. This expects two envir
 * `FACEBOOK_CLIENT_ID`
 * `FACEBOOK_CLIENT_SECRET`
 
-You can then register the OAuth provider like normal.
+You can then register the OAuth provider like normal. Note that the client secret is required when making APIs call to Facebook.
 
 ### Fetching User Data
 
@@ -60,7 +60,9 @@ struct FacebookUserInfo: Content {
 extension Facebook {
     static func getUserInfo(on request: Request) async throws -> FacebookUserInfo {
         let token = try request.accessToken
-        let facebookUserAPIURL: URI = "https://graph.facebook.com/v3.2/me?fields=id,name,email&access_token=\(token)"
+        let clientSecret = ... // Retrieve from however your application saved FACEBOOK_CLIENT_SECRET.
+        let secretProof = generateAppSecretProof(key: clientSecret, message: token)
+        let facebookUserAPIURL: URI = "https://graph.facebook.com/v3.2/me?fields=id,name,email&access_token=\(token)&appsecret_proof=\(secretProof)"
 
         let response = try await request.client.get(facebookUserAPIURL)
         guard response.status == .ok else {
